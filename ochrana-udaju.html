@@ -1,0 +1,175 @@
+<!-- KONCEPT v1.0 — Před zveřejněním doplňte všechna místa [DOPLNIT] a nechte dokument zkontrolovat advokátem. -->
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zásady ochrany osobních údajů — Propilot(y)</title>
+<meta name="robots" content="index,follow">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="any">
+<meta name="theme-color" content="#102648">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-900:#0A1A30;--navy:#102648;--cobalt:#1A56DB;--gold:#EDB458;--gold-200:#F6D79B;
+  --paper:#EDF1F7;--surface:#FFFFFF;--line:#D7DFEA;--line-soft:#E7EDF5;
+  --ink:#0E1B2E;--ink-2:#3C4B61;--ink-3:#6C7C93;--on-navy:#EAF1FA;--on-navy-muted:#A6B9D4;
+  --ff-display:"Space Grotesk",system-ui,sans-serif;--ff-body:"IBM Plex Sans",system-ui,sans-serif;--ff-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--ff-body);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--cobalt);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+svg{display:block}
+/* topbar */
+.topbar{position:sticky;top:0;z-index:20;background:rgba(11,26,48,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
+.topbar__in{max-width:880px;margin:0 auto;padding:0 24px;height:62px;display:flex;align-items:center;gap:1rem}
+.brand{display:flex;align-items:center;gap:.55rem;color:#fff}
+.brand .mark{width:30px;height:30px;flex:none}
+.brand .word{font-family:var(--ff-display);font-weight:700;font-size:1.12rem}
+.brand .word b{color:var(--gold)}
+.topbar__back{margin-left:auto;color:var(--on-navy-muted);font-size:.9rem;font-family:var(--ff-mono)}
+.topbar__back:hover{color:#fff;text-decoration:none}
+/* doc */
+.doc{max-width:880px;margin:34px auto 0;padding:0 24px 80px}
+.card{background:var(--surface);border:1px solid var(--line-soft);border-radius:20px;padding:clamp(28px,5vw,56px);box-shadow:0 1px 2px rgba(16,38,72,.05),0 24px 50px -30px rgba(16,38,72,.4)}
+.eyebrow{font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.eyebrow{color:#B8742F}
+h1{font-family:var(--ff-display);font-weight:700;font-size:clamp(1.9rem,4.4vw,2.8rem);letter-spacing:-.02em;margin:.5rem 0 0;line-height:1.08}
+.meta{font-family:var(--ff-mono);font-size:.76rem;color:var(--ink-3);margin-top:.9rem;letter-spacing:.02em}
+.intro{margin-top:1.6rem;color:var(--ink-2);font-size:1.04rem}
+h2{font-family:var(--ff-display);font-weight:700;font-size:1.3rem;letter-spacing:-.01em;margin:2.6rem 0 .7rem;padding-top:1.4rem;border-top:1px solid var(--line-soft)}
+h2 .n{color:var(--gold);margin-right:.5rem}
+h2 .n{color:#C68A2E}
+h3{font-family:var(--ff-body);font-weight:600;font-size:1.02rem;margin:1.4rem 0 .3rem;color:var(--ink)}
+p{margin:.7rem 0}
+ul,ol{margin:.7rem 0;padding-left:1.3rem}
+li{margin:.45rem 0}
+.lead-list>li{margin:.7rem 0}
+.basis{font-family:var(--ff-mono);font-size:.78rem;color:var(--ink-3);display:block;margin-top:.15rem}
+.fill{background:#FBE7B0;color:#5a4410;padding:0 .3em;border-radius:3px;font-weight:500;font-family:var(--ff-mono);font-size:.92em}
+.callout{background:#F4F8FD;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:10px;padding:16px 18px;margin:1.4rem 0;font-size:.96rem}
+.callout strong{color:var(--ink)}
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.94rem}
+th,td{text-align:left;padding:.6rem .7rem;border-bottom:1px solid var(--line-soft);vertical-align:top}
+th{font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+/* footer */
+.foot{max-width:880px;margin:0 auto;padding:24px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:.6rem 1.4rem;align-items:center;font-size:.88rem;color:var(--ink-3)}
+.foot a{color:var(--ink-2)}
+.foot .cp{margin-left:auto;font-family:var(--ff-mono);font-size:.78rem}
+@media(max-width:560px){.foot .cp{margin-left:0;width:100%}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__in">
+    <a class="brand" href="index.html" aria-label="Propilot(y)">
+      <svg class="mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="#fff"/><clipPath id="m"><circle cx="50" cy="50" r="40"/></clipPath><g clip-path="url(#m)"><rect x="10" y="10" width="80" height="40" fill="#CADBEA"/><rect x="10" y="50" width="80" height="40" fill="#E0922F"/></g><polygon points="50,14 45.5,22 54.5,22" fill="#fff"/><g fill="#102648"><rect x="26" y="47" width="14" height="6" rx="3"/><circle cx="50" cy="50" r="4.4"/><rect x="60" y="47" width="14" height="6" rx="3"/></g></svg>
+      <span class="word">Propilot<b>(y)</b></span>
+    </a>
+    <a class="topbar__back" href="index.html">← Zpět na web</a>
+  </div>
+</header>
+
+<main class="doc">
+  <article class="card">
+    <span class="eyebrow">Právní</span>
+    <h1>Zásady ochrany osobních údajů</h1>
+    <p class="meta">Účinné od <span class="fill">[DOPLNIT datum]</span> · Verze 1.0</p>
+
+    <p class="intro">Tyto zásady popisují, jak společnost Propiloty s.r.o. zpracovává osobní údaje uživatelů mobilní aplikace Propilot(y) a webových stránek <span class="fill">[DOPLNIT doménu]</span> (dále jen „Služba"). Řídíme se nařízením (EU) 2016/679 (GDPR) a zákonem č. 110/2019 Sb., o zpracování osobních údajů.</p>
+
+    <div class="callout"><strong>Stručně:</strong> Sbíráme jen údaje nutné k provozu Služby — účet, informace o zakoupených licencích, vstupy z tréninku radiotelefonie a základní provozní data. Neprodáváme tvoje údaje. Platby zpracovává Apple, resp. platební brána na webu — údaje o platební kartě nezískáváme.</div>
+
+    <h2><span class="n">1.</span>Správce údajů</h2>
+    <p>Správcem osobních údajů je:</p>
+    <p>
+      Propiloty s.r.o.<br>
+      IČO: <span class="fill">[DOPLNIT]</span>, se sídlem <span class="fill">[DOPLNIT adresu]</span><br>
+      zapsaná v obchodním rejstříku vedeném <span class="fill">[DOPLNIT soud a spisovou značku]</span><br>
+      e-mail: <a href="mailto:propiloty@gmail.com">propiloty@gmail.com</a>
+    </p>
+    <p class="callout"><span class="fill">[DOPLNIT: Do založení společnosti Propiloty s.r.o. je správcem fyzická osoba — jméno, IČO a adresa zakladatele. Po vzniku s.r.o. nahraďte.]</span></p>
+    <p>Pověřence pro ochranu osobních údajů (DPO) jsme nejmenovali, neboť k tomu nemáme zákonnou povinnost. Ve všech záležitostech ochrany údajů nás kontaktuj na výše uvedeném e-mailu.</p>
+
+    <h2><span class="n">2.</span>Jaké údaje a proč zpracováváme</h2>
+    <ol class="lead-list">
+      <li><strong>Údaje účtu</strong> — e-mailová adresa, heslo (uložené v zašifrované, tzv. hashované podobě), případně jméno. Účel: vytvoření a správa účtu, přihlášení, synchronizace tvého pokroku mezi zařízeními.
+        <span class="basis">Právní základ: plnění smlouvy (čl. 6 odst. 1 písm. b GDPR).</span></li>
+      <li><strong>Údaje o nákupech a licencích</strong> — informace o zakoupených balíčcích, době jejich platnosti a identifikátory transakcí z App Store nebo platební brány. Účel: zpřístupnění zaplaceného obsahu, evidence předplatného, řešení reklamací.
+        <span class="basis">Právní základ: plnění smlouvy a plnění právní povinnosti (účetnictví).</span></li>
+      <li><strong>Trénink radiotelefonie (AI)</strong> — hlasové nahrávky a/nebo jejich přepisy a text, který zadáš během cvičení s AI řídícím, a vyhodnocení tvého výkonu. Účel: poskytnutí tréninku a zpětné vazby.
+        <span class="basis">Právní základ: plnění smlouvy (čl. 6 odst. 1 písm. b GDPR).</span>
+        <p>Tyto vstupy zpracovává poskytovatel umělé inteligence <span class="fill">[DOPLNIT název poskytovatele AI]</span>. Tvůj hlas <strong>nepoužíváme k tvé identifikaci</strong> (nejde o biometrické zpracování) ani <span class="fill">[DOPLNIT: k trénování AI modelů — uveďte „ani", pokud netrénujete]</span>. Dobu uložení viz čl. 5.</p></li>
+      <li><strong>Technické a provozní údaje</strong> — typ a model zařízení, verze operačního systému, identifikátory aplikace, IP adresa a provozní logy. Účel: provoz a zabezpečení Služby, řešení chyb.
+        <span class="basis">Právní základ: oprávněný zájem na řádném a bezpečném provozu (čl. 6 odst. 1 písm. f GDPR).</span></li>
+      <li><strong>Analytika a hlášení pádů aplikace</strong> — především agregované informace o používání a stabilitě. Účel: zlepšování Služby.
+        <span class="basis">Právní základ: oprávněný zájem, u neesenciálních nástrojů souhlas. <span class="fill">[DOPLNIT konkrétní nástroj, např. Apple App Analytics / jiný]</span></span></li>
+      <li><strong>Komunikace a podpora</strong> — obsah zpráv, které nám zašleš (např. dotazy, nahlášení chyb). Účel: vyřízení tvého požadavku.
+        <span class="basis">Právní základ: plnění smlouvy a oprávněný zájem.</span></li>
+      <li><strong>Firemní / B2B objednávky (školy)</strong> — kontaktní a fakturační údaje objednatele a kontaktních osob. Účel: uzavření a plnění smlouvy o hromadných licencích, fakturace.
+        <span class="basis">Právní základ: plnění smlouvy a plnění právní povinnosti.</span></li>
+    </ol>
+
+    <h2><span class="n">3.</span>Děti a nezletilí</h2>
+    <p>Služba je určena uživatelům od 15 let. Osoby mladší 15 let mohou Službu používat pouze se souhlasem zákonného zástupce. Tam, kde zpracování stojí na souhlasu, u osob mladších 15 let vyžadujeme souhlas zákonného zástupce (čl. 8 GDPR, § 7 zákona č. 110/2019 Sb.).</p>
+    <p>Nákupy uskutečněné nezletilými vyžadují souhlas zákonného zástupce, který za ně odpovídá. Vědomě nezpracováváme údaje dětí mladších 15 let bez souhlasu zákonného zástupce; pokud zjistíme, že k tomu došlo, údaje bez zbytečného odkladu odstraníme. Nezletilým necílíme reklamu ani je nesledujeme pro reklamní účely.</p>
+
+    <h2><span class="n">4.</span>Příjemci a zpracovatelé údajů</h2>
+    <p>Údaje předáváme pouze poskytovatelům, kteří pro nás zajišťují provoz Služby, a to v nezbytném rozsahu a na základě smluv o zpracování:</p>
+    <table>
+      <tr><th>Zpracovatel</th><th>Účel</th><th>Umístění</th></tr>
+      <tr><td>Apple Inc.</td><td>App Store, zpracování plateb v aplikaci</td><td>USA (DPF)</td></tr>
+      <tr><td>Supabase</td><td>Účty a databáze</td><td><span class="fill">[DOPLNIT region — EU/US]</span></td></tr>
+      <tr><td><span class="fill">[Stripe / GoPay]</span></td><td>Platby na webu</td><td><span class="fill">[DOPLNIT]</span></td></tr>
+      <tr><td>Vercel</td><td>Hosting webových stránek</td><td>USA (DPF)</td></tr>
+      <tr><td><span class="fill">[Poskytovatel AI]</span></td><td>Vyhodnocení radiotelefonie</td><td><span class="fill">[DOPLNIT]</span></td></tr>
+      <tr><td><span class="fill">[Analytický nástroj]</span></td><td>Analytika a pády aplikace</td><td><span class="fill">[DOPLNIT]</span></td></tr>
+    </table>
+    <p>Někteří zpracovatelé působí mimo Evropský hospodářský prostor (zejména v USA). Předání údajů je v takovém případě zajištěno na základě rozhodnutí o odpovídající ochraně (EU–US Data Privacy Framework), případně standardních smluvních doložek schválených Evropskou komisí. Údaje můžeme dále předat orgánům veřejné moci, pokud nám to ukládá zákon.</p>
+
+    <h2><span class="n">5.</span>Doba uložení</h2>
+    <ul>
+      <li>Údaje účtu a pokrok: po dobu trvání účtu a následně <span class="fill">[DOPLNIT, např. 12 měsíců]</span> po jeho zrušení.</li>
+      <li>Účetní a daňové doklady: po zákonem stanovenou dobu (účetní doklady zpravidla 5 let, daňové doklady k DPH 10 let).</li>
+      <li>Nahrávky a přepisy z tréninku radiotelefonie: <span class="fill">[DOPLNIT — doporučeno krátce, např. po dobu relace nebo 30 dní]</span>.</li>
+      <li>Analytická data: v agregované či anonymizované podobě.</li>
+    </ul>
+    <p>Po uplynutí uvedených dob údaje vymažeme nebo nevratně anonymizujeme.</p>
+
+    <h2><span class="n">6.</span>Tvoje práva</h2>
+    <p>Ve vztahu ke svým údajům máš právo na přístup, opravu, výmaz, omezení zpracování, přenositelnost údajů a právo vznést námitku. Pokud je zpracování založeno na souhlasu, můžeš jej kdykoli odvolat, aniž je dotčena zákonnost zpracování před odvoláním. Práva uplatníš e-mailem na <a href="mailto:propiloty@gmail.com">propiloty@gmail.com</a>.</p>
+    <p>Máš rovněž právo podat stížnost u dozorového úřadu, kterým je Úřad pro ochranu osobních údajů, Pplk. Sochora 27, 170 00 Praha 7, <a href="https://www.uoou.gov.cz" target="_blank" rel="noopener">www.uoou.gov.cz</a>.</p>
+
+    <h2><span class="n">7.</span>Cookies a webové stránky</h2>
+    <p>Na webových stránkách používáme nezbytné cookies potřebné k jejich provozu. Neesenciální cookies (např. analytické nebo marketingové) používáme jen s tvým souhlasem uděleným prostřednictvím cookie lišty, který můžeš kdykoli změnit. <span class="fill">[DOPLNIT seznam používaných cookies a jejich účel / nástroj pro správu souhlasu]</span></p>
+
+    <h2><span class="n">8.</span>Automatizované rozhodování</h2>
+    <p>Vyhodnocení radiotelefonie umělou inteligencí je orientační zpětná vazba pro tvé učení. Nejde o automatizované rozhodování s právním nebo obdobně významným účinkem ve smyslu čl. 22 GDPR.</p>
+
+    <h2><span class="n">9.</span>Zabezpečení</h2>
+    <p>Přijímáme přiměřená technická a organizační opatření k ochraně údajů — šifrovaný přenos (HTTPS), hashování hesel, řízení přístupu a další. Žádný způsob přenosu ani uložení dat však není stoprocentně bezpečný.</p>
+
+    <h2><span class="n">10.</span>Změny těchto zásad</h2>
+    <p>Tyto zásady můžeme aktualizovat. O podstatných změnách tě budeme informovat v aplikaci nebo e-mailem. Aktuální znění je vždy dostupné na této stránce; datum účinnosti je uvedeno v záhlaví.</p>
+
+    <h2><span class="n">11.</span>Kontakt</h2>
+    <p>Propiloty s.r.o., e-mail <a href="mailto:propiloty@gmail.com">propiloty@gmail.com</a>.</p>
+  </article>
+</main>
+
+<footer class="foot">
+  <a href="obchodni-podminky.html">Obchodní podmínky</a>
+  <a href="index.html">Hlavní stránka</a>
+  <a href="mailto:propiloty@gmail.com">propiloty@gmail.com</a>
+  <span class="cp">© 2026 Propilot(y)</span>
+</footer>
+
+</body>
+</html>

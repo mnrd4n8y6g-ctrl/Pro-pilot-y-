@@ -1,0 +1,160 @@
+<!-- KONCEPT v1.0 — Před zveřejněním doplňte všechna místa [DOPLNIT] a nechte dokument zkontrolovat advokátem. -->
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Obchodní podmínky — Propilot(y)</title>
+<meta name="robots" content="index,follow">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="any">
+<meta name="theme-color" content="#102648">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-900:#0A1A30;--navy:#102648;--cobalt:#1A56DB;--gold:#EDB458;--gold-200:#F6D79B;
+  --paper:#EDF1F7;--surface:#FFFFFF;--line:#D7DFEA;--line-soft:#E7EDF5;
+  --ink:#0E1B2E;--ink-2:#3C4B61;--ink-3:#6C7C93;--on-navy:#EAF1FA;--on-navy-muted:#A6B9D4;
+  --ff-display:"Space Grotesk",system-ui,sans-serif;--ff-body:"IBM Plex Sans",system-ui,sans-serif;--ff-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--ff-body);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--cobalt);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+svg{display:block}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(11,26,48,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
+.topbar__in{max-width:880px;margin:0 auto;padding:0 24px;height:62px;display:flex;align-items:center;gap:1rem}
+.brand{display:flex;align-items:center;gap:.55rem;color:#fff}
+.brand .mark{width:30px;height:30px;flex:none}
+.brand .word{font-family:var(--ff-display);font-weight:700;font-size:1.12rem}
+.brand .word b{color:var(--gold)}
+.topbar__back{margin-left:auto;color:var(--on-navy-muted);font-size:.9rem;font-family:var(--ff-mono)}
+.topbar__back:hover{color:#fff;text-decoration:none}
+.doc{max-width:880px;margin:34px auto 0;padding:0 24px 80px}
+.card{background:var(--surface);border:1px solid var(--line-soft);border-radius:20px;padding:clamp(28px,5vw,56px);box-shadow:0 1px 2px rgba(16,38,72,.05),0 24px 50px -30px rgba(16,38,72,.4)}
+.eyebrow{font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:#B8742F}
+h1{font-family:var(--ff-display);font-weight:700;font-size:clamp(1.9rem,4.4vw,2.8rem);letter-spacing:-.02em;margin:.5rem 0 0;line-height:1.08}
+.meta{font-family:var(--ff-mono);font-size:.76rem;color:var(--ink-3);margin-top:.9rem;letter-spacing:.02em}
+.intro{margin-top:1.6rem;color:var(--ink-2);font-size:1.04rem}
+h2{font-family:var(--ff-display);font-weight:700;font-size:1.3rem;letter-spacing:-.01em;margin:2.6rem 0 .7rem;padding-top:1.4rem;border-top:1px solid var(--line-soft)}
+h2 .n{color:#C68A2E;margin-right:.5rem}
+h3{font-family:var(--ff-body);font-weight:600;font-size:1.02rem;margin:1.4rem 0 .3rem;color:var(--ink)}
+p{margin:.7rem 0}
+ul,ol{margin:.7rem 0;padding-left:1.3rem}
+li{margin:.45rem 0}
+.fill{background:#FBE7B0;color:#5a4410;padding:0 .3em;border-radius:3px;font-weight:500;font-family:var(--ff-mono);font-size:.92em}
+.callout{background:#FBF6EC;border:1px solid #ECD9AE;border-left:3px solid var(--gold);border-radius:10px;padding:16px 18px;margin:1.4rem 0;font-size:.96rem}
+.callout strong{color:var(--ink)}
+.callout--warn{background:#FBEEE9;border-color:#E8C3B3;border-left-color:#C2410C}
+.foot{max-width:880px;margin:0 auto;padding:24px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:.6rem 1.4rem;align-items:center;font-size:.88rem;color:var(--ink-3)}
+.foot a{color:var(--ink-2)}
+.foot .cp{margin-left:auto;font-family:var(--ff-mono);font-size:.78rem}
+@media(max-width:560px){.foot .cp{margin-left:0;width:100%}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__in">
+    <a class="brand" href="index.html" aria-label="Propilot(y)">
+      <svg class="mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="#fff"/><clipPath id="m"><circle cx="50" cy="50" r="40"/></clipPath><g clip-path="url(#m)"><rect x="10" y="10" width="80" height="40" fill="#CADBEA"/><rect x="10" y="50" width="80" height="40" fill="#E0922F"/></g><polygon points="50,14 45.5,22 54.5,22" fill="#fff"/><g fill="#102648"><rect x="26" y="47" width="14" height="6" rx="3"/><circle cx="50" cy="50" r="4.4"/><rect x="60" y="47" width="14" height="6" rx="3"/></g></svg>
+      <span class="word">Propilot<b>(y)</b></span>
+    </a>
+    <a class="topbar__back" href="index.html">← Zpět na web</a>
+  </div>
+</header>
+
+<main class="doc">
+  <article class="card">
+    <span class="eyebrow">Právní</span>
+    <h1>Obchodní podmínky</h1>
+    <p class="meta">Účinné od <span class="fill">[DOPLNIT datum]</span> · Verze 1.0</p>
+
+    <p class="intro">Tyto obchodní podmínky (dále jen „Podmínky") upravují užívání mobilní aplikace Propilot(y) a webových stránek <span class="fill">[DOPLNIT doménu]</span> a nákup licencí ke studijnímu obsahu. Vytvořením účtu nebo nákupem potvrzuješ, že jsi se s Podmínkami seznámil a souhlasíš s nimi.</p>
+
+    <div class="callout callout--warn"><strong>Důležité:</strong> Propilot(y) je studijní a přípravná pomůcka. <strong>Nezaručuje složení zkoušky</strong> u ÚCL, ČTÚ, LAA ČR ani jiného orgánu a není jejich oficiálním produktem. Nenahrazuje předepsaný výcvik ani platné předpisy — v případě rozporu jsou rozhodující oficiální zdroje. Podrobnosti viz čl. 9.</p></div>
+
+    <h2><span class="n">1.</span>Provozovatel</h2>
+    <p>
+      Provozovatelem je Propiloty s.r.o., IČO <span class="fill">[DOPLNIT]</span>, se sídlem <span class="fill">[DOPLNIT adresu]</span>, zapsaná v obchodním rejstříku vedeném <span class="fill">[DOPLNIT]</span>, e-mail <a href="mailto:propiloty@gmail.com">propiloty@gmail.com</a> (dále jen „Provozovatel").
+    </p>
+    <p class="callout"><span class="fill">[DOPLNIT: Do vzniku společnosti vystupuje jako provozovatel zakladatel — jméno a IČO. Po založení s.r.o. nahraďte.]</span></p>
+
+    <h2><span class="n">2.</span>Vymezení pojmů</h2>
+    <ul>
+      <li><strong>Aplikace</strong> — mobilní aplikace Propilot(y) pro zařízení Apple. <strong>Web</strong> — webové stránky Provozovatele.</li>
+      <li><strong>Uživatel</strong> — osoba užívající Službu. <strong>Spotřebitel</strong> — uživatel, který jedná mimo rámec své podnikatelské činnosti (§ 419 občanského zákoníku).</li>
+      <li><strong>Licence / Předplatné</strong> — časově omezené nebo trvalé oprávnění k užívání placeného Obsahu.</li>
+      <li><strong>Obsah</strong> — databáze zkušebních otázek, vysvětlení, trénink radiotelefonie a další materiály ve Službě.</li>
+    </ul>
+
+    <h2><span class="n">3.</span>Účet a způsobilost</h2>
+    <p>Pro plné využití Služby je nutný uživatelský účet. Služba je určena osobám od 15 let; osoby mladší 15 let a nezletilí obecně mohou Službu užívat a nakupovat pouze se souhlasem zákonného zástupce, který za takové jednání odpovídá. Zavazuješ se uvádět pravdivé údaje, chránit přihlašovací údaje a nezpřístupnit účet jiné osobě. Jeden účet je určen pro jednu osobu.</p>
+
+    <h2><span class="n">4.</span>Licence k užívání obsahu</h2>
+    <p>Provozovatel ti uděluje nevýhradní, nepřenosnou a časově omezenou licenci k užívání Obsahu výhradně pro tvou osobní studijní potřebu. Veškerá práva k Obsahu náleží Provozovateli, případně jeho partnerům. Nesmíš Obsah kopírovat, rozmnožovat, šířit, prodávat, zpřístupňovat třetím osobám, hromadně stahovat (scraping) ani zpětně analyzovat. Porušení může vést k pozastavení nebo zrušení přístupu bez náhrady.</p>
+
+    <h2><span class="n">5.</span>Licence, doby platnosti a nákup</h2>
+    <h3>5.1 Druhy licencí</h3>
+    <p>Nabízíme jednotlivé balíčky (např. PPL, větroň, balón, radiotelefonie, LAA) a balíček „Vše", a to v délkách 1, 6 a 12 měsíců <span class="fill">[DOPLNIT, příp. trvalý přístup]</span>. Konkrétní aktuální nabídka a ceny jsou uvedeny v Aplikaci a na Webu.</p>
+    <h3>5.2 Nákup přes Apple (iOS)</h3>
+    <p>Nákupy v Aplikaci zprostředkovává společnost Apple. Smlouva o platbě se řídí podmínkami služby Apple Media Services. Správu předplatného i případné vrácení peněz vyřizuješ v nastavení App Store, resp. prostřednictvím Apple. Automaticky obnovované předplatné se obnovuje za stejnou cenu, dokud jej nezrušíš nejpozději 24 hodin před koncem probíhajícího období. <span class="fill">[Pokud používáte neobnovované předplatné, uveďte místo toho: Přístup je časově omezený a po vypršení se automaticky neobnovuje.]</span></p>
+    <h3>5.3 Nákup přes Web</h3>
+    <p>Při nákupu na Webu uzavíráš smlouvu přímo s Provozovatelem; platbu zpracovává <span class="fill">[Stripe / GoPay]</span>. Ceny jsou uvedeny včetně DPH. Po zaplacení získáš přístup k zakoupené licenci a vystavíme ti daňový doklad.</p>
+    <h3>5.4 Firemní a školní licence (B2B)</h3>
+    <p>Hromadné licence pro letecké školy a organizace poskytujeme na základě individuální objednávky či smlouvy a faktury. Na podnikatele se nevztahují níže uvedená spotřebitelská ustanovení (zejména právo na odstoupení dle čl. 7).</p>
+
+    <h2><span class="n">6.</span>Ceny a DPH</h2>
+    <p>Ceny jsou uvedeny v korunách českých včetně DPH. Provozovatel <span class="fill">[je / není]</span> plátcem DPH. U nákupů přes Apple může Apple ceny lokalizovat a zaokrouhlovat podle pravidel App Store.</p>
+
+    <h2><span class="n">7.</span>Odstoupení od smlouvy (spotřebitel)</h2>
+    <p>Spotřebitel má právo odstoupit od smlouvy uzavřené distančním způsobem do 14 dnů (§ 1829 občanského zákoníku). U digitálního obsahu dodávaného online a u online služeb však právo na odstoupení <strong>zaniká</strong>, pokud bylo plnění zahájeno s tvým předchozím výslovným souhlasem a s tvým prohlášením, že bereš na vědomí zánik práva na odstoupení (§ 1837 občanského zákoníku). Na tuto skutečnost tě před nákupem upozorníme a souhlas vyžádáme. U nákupů přes Apple se uplatní postup společnosti Apple. <span class="fill">[DOPLNIT: postup a kontaktní místo pro odstoupení u webových nákupů, případně vzorový formulář.]</span></p>
+
+    <h2><span class="n">8.</span>Práva z vadného plnění a reklamace</h2>
+    <p>Provozovatel odpovídá za to, že je digitální obsah poskytován bez vad a ve sjednané jakosti (§ 2389a a násl. občanského zákoníku). Případné vady reklamuj na e-mailu <a href="mailto:propiloty@gmail.com">propiloty@gmail.com</a>; postup a lhůty se řídí zákonem a reklamačním řádem Provozovatele. <span class="fill">[DOPLNIT odkaz na reklamační řád, pokud jej vydáte.]</span></p>
+
+    <h2><span class="n">9.</span>Studijní povaha služby a vyloučení záruk</h2>
+    <p>Aplikace je studijní a přípravná pomůcka. <strong>Nezaručuje úspěšné složení zkoušky</strong> u Úřadu pro civilní letectví (ÚCL), Českého telekomunikačního úřadu (ČTÚ), Letecké amatérské asociace ČR (LAA ČR) ani u jiného orgánu a není jejich oficiálním produktem. Nenahrazuje předepsaný letecký výcvik, platné letecké předpisy ani úřední dokumenty. V případě rozporu mezi Obsahem a oficiálními zdroji jsou rozhodující aktuální znění předpisů a úřední dokumenty. Obsah, včetně otázek a vysvětlení, může obsahovat nepřesnosti; spoléhání na něj je na vlastní odpovědnost uživatele. Vyhodnocení tréninku radiotelefonie umělou inteligencí je pouze orientační a není úředním hodnocením.</p>
+
+    <h2><span class="n">10.</span>Omezení odpovědnosti</h2>
+    <p>V rozsahu povoleném právními předpisy Provozovatel neodpovídá za nepřímé škody, ušlý zisk ani za škody vzniklé v důsledku spoléhání na Obsah či nedostupnosti Služby. Tímto nejsou dotčena práva spotřebitele ani odpovědnost, kterou podle zákona nelze vyloučit či omezit (zejména za škodu na přirozených právech člověka, způsobenou úmyslně nebo z hrubé nedbalosti — § 2898 občanského zákoníku).</p>
+
+    <h2><span class="n">11.</span>Dostupnost služby</h2>
+    <p>Služba je poskytována ve stavu, v jakém je k dispozici. Provozovatel může provádět údržbu, měnit, doplňovat či ukončovat jednotlivé funkce a negarantuje nepřerušený provoz.</p>
+
+    <h2><span class="n">12.</span>Pravidla užívání</h2>
+    <p>Uživatel nesmí Službu zneužívat, sdílet účet, získávat či extrahovat Obsah nad rámec běžného užití, obcházet zabezpečení ani užívat Službu k protiprávním účelům.</p>
+
+    <h2><span class="n">13.</span>Trvání a ukončení</h2>
+    <p>Uživatel může účet kdykoli zrušit. Provozovatel může přístup omezit nebo ukončit při porušení Podmínek. Zrušení a obnovy předplatného se řídí čl. 5. Zrušením účtu nezaniká právo Provozovatele na úhradu již splatných závazků.</p>
+
+    <h2><span class="n">14.</span>Ustanovení týkající se společnosti Apple</h2>
+    <p>Tyto Podmínky uzavíráš s Provozovatelem, nikoli se společností Apple. Apple neodpovídá za Aplikaci ani její obsah a nemá povinnost poskytovat k Aplikaci podporu či údržbu. Za případné nároky z vad Aplikace odpovídá v rozsahu dle právních předpisů Provozovatel, resp. se řeší prostřednictvím Apple dle jeho podmínek. Apple a jeho dceřiné společnosti jsou oprávněnými třetími osobami (third-party beneficiaries) těchto Podmínek a jsou oprávněny je vůči tobě vymáhat. Užíváním Aplikace prohlašuješ, že se nenacházíš v zemi, na niž se vztahuje embargo USA, a nejsi uveden na žádném seznamu zakázaných či omezených osob.</p>
+
+    <h2><span class="n">15.</span>Mimosoudní řešení sporů</h2>
+    <p>K mimosoudnímu řešení spotřebitelských sporů z těchto Podmínek je příslušná Česká obchodní inspekce, se sídlem Štěpánská 567/15, 120 00 Praha 2, <a href="https://www.coi.cz" target="_blank" rel="noopener">www.coi.cz</a>. Spotřebitel se může nejprve obrátit na Provozovatele za účelem vyřešení sporu.</p>
+
+    <h2><span class="n">16.</span>Rozhodné právo</h2>
+    <p>Tyto Podmínky a vztahy z nich vzniklé se řídí právem České republiky. Tím nejsou dotčena práva spotřebitele plynoucí z kogentních ustanovení právních předpisů.</p>
+
+    <h2><span class="n">17.</span>Změny podmínek</h2>
+    <p>Provozovatel může Podmínky měnit. O změnách bude informovat v Aplikaci nebo e-mailem a nové znění zpřístupní na této stránce s uvedením data účinnosti.</p>
+
+    <h2><span class="n">18.</span>Kontakt</h2>
+    <p>Propiloty s.r.o., e-mail <a href="mailto:propiloty@gmail.com">propiloty@gmail.com</a>.</p>
+  </article>
+</main>
+
+<footer class="foot">
+  <a href="ochrana-udaju.html">Zásady ochrany osobních údajů</a>
+  <a href="index.html">Hlavní stránka</a>
+  <a href="mailto:propiloty@gmail.com">propiloty@gmail.com</a>
+  <span class="cp">© 2026 Propilot(y)</span>
+</footer>
+
+</body>
+</html>
