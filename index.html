@@ -249,6 +249,10 @@ img,svg{display:block;max-width:100%}
 .foot ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.6rem}
 .foot a{font-size:.92rem;transition:color .15s}
 .foot a:hover{color:#fff}
+.foot a.foot__mail{display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem;font-family:var(--ff-mono);
+  font-size:.86rem;color:var(--gold);letter-spacing:.01em}
+.foot a.foot__mail svg{width:1.05em;height:1.05em;flex:none;opacity:.9}
+.foot a.foot__mail:hover{color:var(--gold-200)}
 .foot__bottom{border-top:1px solid rgba(255,255,255,.08);padding-block:1.4rem;display:flex;flex-wrap:wrap;gap:.8rem 1.6rem;align-items:center;font-size:.82rem}
 .foot__bottom .disc{max-width:60ch;color:#7e90ab}
 .foot__bottom .cp{margin-left:auto;font-family:var(--ff-mono);letter-spacing:.04em}
@@ -658,6 +662,10 @@ img,svg{display:block;max-width:100%}
         <span class="word">Propilot<b>(y)</b></span>
       </div>
       <p data-i18n="foot_brand_p">Teoretická příprava na pilotní a radiotelefonní zkoušky. Postaveno piloty pro piloty.</p>
+      <a class="foot__mail" href="mailto:propiloty@gmail.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        propiloty@gmail.com
+      </a>
     </div>
     <div>
       <h4 data-i18n="foot_h_product">Produkt</h4>
@@ -672,8 +680,8 @@ img,svg{display:block;max-width:100%}
       <h4 data-i18n="foot_h_support">Podpora</h4>
       <ul>
         <li><a href="#" data-i18n="foot_faq">Časté dotazy</a></li>
-        <li><a href="#" data-i18n="foot_contact">Kontakt</a></li>
-        <li><a href="#" data-i18n="foot_bug">Nahlásit chybu</a></li>
+        <li><a href="mailto:propiloty@gmail.com" data-i18n="foot_contact">Kontakt</a></li>
+        <li><a href="mailto:propiloty@gmail.com?subject=Nahl%C3%A1%C5%A1en%C3%AD%20chyby" data-i18n="foot_bug">Nahlásit chybu</a></li>
       </ul>
     </div>
     <div>
