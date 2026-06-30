@@ -1,0 +1,449 @@
+<!-- PROTOTYP webové aplikace Propilot(y). Demo režim funguje bez backendu; pro ostrý provoz doplňte Supabase klíče níže. -->
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Propilot(y) — webová aplikace</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="app-manifest.webmanifest">
+<meta name="theme-color" content="#0A1A30">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-900:#0A1A30;--navy:#102648;--navy-700:#173766;--cobalt:#1A56DB;--cobalt-300:#5B8DEF;
+  --sky:#CADBEA;--gold:#EDB458;--gold-200:#F6D79B;--earth:#B8742F;
+  --bg:#EDF1F7;--surface:#FFFFFF;--line:#D7DFEA;--line-soft:#E7EDF5;
+  --ink:#0E1B2E;--ink-2:#3C4B61;--ink-3:#6C7C93;--on-navy:#EAF1FA;--on-navy-muted:#A6B9D4;
+  --ok:#16A34A;--ok-bg:#E7F6EC;--bad:#DC2626;--bad-bg:#FBEAEA;
+  --ff-d:"Space Grotesk",system-ui,sans-serif;--ff-b:"IBM Plex Sans",system-ui,sans-serif;--ff-m:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--ff-b);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
+h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0}
+.mono{font-family:var(--ff-m)}
+.hide{display:none!important}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;border:1px solid transparent;border-radius:11px;
+  padding:.8em 1.2em;font-weight:600;font-size:.98rem;transition:transform .15s,background .15s,border-color .15s}
+.btn:active{transform:translateY(1px)}
+.btn--gold{background:var(--gold);color:var(--navy-900)}
+.btn--gold:hover{background:var(--gold-200)}
+.btn--navy{background:var(--navy);color:#fff}
+.btn--navy:hover{background:var(--navy-700)}
+.btn--ghost{background:transparent;color:var(--navy);border-color:var(--line)}
+.btn--ghost:hover{border-color:var(--navy)}
+.btn--block{width:100%}
+
+/* ---------- AUTH ---------- */
+.auth{min-height:100%;display:grid;place-items:center;padding:24px;
+  background:radial-gradient(120% 80% at 80% -10%,rgba(26,86,219,.5),transparent 55%),linear-gradient(180deg,var(--navy-900),var(--navy))}
+.auth__card{width:100%;max-width:400px;background:var(--surface);border-radius:22px;padding:32px 28px;box-shadow:0 30px 70px -25px rgba(0,0,0,.6)}
+.auth__logo{display:flex;align-items:center;gap:.6rem;justify-content:center;margin-bottom:.4rem}
+.auth__logo .mark{width:40px;height:40px}
+.auth__logo .word{font-family:var(--ff-d);font-weight:700;font-size:1.3rem;color:var(--navy)}
+.auth__logo .word b{color:var(--gold)}
+.auth__sub{text-align:center;color:var(--ink-3);font-size:.92rem;margin:.1rem 0 1.4rem}
+.tabs{display:flex;background:var(--bg);border-radius:11px;padding:4px;margin-bottom:1.2rem}
+.tabs button{flex:1;border:0;background:transparent;border-radius:8px;padding:.6em;font-weight:600;color:var(--ink-3);font-size:.92rem}
+.tabs button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(16,38,72,.12)}
+.field{margin-bottom:.9rem}
+.field label{display:block;font-size:.82rem;color:var(--ink-2);margin-bottom:.3rem;font-weight:500}
+.field input{width:100%;border:1px solid var(--line);border-radius:10px;padding:.75em .85em;font-size:1rem;font-family:inherit;background:#fff}
+.field input:focus{outline:none;border-color:var(--cobalt)}
+.auth__msg{font-size:.85rem;margin:.2rem 0 .9rem;min-height:1.1em}
+.auth__msg.err{color:var(--bad)}
+.auth__demo{display:block;text-align:center;margin-top:1rem;color:var(--cobalt);background:none;border:0;font-size:.9rem;width:100%}
+.auth__dev{font-size:.78rem;color:var(--ink-3);text-align:center;margin:.6rem 0 0}
+.auth__note{margin-top:1.3rem;padding-top:1.1rem;border-top:1px solid var(--line-soft);font-size:.8rem;color:var(--ink-3);text-align:center;line-height:1.5}
+
+/* ---------- APP SHELL ---------- */
+.shell{min-height:100%;display:flex;flex-direction:column}
+.bar{position:sticky;top:0;z-index:10;background:var(--navy-900);color:#fff;display:flex;align-items:center;gap:.7rem;
+  padding:0 16px;height:58px;padding-top:env(safe-area-inset-top)}
+.bar .mark{width:30px;height:30px;flex:none}
+.bar .word{font-family:var(--ff-d);font-weight:700;font-size:1.06rem}
+.bar .word b{color:var(--gold)}
+.bar__back{background:none;border:0;color:var(--on-navy-muted);font-size:1.4rem;line-height:1;padding:.2rem .4rem;margin-left:-6px}
+.bar__sp{flex:1}
+.chip{font-family:var(--ff-m);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;padding:.35em .6em;border-radius:999px}
+.chip--free{background:rgba(255,255,255,.1);color:var(--on-navy-muted)}
+.chip--pro{background:var(--gold);color:var(--navy-900)}
+.acct{position:relative}
+.acct__btn{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-weight:600;font-size:.85rem}
+.acct__menu{position:absolute;right:0;top:42px;background:#fff;color:var(--ink);border-radius:12px;box-shadow:0 18px 40px -16px rgba(0,0,0,.4);min-width:200px;padding:.5rem;border:1px solid var(--line)}
+.acct__menu .em{font-size:.8rem;color:var(--ink-3);padding:.5rem .6rem;word-break:break-all}
+.acct__menu button{display:block;width:100%;text-align:left;border:0;background:none;padding:.6rem;border-radius:8px;font-size:.92rem;color:var(--ink)}
+.acct__menu button:hover{background:var(--bg)}
+
+.main{flex:1;max-width:760px;width:100%;margin:0 auto;padding:22px 16px 40px}
+.screen-title{font-size:1.5rem;margin-bottom:.3rem}
+.screen-sub{color:var(--ink-3);font-size:.95rem;margin-bottom:1.4rem}
+
+/* license / subject cards */
+.cards{display:grid;gap:12px}
+.card{background:var(--surface);border:1px solid var(--line-soft);border-radius:16px;padding:18px 18px;
+  box-shadow:0 1px 2px rgba(16,38,72,.05);text-align:left;border-left:4px solid var(--accent,var(--cobalt));
+  transition:transform .15s,box-shadow .15s;display:flex;align-items:center;gap:.8rem;width:100%}
+.card:hover{transform:translateY(-2px);box-shadow:0 16px 36px -22px rgba(16,38,72,.5)}
+.card__body{flex:1;min-width:0}
+.card__code{font-family:var(--ff-m);font-size:.72rem;color:var(--accent,var(--cobalt));letter-spacing:.04em}
+.card__name{font-family:var(--ff-d);font-weight:600;font-size:1.06rem;margin-top:.15rem}
+.card__meta{font-family:var(--ff-m);font-size:.72rem;color:var(--ink-3);margin-top:.35rem}
+.card__chev{color:var(--ink-3);font-size:1.3rem;flex:none}
+
+/* mode chooser */
+.modes{display:grid;gap:12px;margin-top:.4rem}
+.mode{background:var(--surface);border:1px solid var(--line-soft);border-radius:16px;padding:20px;text-align:left;width:100%;display:flex;gap:1rem;align-items:flex-start}
+.mode:hover{border-color:var(--navy)}
+.mode__ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;flex:none;background:linear-gradient(150deg,var(--navy),var(--cobalt));color:#fff;font-size:1.3rem}
+.mode--exam .mode__ic{background:linear-gradient(150deg,var(--earth),var(--gold));color:var(--navy-900)}
+.mode__t{font-family:var(--ff-d);font-weight:600;font-size:1.1rem}
+.mode__d{color:var(--ink-2);font-size:.9rem;margin-top:.2rem}
+
+/* quiz */
+.quizbar{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem}
+.progress{flex:1;height:7px;background:var(--line-soft);border-radius:99px;overflow:hidden}
+.progress>i{display:block;height:100%;background:var(--gold);width:0;transition:width .25s}
+.qcount{font-family:var(--ff-m);font-size:.78rem;color:var(--ink-3);white-space:nowrap}
+.timer{font-family:var(--ff-m);font-size:.78rem;color:var(--navy);background:var(--surface);border:1px solid var(--line);padding:.2em .5em;border-radius:8px}
+.qcard{background:var(--surface);border:1px solid var(--line-soft);border-radius:18px;padding:22px 20px;box-shadow:0 1px 2px rgba(16,38,72,.05)}
+.qtext{font-size:1.08rem;line-height:1.5;margin-bottom:1.1rem}
+.opts{display:grid;gap:10px}
+.opt{display:flex;gap:.7rem;align-items:flex-start;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:.85em .9em;font-size:.98rem;width:100%;transition:border-color .12s,background .12s}
+.opt:hover{border-color:var(--cobalt-300)}
+.opt .lt{font-family:var(--ff-m);font-weight:600;color:var(--ink-3);flex:none}
+.opt.sel{border-color:var(--cobalt);background:#F3F7FF}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.ok .lt{color:var(--ok)}
+.opt.bad{border-color:var(--bad);background:var(--bad-bg)}
+.opt.bad .lt{color:var(--bad)}
+.opt:disabled{cursor:default}
+.expl{margin-top:1rem;border-radius:12px;padding:14px 16px;font-size:.92rem;line-height:1.5;background:#F4F8FD;border:1px solid var(--line)}
+.expl b{display:block;font-family:var(--ff-m);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem}
+.expl.ok b{color:var(--ok)} .expl.bad b{color:var(--bad)}
+.qnav{display:flex;gap:.7rem;margin-top:1.2rem}
+
+/* paywall */
+.pay{background:linear-gradient(135deg,var(--navy),var(--navy-900));color:var(--on-navy);border-radius:18px;padding:28px 24px;text-align:center}
+.pay .mark{width:54px;height:54px;margin:0 auto 1rem}
+.pay h2{color:#fff;font-size:1.4rem}
+.pay p{color:var(--on-navy-muted);font-size:.95rem;margin:.7rem auto 1.3rem;max-width:42ch}
+.pay__plans{display:grid;gap:10px;max-width:320px;margin:0 auto 1.1rem}
+.plan{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:.8em 1em;color:#fff;font-size:.95rem}
+.plan b{font-family:var(--ff-d)}
+.plan .save{font-family:var(--ff-m);font-size:.66rem;color:var(--navy-900);background:var(--gold);padding:.2em .5em;border-radius:999px;margin-left:.5rem}
+.pay__note{font-family:var(--ff-m);font-size:.68rem;color:var(--on-navy-muted);margin-top:1rem;line-height:1.5}
+
+/* results */
+.result{text-align:center;background:var(--surface);border:1px solid var(--line-soft);border-radius:20px;padding:32px 24px}
+.score{font-family:var(--ff-d);font-weight:700;font-size:3.4rem;line-height:1;color:var(--navy)}
+.score.pass{color:var(--ok)} .score.fail{color:var(--bad)}
+.result__sub{color:var(--ink-2);margin:.5rem 0 1.4rem}
+.review{margin-top:1.6rem;text-align:left}
+.review h3{font-size:1.05rem;margin-bottom:.6rem}
+.rev{border:1px solid var(--line-soft);border-radius:12px;padding:14px;margin-bottom:10px;background:var(--surface)}
+.rev .rq{font-size:.95rem;margin-bottom:.5rem}
+.rev .ra{font-size:.85rem;margin:.15rem 0}
+.rev .ra.ok{color:var(--ok)} .rev .ra.bad{color:var(--bad)}
+.appfoot{text-align:center;padding:18px;color:var(--ink-3);font-size:.8rem}
+.appfoot a{color:var(--ink-2)}
+.banner{background:#FBF6EC;border:1px solid #ECD9AE;border-radius:12px;padding:12px 14px;font-size:.85rem;color:#5a4410;margin-bottom:1.2rem}
+</style>
+</head>
+<body>
+
+<!-- ============ AUTH SCREEN ============ -->
+<section id="auth" class="auth">
+  <div class="auth__card">
+    <div class="auth__logo">
+      <svg class="mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="#102648"/><circle cx="50" cy="50" r="37" fill="#fff"/><clipPath id="ma"><circle cx="50" cy="50" r="31"/></clipPath><g clip-path="url(#ma)"><rect x="15" y="15" width="70" height="35" fill="#CADBEA"/><rect x="15" y="50" width="70" height="35" fill="#E0922F"/></g><polygon points="50,21 46,28 54,28" fill="#fff"/><g fill="#102648"><rect x="31" y="47.5" width="11" height="5" rx="2.5"/><circle cx="50" cy="50" r="3.6"/><rect x="58" y="47.5" width="11" height="5" rx="2.5"/></g></svg>
+      <span class="word">Propilot<b>(y)</b></span>
+    </div>
+    <p class="auth__sub">Přihlas se a pokračuj v přípravě v prohlížeči.</p>
+    <div class="tabs">
+      <button id="tabLogin" class="on" type="button">Přihlášení</button>
+      <button id="tabReg" type="button">Registrace</button>
+    </div>
+    <div class="field"><label for="email">E-mail</label><input id="email" type="email" autocomplete="email" placeholder="vas@email.cz"></div>
+    <div class="field"><label for="pw">Heslo</label><input id="pw" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+    <div id="authMsg" class="auth__msg"></div>
+    <button id="authSubmit" class="btn btn--gold btn--block" type="button">Přihlásit se</button>
+    <p id="devNote" class="auth__dev hide"></p>
+    <p class="auth__note">Pro vstup do aplikace je nutný účet. Jeden účet platí pro web i mobilní aplikaci — co si koupíš, máš na iPhonu, Androidu i ve Windows.</p>
+  </div>
+</section>
+
+<!-- ============ APP SHELL ============ -->
+<section id="app" class="shell hide">
+  <header class="bar">
+    <button id="backBtn" class="bar__back hide" type="button" aria-label="Zpět">‹</button>
+    <svg class="mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="#fff"/><clipPath id="mb"><circle cx="50" cy="50" r="40"/></clipPath><g clip-path="url(#mb)"><rect x="10" y="10" width="80" height="40" fill="#CADBEA"/><rect x="10" y="50" width="80" height="40" fill="#E0922F"/></g><polygon points="50,14 45.5,22 54.5,22" fill="#fff"/><g fill="#102648"><rect x="26" y="47" width="14" height="6" rx="3"/><circle cx="50" cy="50" r="4.4"/><rect x="60" y="47" width="14" height="6" rx="3"/></g></svg>
+    <span class="word">Propilot<b>(y)</b></span>
+    <span class="bar__sp"></span>
+    <span id="statusChip" class="chip chip--free">Zdarma</span>
+    <div class="acct">
+      <button id="acctBtn" class="acct__btn" type="button" aria-label="Účet">U</button>
+      <div id="acctMenu" class="acct__menu hide">
+        <div class="em" id="acctEmail">ukázka</div>
+        <button id="goPremium" type="button">Koupit licenci</button>
+        <button id="logoutBtn" type="button">Odhlásit se</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="main"><!-- rendered by JS --></main>
+
+  <footer class="appfoot">Prototyp webové aplikace · <a href="index.html">zpět na propiloty.cz</a></footer>
+</section>
+
+<script src="app-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  "use strict";
+  // ===== KONFIGURACE: doplň pro ostrý provoz (anon klíč je veřejný, smí být v kódu) =====
+  var SUPABASE_URL = "";        // např. https://xxxx.supabase.co
+  var SUPABASE_ANON_KEY = "";   // veřejný anon klíč
+  // =====================================================================================
+  var sb = null;
+  try { if (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e){}
+
+  var FREE_LIMIT = 3; // počet otázek zdarma v každém předmětu (ukázka)
+  var DATA = window.QUESTION_DATA || {licenses:[]};
+  var ACCENTS = ["#1A56DB","#0EA5A0","#22A04A","#3AA9C9","#EDB458","#B8742F"];
+
+  var state = { user:null, premium:false, screen:"auth", lic:null, cat:null, mode:null, qi:0, answers:[], tStart:0, tTimer:null };
+
+  var $ = function(id){ return document.getElementById(id); };
+  var authEl=$("auth"), appEl=$("app"), mainEl=$("main"), backBtn=$("backBtn");
+
+  /* ---------------- AUTH ---------------- */
+  var mode="login";
+  function setTab(m){ mode=m;
+    $("tabLogin").classList.toggle("on",m==="login"); $("tabReg").classList.toggle("on",m==="reg");
+    $("authSubmit").textContent = m==="login" ? "Přihlásit se" : "Vytvořit účet";
+    $("pw").setAttribute("autocomplete", m==="login"?"current-password":"new-password");
+    msg(""); }
+  function msg(t,err){ var e=$("authMsg"); e.textContent=t||""; e.classList.toggle("err",!!err); }
+  $("tabLogin").onclick=function(){setTab("login");};
+  $("tabReg").onclick=function(){setTab("reg");};
+
+  async function submitAuth(){
+    var email=$("email").value.trim(), pw=$("pw").value;
+    if(!email || !pw){ msg("Vyplň e-mail i heslo.",true); return; }
+    if(!sb){ // DEMO režim
+      enterApp({email:email}); return;
+    }
+    msg("Pracuji…");
+    try{
+      var res = mode==="login"
+        ? await sb.auth.signInWithPassword({email:email,password:pw})
+        : await sb.auth.signUp({email:email,password:pw});
+      if(res.error){ msg(res.error.message,true); return; }
+      var user = res.data && res.data.user;
+      if(mode==="reg" && (!res.data.session)){ msg("Hotovo — potvrď e-mail a přihlas se."); return; }
+      await loadEntitlement(user);
+      enterApp({email:user?user.email:email});
+    }catch(e){ msg("Chyba spojení. "+(e&&e.message||""),true); }
+  }
+  $("authSubmit").onclick=submitAuth;
+  $("pw").addEventListener("keydown",function(e){ if(e.key==="Enter") submitAuth(); });
+
+  async function loadEntitlement(user){
+    state.premium=false;
+    if(!sb || !user) return;
+    try{ // očekává tabulku 'entitlements' (user_id, status, expires_at)
+      var r = await sb.from("entitlements").select("status,expires_at").eq("user_id",user.id);
+      if(r.data){ state.premium = r.data.some(function(e){ return e.status==="active" && (!e.expires_at || new Date(e.expires_at)>new Date()); }); }
+    }catch(e){}
+  }
+
+  function enterApp(u){ state.user=u; authEl.classList.add("hide"); appEl.classList.remove("hide");
+    $("acctEmail").textContent=u.email; $("acctBtn").textContent=(u.email[0]||"U").toUpperCase();
+    refreshStatus(); go("home"); }
+
+  function refreshStatus(){ var c=$("statusChip");
+    c.className="chip "+(state.premium?"chip--pro":"chip--free"); c.textContent=state.premium?"Premium":"Zdarma"; }
+
+  /* ---------------- ACCOUNT MENU ---------------- */
+  $("acctBtn").onclick=function(e){ e.stopPropagation(); $("acctMenu").classList.toggle("hide"); };
+  document.addEventListener("click",function(){ $("acctMenu").classList.add("hide"); });
+  $("acctMenu").onclick=function(e){ e.stopPropagation(); };
+  $("logoutBtn").onclick=async function(){ if(sb){ try{await sb.auth.signOut();}catch(e){} }
+    state={user:null,premium:false,screen:"auth",lic:null,cat:null,mode:null,qi:0,answers:[],tStart:0,tTimer:null};
+    appEl.classList.add("hide"); authEl.classList.remove("hide"); $("acctMenu").classList.add("hide"); };
+  $("goPremium").onclick=function(){ $("acctMenu").classList.add("hide"); go("paywall"); };
+
+  /* ---------------- NAVIGATION ---------------- */
+  function go(screen){ state.screen=screen; if(state.tTimer){clearInterval(state.tTimer);state.tTimer=null;}
+    backBtn.classList.toggle("hide", screen==="home");
+    window.scrollTo(0,0); render(); }
+  backBtn.onclick=function(){
+    if(state.screen==="quiz"||state.screen==="result"||state.screen==="paywall") return go(state.cat?"mode":"license");
+    if(state.screen==="mode") return go("license");
+    if(state.screen==="license") return go("home");
+    go("home");
+  };
+
+  /* ---------------- RENDER ---------------- */
+  function esc(s){ return (s||"").replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];}); }
+  function render(){
+    var s=state.screen;
+    if(s==="home") return renderHome();
+    if(s==="license") return renderLicense();
+    if(s==="mode") return renderMode();
+    if(s==="quiz") return renderQuiz();
+    if(s==="result") return renderResult();
+    if(s==="paywall") return renderPaywall();
+  }
+
+  function renderHome(){
+    var name=(state.user.email||"").split("@")[0];
+    var cards = DATA.licenses.map(function(L,i){
+      var nq=L.categories.reduce(function(a,c){return a+c.questions.length;},0);
+      return '<button class="card" data-lic="'+i+'" style="--accent:'+ACCENTS[i%ACCENTS.length]+'">'+
+        '<div class="card__body"><div class="card__code">'+esc(L.id.toUpperCase())+'</div>'+
+        '<div class="card__name">'+esc(L.name)+'</div>'+
+        '<div class="card__meta">'+L.categories.length+' předmětů · '+nq+' otázek v ukázce</div></div>'+
+        '<span class="card__chev">›</span></button>';
+    }).join("");
+    mainEl.innerHTML='<h1 class="screen-title">Ahoj '+esc(name)+' 👋</h1>'+
+      '<p class="screen-sub">Vyber si licenci a pusť se do přípravy.</p>'+
+      (state.premium?'':'<div class="banner">Účet je v režimu <b>Zdarma</b> — v každém předmětu máš '+FREE_LIMIT+' otázky zdarma. Celý obsah odemkne Premium.</div>')+
+      '<div class="cards">'+cards+'</div>';
+    [].forEach.call(mainEl.querySelectorAll(".card"),function(b){ b.onclick=function(){ state.lic=DATA.licenses[+b.dataset.lic]; go("license"); }; });
+  }
+
+  function renderLicense(){
+    var L=state.lic;
+    var cards=L.categories.map(function(c,i){
+      var locked = !state.premium && c.questions.length>FREE_LIMIT;
+      return '<button class="card" data-cat="'+i+'" style="--accent:'+ACCENTS[i%ACCENTS.length]+'">'+
+        '<div class="card__body"><div class="card__name">'+esc(c.name)+'</div>'+
+        '<div class="card__meta">'+c.questions.length+' otázek'+(locked?' · '+FREE_LIMIT+' zdarma':'')+'</div></div>'+
+        '<span class="card__chev">›</span></button>';
+    }).join("");
+    mainEl.innerHTML='<div class="card__code mono" style="color:var(--ink-3)">'+esc(L.id.toUpperCase())+'</div>'+
+      '<h1 class="screen-title">'+esc(L.name)+'</h1>'+
+      '<p class="screen-sub">Vyber předmět.</p><div class="cards">'+cards+'</div>';
+    [].forEach.call(mainEl.querySelectorAll(".card"),function(b){ b.onclick=function(){ state.cat=L.categories[+b.dataset.cat]; go("mode"); }; });
+  }
+
+  function renderMode(){
+    mainEl.innerHTML='<h1 class="screen-title">'+esc(state.cat.name)+'</h1>'+
+      '<p class="screen-sub">Jak se chceš učit?</p><div class="modes">'+
+      '<button class="mode" data-m="learn"><div class="mode__ic">📖</div><div><div class="mode__t">Učení</div>'+
+      '<div class="mode__d">Otázky s okamžitým vyhodnocením a vysvětlením, proč je odpověď správná.</div></div></button>'+
+      '<button class="mode mode--exam" data-m="exam"><div class="mode__ic">⏱</div><div><div class="mode__t">Zkouška</div>'+
+      '<div class="mode__d">Časovaná simulace bez nápovědy. Na konci skóre a rozbor každé chyby.</div></div></button></div>';
+    [].forEach.call(mainEl.querySelectorAll(".mode"),function(b){ b.onclick=function(){ startQuiz(b.dataset.m); }; });
+  }
+
+  function poolQuestions(){
+    var qs=state.cat.questions.slice();
+    if(!state.premium) qs=qs.slice(0,FREE_LIMIT);
+    return qs;
+  }
+  function startQuiz(m){ state.mode=m; state.qi=0; state.answers=[]; state.tStart=Date.now(); go("quiz"); }
+
+  function renderQuiz(){
+    // paywall hit: free user reached limit but category has more
+    if(!state.premium && state.qi>=FREE_LIMIT && state.cat.questions.length>FREE_LIMIT && state.qi>=poolQuestions().length){
+      return renderPaywall(true);
+    }
+    var pool=poolQuestions();
+    if(state.qi>=pool.length) return finishQuiz();
+    var q=pool[state.qi], total=pool.length;
+    var letters=["A","B","C","D","E","F"];
+    var opts=q.options.map(function(o,i){ return '<button class="opt" data-i="'+i+'"><span class="lt">'+letters[i]+'</span><span>'+esc(o)+'</span></button>'; }).join("");
+    var timerHtml = state.mode==="exam" ? '<span class="timer" id="timer">0:00</span>' : '';
+    mainEl.innerHTML='<div class="quizbar"><div class="progress"><i style="width:'+Math.round(state.qi/total*100)+'%"></i></div>'+
+      '<span class="qcount">'+(state.qi+1)+' / '+total+'</span>'+timerHtml+'</div>'+
+      '<div class="qcard"><div class="qtext">'+esc(q.text)+'</div><div class="opts" id="opts">'+opts+'</div>'+
+      '<div id="explBox"></div><div class="qnav hide" id="qnav"><button class="btn btn--gold btn--block" id="nextBtn">Další otázka</button></div></div>';
+    if(state.mode==="exam") startTimer();
+    var answered=false;
+    [].forEach.call(mainEl.querySelectorAll(".opt"),function(b){
+      b.onclick=function(){
+        if(answered && state.mode==="learn") return;
+        var pick=+b.dataset.i;
+        if(state.mode==="exam"){ // single select, advance via Další
+          [].forEach.call(mainEl.querySelectorAll(".opt"),function(x){x.classList.remove("sel");});
+          b.classList.add("sel"); state._pick=pick; $("qnav").classList.remove("hide"); return;
+        }
+        // LEARN: immediate feedback
+        answered=true; state.answers.push(pick);
+        [].forEach.call(mainEl.querySelectorAll(".opt"),function(x){ x.disabled=true;
+          var xi=+x.dataset.i; if(xi===q.correct)x.classList.add("ok"); else if(xi===pick)x.classList.add("bad"); });
+        var ok=pick===q.correct;
+        if(q.explanation) $("explBox").innerHTML='<div class="expl '+(ok?"ok":"bad")+'"><b>'+(ok?"Správně":"Špatně — vysvětlení")+'</b>'+esc(q.explanation)+'</div>';
+        else $("explBox").innerHTML='<div class="expl '+(ok?"ok":"bad")+'"><b>'+(ok?"Správně":"Špatně")+'</b>Správná odpověď: '+letters[q.correct]+'.</div>';
+        $("qnav").classList.remove("hide");
+      };
+    });
+    $("nextBtn").onclick=function(){
+      if(state.mode==="exam"){ if(state._pick==null){return;} state.answers.push(state._pick); state._pick=null; }
+      state.qi++; go("quiz");
+    };
+  }
+
+  function startTimer(){ var t=$("timer"); if(!t)return;
+    state.tTimer=setInterval(function(){ var s=Math.floor((Date.now()-state.tStart)/1000);
+      t.textContent=Math.floor(s/60)+":"+("0"+(s%60)).slice(-2); },500); }
+
+  function finishQuiz(){ if(state.tTimer){clearInterval(state.tTimer);state.tTimer=null;} go("result"); }
+
+  function renderResult(){
+    var pool=poolQuestions();
+    var correct=0; pool.forEach(function(q,i){ if(state.answers[i]===q.correct)correct++; });
+    var pct=Math.round(correct/pool.length*100), pass=pct>=75;
+    var letters=["A","B","C","D","E","F"];
+    var review = state.mode==="exam" ? ('<div class="review"><h3>Rozbor odpovědí</h3>'+pool.map(function(q,i){
+        var a=state.answers[i], ok=a===q.correct;
+        return '<div class="rev"><div class="rq">'+(i+1)+'. '+esc(q.text.split(" a)")[0].slice(0,160))+'…</div>'+
+          '<div class="ra '+(ok?"ok":"bad")+'">Tvá odpověď: '+(a!=null?letters[a]:"—")+(ok?" ✓":" ✗")+'</div>'+
+          (ok?'':'<div class="ra ok">Správně: '+letters[q.correct]+'</div>')+
+          (q.explanation?'<div class="ra" style="color:var(--ink-2);margin-top:.3rem">'+esc(q.explanation)+'</div>':'')+'</div>';
+      }).join("")+'</div>') : '';
+    mainEl.innerHTML='<div class="result"><div class="score '+(pass?"pass":"fail")+'">'+pct+'%</div>'+
+      '<p class="result__sub">'+correct+' z '+pool.length+' správně · '+(pass?"prošel jsi":"ještě potrénuj")+'</p>'+
+      '<button class="btn btn--gold" id="againBtn">Zkusit znovu</button> '+
+      '<button class="btn btn--ghost" id="homeBtn">Na přehled</button></div>'+review;
+    $("againBtn").onclick=function(){ startQuiz(state.mode); };
+    $("homeBtn").onclick=function(){ go("home"); };
+  }
+
+  function renderPaywall(fromQuiz){
+    var plans=[["1 měsíc","199 Kč",""],["6 měsíců","699 Kč","–42 %"],["12 měsíců","999 Kč","nejvýhodnější"]];
+    mainEl.innerHTML='<div class="pay"><svg class="mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="#fff"/><clipPath id="mp"><circle cx="50" cy="50" r="40"/></clipPath><g clip-path="url(#mp)"><rect x="10" y="10" width="80" height="40" fill="#CADBEA"/><rect x="10" y="50" width="80" height="40" fill="#E0922F"/></g><polygon points="50,14 45.5,22 54.5,22" fill="#fff"/><g fill="#102648"><rect x="26" y="47" width="14" height="6" rx="3"/><circle cx="50" cy="50" r="4.4"/><rect x="60" y="47" width="14" height="6" rx="3"/></g></svg>'+
+      '<h2>'+(fromQuiz?"Konec otázek zdarma":"Odemkni celý obsah")+'</h2>'+
+      '<p>'+(fromQuiz?"Tohle byly otázky zdarma. ":"")+'Premium odemkne všech 14 619 otázek se všemi vysvětleními, zkouškový režim i radiotelefonii — na webu i v mobilní aplikaci.</p>'+
+      '<div class="pay__plans">'+plans.map(function(p){return '<div class="plan"><span><b>'+p[0]+'</b>'+(p[2]?'<span class="save">'+p[2]+'</span>':'')+'</span><b>'+p[1]+'</b></div>';}).join("")+'</div>'+
+      '<button class="btn btn--gold btn--block" id="buyBtn">Koupit a odemknout</button>'+
+      '<p class="pay__note">Platba na webu přes Stripe / GoPay — bez poplatku Apple. Co koupíš tady, platí i v iOS aplikaci přes tvůj účet.</p></div>';
+    $("buyBtn").onclick=function(){
+      // DEMO: v ostré verzi zde proběhne přesměrování na Stripe/GoPay Checkout a po úhradě se zapíše entitlement do Supabase
+      state.premium=true; refreshStatus();
+      alert("Ukázka: tady by se v ostré verzi otevřela platební brána (Stripe / GoPay). Po zaplacení se účtu nastaví Premium.\n\nPro demo jsme Premium odemkli rovnou.");
+      go(state.cat?"mode":"home");
+    };
+  }
+
+  // start: require account. If backend configured, resume existing session; otherwise show dev note.
+  (async function(){
+    if(sb){ try{ var r=await sb.auth.getSession(); if(r.data&&r.data.session){ var u=r.data.session.user; await loadEntitlement(u); enterApp({email:u.email}); return; } }catch(e){} }
+    else { var dn=$("devNote"); if(dn){ dn.textContent="Supabase zatím není připojen — přihlášení běží lokálně (režim vývoje)."; dn.classList.remove("hide"); } }
+  })();
+
+  // PWA service worker
+  if("serviceWorker" in navigator){ window.addEventListener("load",function(){ navigator.serviceWorker.register("app-sw.js").catch(function(){}); }); }
+})();
+</script>
+</body>
+</html>
