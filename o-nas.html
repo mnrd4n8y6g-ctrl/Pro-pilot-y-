@@ -536,7 +536,7 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
         <p class="strong" data-i18n="ab_why_p2">Nejsme velká firma. Jsme dva piloti, kteří létání milují a chtějí tuhle vášeň předávat dál.</p>
         <div class="ab-cta">
           <a class="btn btn--gold" href="app.html" data-i18n="ab_btn1">Vyzkoušet zdarma</a>
-          <a class="btn btn--ghost-light" href="mailto:app@propiloty.cz" data-i18n="ab_btn2">Napište nám</a>
+          <a class="btn btn--ghost-light" href="#feedback" data-feedback data-i18n="ab_btn2">Napište nám</a>
         </div>
       </div>
       <svg class="ab-route" viewBox="0 0 300 220" fill="none" aria-hidden="true">
@@ -656,5 +656,126 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
   } else { rev.forEach(function(el){el.classList.add('in');}); }
 })();
 </script>
+<!-- ===== FEEDBACK MODAL (Web3Forms) ===== -->
+<script>
+(function(){
+  /* >>> Sem vložte svůj Web3Forms Access Key (získáte zdarma na web3forms.com) <<< */
+  var ACCESS_KEY = "a6792b34-9b65-4115-8650-1feee6b8c20d";
+
+  var T = {
+    cs:{ eb:"Testovací verze · feedback", h:"Napiš, co máš na srdci", p:"Co se ti líbí, co tě štve, co chybí? Každou zprávu čteme a pomůže nám vyladit finální verzi.",
+         ph:"Tvůj vzkaz…", em:"E-mail (nepovinné, pro odpověď)", send:"Odeslat", sending:"Odesílám…",
+         ok_h:"Děkujeme!", ok_p:"Tvůj vzkaz dorazil přímo k nám. Moc si toho vážíme.", close:"Zavřít",
+         err:"Odeslání se nepovedlo. Zkus to prosím znovu za chvíli.", empty:"Napiš nám prosím aspoň pár slov." },
+    en:{ eb:"Test version · feedback", h:"Tell us what’s on your mind", p:"What do you like, what bugs you, what’s missing? We read every message and it helps us fine-tune the final version.",
+         ph:"Your message…", em:"E-mail (optional, for a reply)", send:"Send", sending:"Sending…",
+         ok_h:"Thank you!", ok_p:"Your message went straight to us. We really appreciate it.", close:"Close",
+         err:"Sending failed. Please try again in a moment.", empty:"Please write at least a few words." }
+  };
+  var css = ''
+  + '.fbm{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(6,16,32,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}'
+  + '.fbm.is-open{display:flex;animation:fbmIn .18s ease}'
+  + '@keyframes fbmIn{from{opacity:0}to{opacity:1}}'
+  + '.fbm__card{position:relative;overflow:hidden;width:min(520px,100%);max-height:calc(100vh - 36px);overflow-y:auto;background:#fff;color:#0E1B2E;border-radius:22px;'
+  + 'padding:30px 28px 26px;box-shadow:0 40px 90px -30px rgba(0,0,0,.6);border:1px solid rgba(237,180,88,.55);font-family:"IBM Plex Sans",system-ui,sans-serif;animation:fbmUp .22s ease}'
+  + '@keyframes fbmUp{from{transform:translateY(14px)}to{transform:none}}'
+  + '.fbm__wm{position:absolute;right:-60px;bottom:-60px;width:300px;height:300px;opacity:.1;pointer-events:none}'
+  + '.fbm__x{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:0;background:#EDF1F7;color:#102648;font-size:20px;line-height:1;cursor:pointer}'
+  + '.fbm__x:hover{background:#DDE5F0}'
+  + '.fbm__brand{display:flex;align-items:center;gap:.6rem}'
+  + '.fbm__brand svg{width:34px;height:34px}'
+  + '.fbm__brand b{font-family:"Space Grotesk",system-ui,sans-serif;font-size:1.15rem;color:#102648}'
+  + '.fbm__brand b i{font-style:normal;color:#D99A35}'
+  + '.fbm__eb{display:block;margin-top:1.1rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#B8742F}'
+  + '.fbm h2{font-family:"Space Grotesk",system-ui,sans-serif;font-size:1.65rem;line-height:1.1;margin:.35rem 0 0;color:#0E1B2E;letter-spacing:-.01em}'
+  + '.fbm p{margin:.6rem 0 0;color:#4A5B73;font-size:.95rem;line-height:1.5}'
+  + '.fbm textarea,.fbm input[type=email]{position:relative;width:100%;box-sizing:border-box;border:1px solid #D7DFEA;border-radius:14px;padding:.85rem 1rem;font:inherit;font-size:1rem;color:#0E1B2E;background:rgba(255,255,255,.85)}'
+  + '.fbm textarea{min-height:140px;resize:vertical;margin-top:1.1rem}'
+  + '.fbm input[type=email]{margin-top:.7rem}'
+  + '.fbm textarea:focus,.fbm input[type=email]:focus{outline:2px solid #EDB458;outline-offset:1px;border-color:#EDB458}'
+  + '.fbm__row{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:1rem;position:relative}'
+  + '.fbm__msg{font-size:.85rem;color:#C2410C;min-height:1.2em}'
+  + '.fbm__send{border:0;cursor:pointer;background:#EDB458;color:#0A1A30;font-weight:600;font-size:1rem;padding:.8rem 1.4rem;border-radius:12px;box-shadow:0 8px 20px -8px rgba(237,180,88,.7);font-family:inherit}'
+  + '.fbm__send:hover{background:#F6D79B}.fbm__send[disabled]{opacity:.6;cursor:default}'
+  + '.fbm__ok{text-align:center;padding:1rem 0 .4rem;position:relative}'
+  + '.fbm__ok .ic{width:64px;height:64px;margin:0 auto 1rem;border-radius:50%;background:#EDF8F1;color:#1E9E57;display:grid;place-items:center}'
+  + '.fbm__ok .ic svg{width:30px;height:30px}'
+  + '.fbm__ok .fbm__send{margin-top:1.3rem}'
+  + '.fbm__hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;opacity:0}';
+  var st=document.createElement('style'); st.textContent=css; document.head.appendChild(st);
+
+  var mark='<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="47" fill="#fff" stroke="#D7DFEA"/><clipPath id="fbm-c"><circle cx="50" cy="50" r="40"/></clipPath><g clip-path="url(#fbm-c)"><rect x="10" y="10" width="80" height="40" fill="#CADBEA"/><rect x="10" y="50" width="80" height="40" fill="#E0922F"/></g><polygon points="50,14 45.5,22 54.5,22" fill="#fff"/><g fill="#102648"><rect x="26" y="47" width="14" height="6" rx="3"/><circle cx="50" cy="50" r="4.4"/><rect x="60" y="47" width="14" height="6" rx="3"/></g></svg>';
+
+  var box=document.createElement('div');
+  box.className='fbm'; box.setAttribute('role','dialog'); box.setAttribute('aria-modal','true'); box.setAttribute('aria-labelledby','fbmTitle');
+  box.innerHTML='<div class="fbm__card">'
+    + '<div class="fbm__wm">'+mark.replace('fbm-c','fbm-c2').replace('url(#fbm-c)','url(#fbm-c2)')+'</div>'
+    + '<button type="button" class="fbm__x" aria-label="Zavřít">×</button>'
+    + '<div class="fbm__form">'
+    +   '<div class="fbm__brand">'+mark+'<b>Propilot<i>(y)</i></b></div>'
+    +   '<span class="fbm__eb" data-t="eb"></span><h2 id="fbmTitle" data-t="h"></h2><p data-t="p"></p>'
+    +   '<textarea name="message" maxlength="5000" required></textarea>'
+    +   '<input type="email" name="email" autocomplete="email">'
+    +   '<input type="checkbox" name="botcheck" class="fbm__hp" tabindex="-1" autocomplete="off">'
+    +   '<div class="fbm__row"><span class="fbm__msg" aria-live="polite"></span><button type="button" class="fbm__send" data-t="send"></button></div>'
+    + '</div>'
+    + '<div class="fbm__ok" hidden><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>'
+    +   '<h2 data-t="ok_h"></h2><p data-t="ok_p"></p><button type="button" class="fbm__send fbm__close" data-t="close"></button></div>'
+    + '</div>';
+  document.body.appendChild(box);
+
+  var q=function(s){return box.querySelector(s);};
+  var ta=q('textarea'), em=q('input[type=email]'), hp=q('.fbm__hp'), send=q('.fbm__form .fbm__send'), msg=q('.fbm__msg');
+  var L='cs', lastFocus=null;
+
+  function apply(){
+    L = (document.documentElement.lang==='en') ? 'en' : 'cs';
+    box.querySelectorAll('[data-t]').forEach(function(el){ el.textContent=T[L][el.getAttribute('data-t')]; });
+    ta.placeholder=T[L].ph; em.placeholder=T[L].em; q('.fbm__x').setAttribute('aria-label',T[L].close);
+  }
+  function open(e){
+    if(e) e.preventDefault();
+    lastFocus=document.activeElement; apply();
+    q('.fbm__form').hidden=false; q('.fbm__ok').hidden=true; msg.textContent='';
+    box.classList.add('is-open'); document.documentElement.style.overflow='hidden';
+    setTimeout(function(){ta.focus();},60);
+  }
+  function close(){
+    box.classList.remove('is-open'); document.documentElement.style.overflow='';
+    if(lastFocus&&lastFocus.focus) lastFocus.focus();
+  }
+  box.addEventListener('click',function(e){ if(e.target===box) close(); });
+  q('.fbm__x').addEventListener('click',close);
+  q('.fbm__close').addEventListener('click',close);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&box.classList.contains('is-open')) close(); });
+  document.addEventListener('click',function(e){
+    var t=e.target.closest && e.target.closest('[data-feedback]'); if(t) open(e);
+  });
+
+  send.addEventListener('click',function(){
+    var text=ta.value.trim();
+    if(text.length<2){ msg.textContent=T[L].empty; ta.focus(); return; }
+    if(hp.checked) return;
+    send.disabled=true; send.textContent=T[L].sending; msg.textContent='';
+    var page=location.pathname.split('/').pop()||'index.html';
+    fetch('https://api.web3forms.com/submit',{
+      method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({
+        access_key:ACCESS_KEY,
+        subject:'Feedback z webu propiloty.cz ('+page+')',
+        from_name:'Propilot(y) – feedback',
+        message:text,
+        email:em.value.trim()||undefined,
+        stranka:page, jazyk:L
+      })
+    }).then(function(r){return r.json();}).then(function(d){
+      if(d && d.success){ ta.value=''; em.value=''; q('.fbm__form').hidden=true; q('.fbm__ok').hidden=false; q('.fbm__close').focus(); }
+      else { msg.textContent=T[L].err; }
+    }).catch(function(){ msg.textContent=T[L].err; })
+    .finally(function(){ send.disabled=false; send.textContent=T[L].send; });
+  });
+})();
+</script>
+
 </body>
 </html>
