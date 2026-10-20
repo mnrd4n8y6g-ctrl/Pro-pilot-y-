@@ -131,7 +131,7 @@ img,svg{display:block;max-width:100%}
   box-shadow:0 0 24px rgba(237,180,88,.45);background:transparent}
 
 /* ---------- trust ---------- */
-.trust{background:var(--surface);border-bottom:1px solid var(--line-soft)}
+.trust{background:var(--surface)}
 .trust__in{display:flex;flex-wrap:wrap;align-items:center;gap:.9rem 2rem;padding-block:22px}
 .trust__lead{font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
 .trust__items{display:flex;flex-wrap:wrap;gap:.6rem 1.6rem;align-items:center}
@@ -282,6 +282,20 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
 /* reveal */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
 .reveal.in{opacity:1;transform:none}
+
+
+/* ---------- smooth transitions between sections ---------- */
+:root{--fade:clamp(48px,7vw,110px)}
+#funkce{background:linear-gradient(180deg,var(--surface) 0%,var(--paper) 22%,var(--paper) 78%,var(--surface) 100%)}
+#licence{background:var(--surface)}
+#countries{background:linear-gradient(180deg,var(--surface) 0%,var(--paper) 25%,var(--paper) 75%,var(--surface) 100%)}
+.rt::before,.rt::after,.final::before{content:"";position:absolute;left:0;right:0;height:var(--fade);pointer-events:none;z-index:1}
+.rt::before{top:0;background:linear-gradient(180deg,var(--surface),rgba(13,35,66,0))}
+.rt::after{bottom:0;background:linear-gradient(0deg,var(--paper),rgba(10,26,48,0))}
+.rt__in{position:relative;z-index:2}
+#postup{background:linear-gradient(180deg,var(--paper) 0%,var(--paper) 40%,var(--surface) 100%)}
+.final::before{top:0;background:linear-gradient(180deg,var(--surface),rgba(10,26,48,0))}
+.foot{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-900) 60%)!important;border-top:0!important}
 
 /* ---------- responsive ---------- */
 @media(max-width:900px){
@@ -599,21 +613,6 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
       </article>
     </div>
 
-    <div class="subjects reveal">
-      <h3 data-i18n="subj_h3">Devět předmětů PPL, každý s vlastní statistikou</h3>
-      <p data-i18n="subj_p">Procvičuj po předmětech a sleduj, kde se zlepšuješ a kde ztrácíš body.</p>
-      <div class="chips">
-        <span class="chip"><b>ALW</b><span data-i18n="chip_alw">Letecké předpisy</span></span>
-        <span class="chip"><b>AGK</b><span data-i18n="chip_agk">Drak a systémy</span></span>
-        <span class="chip"><b>FPP</b><span data-i18n="chip_fpp">Principy letu</span></span>
-        <span class="chip"><b>FPL</b><span data-i18n="chip_fpl">Výkony a plánování</span></span>
-        <span class="chip"><b>NAV</b><span data-i18n="chip_nav">Navigace</span></span>
-        <span class="chip"><b>MET</b><span data-i18n="chip_met">Meteorologie</span></span>
-        <span class="chip"><b>HPL</b><span data-i18n="chip_hpl">Lidská výkonnost</span></span>
-        <span class="chip"><b>OPR</b><span data-i18n="chip_opr">Provozní postupy</span></span>
-        <span class="chip"><b data-i18n="chip_kom_c">KOM</b><span data-i18n="chip_kom">Spojení</span></span>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -676,7 +675,7 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
 </section>
 
 <!-- ===== HOW IT WORKS ===== -->
-<section class="band band--paper">
+<section class="band band--paper" id="postup">
   <div class="wrap">
     <div class="band__head reveal">
       <span class="eyebrow" data-i18n="how_eyebrow">Jak to probíhá</span>
