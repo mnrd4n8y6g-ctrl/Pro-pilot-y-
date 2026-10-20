@@ -171,6 +171,17 @@ img,svg{display:block;max-width:100%}
 .lcard .code{font-family:var(--ff-mono);font-size:.78rem;letter-spacing:.08em;color:var(--accent,var(--cobalt));font-weight:500}
 .lcard h3{font-size:1.16rem;font-family:var(--ff-display);font-weight:600;margin-top:.35rem}
 .lcard .meta{font-family:var(--ff-mono);font-size:.72rem;color:var(--ink-3);margin-top:.7rem;letter-spacing:.02em}
+/* language-only blocks */
+html[lang="en"] [data-only="cs"]{display:none!important}
+html:not([lang="en"]) [data-only="en"]{display:none!important}
+.lic--en{grid-template-columns:repeat(4,1fr)}
+/* countries (EN) */
+.ctry{display:grid;grid-template-columns:1.6fr 1fr;gap:clamp(18px,3vw,32px)}
+.ctry__col{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r-md);padding:24px 22px}
+.ctry__col h3{font-family:var(--ff-display);font-weight:600;font-size:1.16rem;color:var(--earth);margin:0 0 1rem}
+.ctry__col ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.55rem 1rem}
+.ctry__col li{font-size:.96rem;color:var(--ink-2);display:flex;align-items:center;gap:.55rem}
+.ctry__col li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold);flex:none}
 .subjects{margin-top:clamp(34px,4vw,46px);background:var(--navy);border-radius:var(--r-lg);padding:clamp(26px,4vw,40px);color:var(--on-navy)}
 .subjects h3{color:#fff;font-size:1.25rem;font-family:var(--ff-display);font-weight:600}
 .subjects p{color:var(--on-navy-muted);margin-top:.4rem;font-size:.96rem}
@@ -274,6 +285,8 @@ img,svg{display:block;max-width:100%}
 
 /* ---------- responsive ---------- */
 @media(max-width:900px){
+  .lic--en{grid-template-columns:repeat(2,1fr)}
+  .ctry{grid-template-columns:1fr}
   .nav__links{display:none}
   .nav__toggle{display:flex}
   .lang{margin-left:auto}
@@ -306,7 +319,7 @@ img,svg{display:block;max-width:100%}
   .nav__ext a{width:30px;height:30px}
   .lang button{padding:.45em .55em}
   .nav__toggle{width:38px;height:36px}
-  .feat,.lic{grid-template-columns:1fr}
+  .feat,.lic,.lic--en{grid-template-columns:1fr}
   .ro{padding-right:1.1rem;margin-right:1.1rem}
   .ro b{font-size:1.3rem}
   .foot__top{grid-template-columns:1fr 1fr}
@@ -405,9 +418,8 @@ img,svg{display:block;max-width:100%}
         <a class="btn btn--ghost-light" href="#funkce" data-i18n="hero_btn2">Co appka umí</a>
       </div>
       <div class="hero__readout">
-        <div class="ro"><b>14&nbsp;619</b><span data-i18n="ro_q">otázek</span></div>
-        <div class="ro"><b>31</b><span data-i18n="ro_lic">licencí</span></div>
-        <div class="ro"><b>9</b><span data-i18n="ro_subj">předmětů PPL</span></div>
+        <div class="ro"><b data-i18n="ro_q_n">14&nbsp;619</b><span data-i18n="ro_q">otázek</span></div>
+        <div class="ro"><b data-i18n="ro_lic_n">31</b><span data-i18n="ro_lic">licencí</span></div>
         <div class="ro"><b>CZ / EN</b><span data-i18n="ro_lang">jazyky</span></div>
       </div>
     </div>
@@ -484,7 +496,7 @@ img,svg{display:block;max-width:100%}
 <section class="trust">
   <div class="wrap trust__in">
     <span class="trust__lead" data-i18n="trust_lead">Otázky vycházejí z oficiálních bank</span>
-    <div class="trust__items">
+    <div class="trust__items" data-i18n="trust_items">
       <span>ÚCL</span><i>·</i><span>LAA ČR</span><i>·</i><span>ČTÚ</span><i>·</i><span>EASA FCL</span><i>·</i><span>ICAO Doc 9432</span>
     </div>
   </div>
@@ -541,7 +553,7 @@ img,svg{display:block;max-width:100%}
       <h2 data-i18n="lic_h2">Jedna aplikace, 31 licencí.</h2>
       <p data-i18n="lic_p">Od soukromého pilota po ultralighty, balóny a radiotelefonní průkaz — česky i anglicky, vždy podle aktuálních otázkových bank.</p>
     </div>
-    <div class="lic">
+    <div class="lic" data-only="cs">
       <article class="lcard reveal" style="--accent:#1A56DB">
         <span class="code">PPL(A)</span><h3 data-i18n="l1_t">Soukromý pilot letounu</h3>
         <p class="meta" data-i18n="l1_m">897 otázek · 9 předmětů · CZ / EN</p>
@@ -568,6 +580,25 @@ img,svg{display:block;max-width:100%}
       </article>
     </div>
 
+    <div class="lic lic--en" data-only="en">
+      <article class="lcard" style="--accent:#1A56DB">
+        <span class="code">PPL(A) · PPL(H)</span><h3>Pilot Licence</h3>
+        <p class="meta">1,726 questions · aeroplane &amp; helicopter</p>
+      </article>
+      <article class="lcard" style="--accent:#3AA9C9">
+        <span class="code">BPL(GAS) · BPL(H)</span><h3>Balloon Pilot Licence</h3>
+        <p class="meta">903 questions · gas &amp; hot-air</p>
+      </article>
+      <article class="lcard" style="--accent:#22A04A">
+        <span class="code">SPL</span><h3>Sailplane Pilot Licence</h3>
+        <p class="meta">656 questions · sailplane</p>
+      </article>
+      <article class="lcard" style="--accent:#F06A2A">
+        <span class="code">AI ATC</span><h3>Radiotelephony</h3>
+        <p class="meta">27 scenarios · AI controller simulation · phraseology training</p>
+      </article>
+    </div>
+
     <div class="subjects reveal">
       <h3 data-i18n="subj_h3">Devět předmětů PPL, každý s vlastní statistikou</h3>
       <p data-i18n="subj_p">Procvičuj po předmětech a sleduj, kde se zlepšuješ a kde ztrácíš body.</p>
@@ -580,7 +611,35 @@ img,svg{display:block;max-width:100%}
         <span class="chip"><b>MET</b><span data-i18n="chip_met">Meteorologie</span></span>
         <span class="chip"><b>HPL</b><span data-i18n="chip_hpl">Lidská výkonnost</span></span>
         <span class="chip"><b>OPR</b><span data-i18n="chip_opr">Provozní postupy</span></span>
-        <span class="chip"><b>KOM</b><span data-i18n="chip_kom">Spojení</span></span>
+        <span class="chip"><b data-i18n="chip_kom_c">KOM</b><span data-i18n="chip_kom">Spojení</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHERE ECQB-PPL IS USED (EN only) ===== -->
+<section class="band band--paper" id="countries" data-only="en">
+  <div class="wrap">
+    <div class="band__head">
+      <span class="eyebrow">Where you can use it</span>
+      <h2>Countries using the ECQB-PPL question bank</h2>
+      <p>The English version follows the ECQB (European Central Question Bank), which these countries use for PPL, SPL and BPL theory exams.</p>
+    </div>
+    <div class="ctry">
+      <div class="ctry__col">
+        <h3>Europe</h3>
+        <ul>
+          <li>Albania</li><li>Austria</li><li>Belgium</li><li>Cyprus</li><li>Czech Republic</li><li>Denmark</li>
+          <li>Germany</li><li>Greece</li><li>Iceland</li><li>Luxembourg</li><li>Malta</li><li>Montenegro</li>
+          <li>Poland</li><li>Romania</li><li>Slovakia</li><li>Slovenia</li>
+        </ul>
+      </div>
+      <div class="ctry__col">
+        <h3>Africa</h3>
+        <ul>
+          <li>Botswana</li><li>Burundi</li><li>Kenya</li><li>Namibia</li><li>Rwanda</li>
+          <li>South Africa</li><li>South Sudan</li><li>Tanzania</li><li>Uganda</li><li>Zimbabwe</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -743,21 +802,23 @@ img,svg{display:block;max-width:100%}
   /* ---- i18n (EN dictionary; Czech is the source captured from the DOM) ---- */
   var EN = {
     nav_features:"Features", nav_licences:"Licences", nav_rt:"Radiotelephony", nav_premium:"Premium", nav_download:"Download", nav_login:"Sign in",
-    hero_eyebrow:"Pilot theory · ÚCL · ČTÚ · LAA ČR",
+    hero_eyebrow:"Pilot theory · ECQB · EASA Part-FCL",
     hero_h1:"Pass your theory exams <span class=\"amber\">first time.</span>",
-    hero_lede:"A Czech study app for pilots. 14,619 questions with explanations, an ÚCL-style exam mode and radiotelephony practice with an AI controller — from PPL through ultralights to the radio operator licence. All offline on Mac, iPad and iPhone.",
+    hero_lede:"A study app for pilots. 3,285 ECQB questions with explanations, a realistic exam mode and radiotelephony practice with an AI controller — for PPL(A), PPL(H), SPL and BPL. All offline on Mac, iPad and iPhone.",
+    ro_q_n:"3,285", ro_lic_n:"5",
     hero_btn:"Download on the App Store", hero_btn_sub:"Mac · iPad · iPhone", hero_btn2:"What it does",
-    ro_q:"questions", ro_lic:"licences", ro_subj:"PPL subjects", ro_lang:"languages",
+    ro_q:"questions", ro_lic:"licences", ro_lang:"languages",
     trust_lead:"Questions based on official exam banks",
+    trust_items:"<span>ECQB-PPL</span><i>·</i><span>EASA Part-FCL</span><i>·</i><span>ICAO Doc 9432</span>",
     feat_eyebrow:"What you get",
     feat_h2:"Built on understanding, not cramming.",
     feat_p:"Every feature has one job — to get you ready for the real exam date. No distractions, just what counts.",
     f1_t:"Learning with explanations",
     f1_p:"For every question you see why the answer is correct — not just a/b/c/d, but the reasoning and the regulation behind it.",
     f2_t:"Exam mode",
-    f2_p:"A timed exam simulation per ÚCL. When you finish, a breakdown of every mistake and a history of all your attempts.",
+    f2_p:"A timed simulation of the real theory exam. When you finish, a breakdown of every mistake and a history of all your attempts.",
     f3_t:"Radiotelephony <span class=\"pill\">New</span>",
-    f3_p:"Talk to an AI controller per L PHRASEOLOGY. At the end you get an assessment, like from an instructor.",
+    f3_p:"Talk to an AI controller using standard ICAO phraseology. At the end you get an assessment, like from an instructor.",
     f4_t:"Weak spots",
     f4_p:"The app spots the subjects where you struggle and keeps bringing you back until you have them down.",
     f5_t:"Badges and streaks",
@@ -765,8 +826,8 @@ img,svg{display:block;max-width:100%}
     f6_t:"Works offline",
     f6_p:"The whole database is downloaded on your device. Study even in the air with no signal.",
     lic_eyebrow:"Licence catalogue",
-    lic_h2:"One app, 31 licences.",
-    lic_p:"From the private pilot to ultralights, balloons and the radio operator licence — in Czech and English, always to the current question banks.",
+    lic_h2:"One app, five licences.",
+    lic_p:"Aeroplane, helicopter, sailplane and balloon — all to the current ECQB question bank, plus radiotelephony practice.",
     l1_t:"Private Pilot (Aeroplane)", l1_m:"897 questions · 9 subjects · CZ / EN",
     l2_t:"Private Pilot (Helicopter)", l2_m:"821 questions · 9 subjects · CZ / EN",
     l3_t:"Sailplane Pilot", l3_m:"656 questions · 9 subjects · CZ / EN",
@@ -776,10 +837,10 @@ img,svg{display:block;max-width:100%}
     subj_h3:"Nine PPL subjects, each with its own stats",
     subj_p:"Practise by subject and track where you are improving and where you are losing points.",
     chip_alw:"Air Law", chip_agk:"Aircraft General", chip_fpp:"Principles of Flight", chip_fpl:"Performance & Planning",
-    chip_nav:"Navigation", chip_met:"Meteorology", chip_hpl:"Human Performance", chip_opr:"Operational Procedures", chip_kom:"Communications",
+    chip_nav:"Navigation", chip_met:"Meteorology", chip_hpl:"Human Performance", chip_opr:"Operational Procedures", chip_kom:"Communications", chip_kom_c:"COM",
     rt_eyebrow:"Radiotelephony",
     rt_h2:"Get the frequency in your ear before you are in the cockpit.",
-    rt_lede:"The trainer runs a simulated exchange with an AI controller per L PHRASEOLOGY and ICAO Doc 9432 — from taxi to emergencies. After each session you get a debrief, like from an examiner.",
+    rt_lede:"The trainer runs a simulated exchange with an AI controller per ICAO Doc 9432 — from taxi to emergencies. After each session you get a debrief, like from an examiner.",
     rt_s1:"scenarios", rt_s2:"standard phrases", rt_s3:"both language versions",
     rt_sim:"SIMULATION · TWR",
     rt_l1:"Praha Tower, OK-PIL, holding point runway 24, ready for departure.",
@@ -789,23 +850,23 @@ img,svg{display:block;max-width:100%}
     rt_debrief:"Session debrief", rt_grade:"Score · 92%",
     how_eyebrow:"How it works",
     how_h2:"Three steps to the stamp in your licence.",
-    s1_t:"Pick your licence", s1_p:"PPL, ultralight, sailplane, balloon or radio operator licence — in Czech and English.",
+    s1_t:"Pick your licence", s1_p:"PPL(A), PPL(H), sailplane or balloon — plus radiotelephony practice.",
     s2_t:"Practise and learn", s2_p:"Questions with explanations, weak spots, bookmarks and daily streaks. By subject or across all.",
     s3_t:"Sit the exam", s3_p:"Exam mode puts you in real conditions, so nothing surprises you in front of the board.",
     prem_eyebrow:"Propilot Premium",
     prem_h2:"Start free, unlock everything.",
     prem_p:"Some questions are free forever. Premium unlocks the whole database with every explanation and full offline access — ad-free.",
-    prem_c1:"All 14,619 questions", prem_c2:"Explanation for each", prem_c3:"Full offline mode", prem_c4:"Ad-free",
+    prem_c1:"All 3,285 questions", prem_c2:"Explanation for each", prem_c3:"Full offline mode", prem_c4:"Ad-free",
     prem_btn:"Download and try", prem_btn_sub:"Free · Premium in-app", prem_note:"Manage your subscription in the App Store.",
     final_h2:"Ready for your exam date?",
     final_p:"Download Propilot(y) and start studying today.",
     final_btn:"Download on the App Store", final_btn_sub:"Free to download", final_note:"Mac · iPad · iPhone",
-    foot_brand_p:"Theory prep for pilot and radio operator exams. Built by pilots, for pilots.",
+    foot_brand_p:"Theory prep for pilot exams. Built by pilots, for pilots.",
     foot_h_product:"Product", foot_h_support:"Support", foot_h_legal:"Legal",
     foot_features:"Features", foot_licences:"Licences", foot_rt:"Radiotelephony", foot_premium:"Premium",
     foot_faq:"FAQ", foot_contact:"Contact", foot_bug:"Report a bug",
     foot_privacy:"Privacy Policy", foot_terms:"Terms of Service",
-    foot_disc:"Propilot(y) is an independent study aid. It is not an official product of ÚCL, ČTÚ, LAA ČR or EASA."
+    foot_disc:"Propilot(y) is an independent study aid. It is not an official product of EASA, the ECQB or any national aviation authority."
   };
 
   var i18nEls = Array.prototype.slice.call(document.querySelectorAll('[data-i18n]'));
