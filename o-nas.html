@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O nás — Propilot(y)</title>
+<meta name="description" content="Za propiloty.cz stojí dva mladí piloti, Lukáš a Marek. Kdo jsme a proč jsme aplikaci vytvořili.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#102648">
+<meta property="og:type" content="website">
+<meta property="og:title" content="O nás — Propilot(y)">
+<meta property="og:description" content="Dva kamarádi, jedna vášeň: létání. Kdo stojí za propiloty.cz.">
+<meta property="og:image" content="icon-512.png">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-900:#0A1A30; --navy:#102648; --navy-700:#173766;
+  --cobalt:#1A56DB; --cobalt-300:#5B8DEF;
+  --sky:#CADBEA; --sky-100:#E7EEF6;
+  --earth:#B8742F; --gold:#EDB458; --gold-200:#F6D79B;
+  --paper:#EDF1F7; --surface:#FFFFFF; --line:#D7DFEA; --line-soft:#E7EDF5;
+  --ink:#0E1B2E; --ink-2:#3C4B61; --ink-3:#6C7C93;
+  --on-navy:#EAF1FA; --on-navy-muted:#A6B9D4;
+  --success:#16A34A;
+  --maxw:1180px;
+  --pad:clamp(20px,5vw,40px);
+  --band-y:clamp(72px,10vw,128px);
+  --r-lg:22px; --r-md:16px; --r-sm:11px;
+  --shadow-card:0 1px 2px rgba(16,38,72,.05),0 18px 40px -24px rgba(16,38,72,.35);
+  --shadow-pop:0 30px 70px -30px rgba(16,38,72,.55);
+  --ff-display:"Space Grotesk",system-ui,sans-serif;
+  --ff-body:"IBM Plex Sans",system-ui,sans-serif;
+  --ff-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--ff-body);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+h1,h2,h3{font-family:var(--ff-display);font-weight:700;line-height:1.05;letter-spacing:-.02em;margin:0}
+p{margin:0}
+a{color:inherit;text-decoration:none}
+img,svg{display:block;max-width:100%}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--pad)}
+.eyebrow{font-family:var(--ff-mono);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--earth);font-weight:500;display:inline-flex;gap:.6em;align-items:center}
+.eyebrow--gold{color:var(--gold)}
+.eyebrow::before{content:"";width:26px;height:1px;background:currentColor;opacity:.7}
+.lede{color:var(--ink-2);font-size:clamp(1.02rem,1.6vw,1.18rem);max-width:54ch}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:.55em;font-family:var(--ff-body);font-weight:600;
+  font-size:.98rem;padding:.85em 1.3em;border-radius:var(--r-sm);border:1px solid transparent;cursor:pointer;
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease;white-space:nowrap}
+.btn svg{width:1.15em;height:1.15em;flex:none}
+.btn--gold{background:var(--gold);color:var(--navy-900);box-shadow:0 8px 20px -8px rgba(237,180,88,.65)}
+.btn--gold:hover{background:var(--gold-200);transform:translateY(-2px);box-shadow:0 14px 26px -10px rgba(237,180,88,.7)}
+.btn--ghost{background:transparent;color:var(--navy);border-color:var(--line)}
+.btn--ghost:hover{border-color:var(--navy);transform:translateY(-2px)}
+.btn--ghost-light{background:rgba(255,255,255,.06);color:var(--on-navy);border-color:rgba(255,255,255,.28)}
+.btn--ghost-light:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.55);transform:translateY(-2px)}
+.btn .sub{font-family:var(--ff-mono);font-size:.66rem;letter-spacing:.12em;opacity:.7;font-weight:400;text-transform:uppercase}
+.btn--store{flex-direction:column;align-items:flex-start;gap:.05em;line-height:1.15}
+.btn--store .sub{margin-top:1px}
+
+/* ---------- nav ---------- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(11,26,48,.82);backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,255,255,.08)}
+.nav__in{display:flex;align-items:center;gap:1.4rem;height:68px}
+.brand{display:flex;align-items:center;gap:.62rem;color:#fff}
+.brand .mark{width:34px;height:34px;flex:none}
+.brand .word{font-family:var(--ff-display);font-weight:700;font-size:1.24rem;letter-spacing:-.01em}
+.brand .word b{color:var(--gold);font-weight:700}
+.nav__links{display:flex;gap:1.5rem;margin-left:auto;align-items:center}
+.nav__links a{color:var(--on-navy-muted);font-size:.94rem;font-weight:500;white-space:nowrap;transition:color .15s}
+@media(max-width:1180px) and (min-width:901px){.nav__in{gap:.9rem}.nav__links{gap:.95rem}.nav__links a{font-size:.88rem}.nav__links .nav__cta{padding:.55em 1em}.nav__ext a{width:30px}}
+@media(max-width:1000px) and (min-width:901px){.nav__in{gap:.6rem}.nav__links{gap:.7rem}.nav__links a{font-size:.84rem}.brand .word{font-size:1.1rem}.nav__ext{margin-left:-.3rem}}
+.nav__links a:hover{color:#fff}
+.nav__links a.btn--gold,.nav__links a.btn--gold:hover{color:var(--navy-900)}
+.nav__cta{margin-left:.4rem}
+/* language switch */
+.lang{flex:none;display:inline-flex;border:1px solid rgba(255,255,255,.22);border-radius:9px;overflow:hidden;margin-left:auto}
+.lang button{background:transparent;border:0;color:var(--on-navy-muted);font-family:var(--ff-mono);font-size:.72rem;
+  letter-spacing:.06em;padding:.5em .7em;cursor:pointer;transition:.15s}
+.lang button.is-active{background:var(--gold);color:var(--navy-900);font-weight:500}
+.lang button:not(.is-active):hover{color:#fff}
+/* social icons in top bar */
+.nav__ext{flex:none;display:flex;align-items:center;gap:.3rem;margin-left:-.5rem}
+.nav__ext a{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;
+  color:var(--on-navy-muted);transition:color .15s,background .15s}
+.nav__ext a:hover{color:#fff;background:rgba(255,255,255,.1)}
+.nav__ext svg{width:18px;height:18px}
+.nav__toggle{display:none;margin-left:.55rem;background:none;border:1px solid rgba(255,255,255,.25);
+  border-radius:9px;width:42px;height:38px;cursor:pointer;align-items:center;justify-content:center}
+.nav__toggle span,.nav__toggle span::before,.nav__toggle span::after{content:"";display:block;width:18px;height:2px;background:#fff;border-radius:2px;position:relative;transition:.2s}
+.nav__toggle span::before{position:absolute;top:-6px}.nav__toggle span::after{position:absolute;top:6px}
+.nav.open .nav__toggle span{background:transparent}
+.nav.open .nav__toggle span::before{transform:rotate(45deg);top:0}
+.nav.open .nav__toggle span::after{transform:rotate(-45deg);top:0}
+
+/* ---------- hero ---------- */
+.hero{position:relative;background:
+   radial-gradient(120% 80% at 80% -10%,rgba(26,86,219,.55),transparent 55%),
+   linear-gradient(180deg,var(--navy-900) 0%,var(--navy) 52%,#0d2647 100%);
+   color:var(--on-navy);overflow:hidden;isolation:isolate}
+.hero__stars{position:absolute;inset:0;z-index:0;pointer-events:none}
+.hero__compass{position:absolute;right:-160px;top:-120px;width:560px;height:560px;opacity:.06;z-index:0;color:#fff;pointer-events:none}
+.hero__in{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,72px);
+  align-items:center;padding-block:clamp(56px,8vw,104px) clamp(64px,9vw,120px)}
+.hero h1{font-size:clamp(2.5rem,5.6vw,4.5rem);color:#fff}
+.hero h1 .amber{color:var(--gold)}
+.hero__lede{color:var(--on-navy-muted);font-size:clamp(1.04rem,1.7vw,1.22rem);margin-top:1.15rem;max-width:50ch}
+.hero__cta{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:2rem}
+.hero__readout{display:flex;flex-wrap:wrap;gap:0;margin-top:2.6rem;border-top:1px solid rgba(255,255,255,.12);padding-top:1.3rem}
+.ro{padding-right:1.5rem;margin-right:1.5rem;border-right:1px solid rgba(255,255,255,.12)}
+.ro:last-child{border-right:0;margin-right:0;padding-right:0}
+.ro b{display:block;font-family:var(--ff-display);font-weight:700;font-size:1.55rem;color:#fff;line-height:1}
+.ro span{font-family:var(--ff-mono);font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;color:var(--on-navy-muted)}
+.hero__instr{display:flex;justify-content:center;align-items:center}
+.instrument{width:min(420px,82vw);filter:drop-shadow(0 40px 60px rgba(0,0,0,.45))}
+.instrument-caption{font-family:var(--ff-mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--on-navy-muted);text-align:center;margin-top:1.1rem}
+.horizon-edge{position:relative;z-index:3;height:0;border-top:2px solid var(--gold);
+  box-shadow:0 0 24px rgba(237,180,88,.45);background:transparent}
+
+/* ---------- trust ---------- */
+.trust{background:var(--surface)}
+.trust__in{display:flex;flex-wrap:wrap;align-items:center;gap:.9rem 2rem;padding-block:22px}
+.trust__lead{font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.trust__items{display:flex;flex-wrap:wrap;gap:.6rem 1.6rem;align-items:center}
+.trust__items span{font-family:var(--ff-display);font-weight:600;font-size:1.02rem;color:var(--navy);letter-spacing:.01em;opacity:.85}
+.trust__items i{color:var(--line);font-style:normal}
+
+/* ---------- generic band ---------- */
+.band{padding-block:var(--band-y)}
+.band--paper{background:var(--paper)}
+.band--white{background:var(--surface)}
+.band__head{max-width:62ch;margin-bottom:clamp(34px,5vw,56px)}
+.band__head h2{font-size:clamp(1.95rem,4vw,3rem);margin-top:.7rem}
+.band__head p{margin-top:1rem;color:var(--ink-2);font-size:clamp(1.02rem,1.5vw,1.14rem)}
+
+/* ---------- features ---------- */
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,22px)}
+.tile{position:relative;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r-lg);
+  padding:28px 26px 30px;box-shadow:var(--shadow-card);transition:transform .2s ease,box-shadow .2s ease}
+.band--white .tile{background:var(--paper)}
+.tile:hover{transform:translateY(-4px);box-shadow:var(--shadow-pop)}
+.tile__ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;margin-bottom:18px;
+  background:linear-gradient(150deg,var(--navy) 0%,var(--cobalt) 130%);color:#fff}
+.tile__ic svg{width:26px;height:26px;stroke:#fff;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.tile.is-accent .tile__ic{background:linear-gradient(150deg,var(--earth),var(--gold));}
+.tile.is-accent .tile__ic svg{stroke:var(--navy-900)}
+.tile h3{font-size:1.18rem;letter-spacing:-.01em;font-family:var(--ff-display);font-weight:600;display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.tile p{margin-top:.6rem;color:var(--ink-2);font-size:.98rem}
+.pill{font-family:var(--ff-mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;
+  background:var(--gold);color:var(--navy-900);padding:.25em .6em;border-radius:999px}
+
+/* ---------- licences ---------- */
+.lic{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.8vw,20px)}
+.lcard{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r-md);padding:24px 22px;
+  box-shadow:var(--shadow-card);position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease}
+.lcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-pop)}
+.lcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent,var(--cobalt))}
+.lcard .code{font-family:var(--ff-mono);font-size:.78rem;letter-spacing:.08em;color:var(--accent,var(--cobalt));font-weight:500}
+.lcard h3{font-size:1.16rem;font-family:var(--ff-display);font-weight:600;margin-top:.35rem}
+.lcard .meta{font-family:var(--ff-mono);font-size:.72rem;color:var(--ink-3);margin-top:.7rem;letter-spacing:.02em}
+/* language-only blocks */
+html[lang="en"] [data-only="cs"]{display:none!important}
+html:not([lang="en"]) [data-only="en"]{display:none!important}
+.lic--en{grid-template-columns:repeat(4,1fr)}
+/* countries (EN) */
+.ctry{display:grid;grid-template-columns:1.6fr 1fr;gap:clamp(18px,3vw,32px)}
+.ctry__col{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r-md);padding:24px 22px}
+.ctry__col h3{font-family:var(--ff-display);font-weight:600;font-size:1.16rem;color:var(--earth);margin:0 0 1rem}
+.ctry__col ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.55rem 1rem}
+.ctry__col li{font-size:.96rem;color:var(--ink-2);display:flex;align-items:center;gap:.55rem}
+.ctry__col li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold);flex:none}
+.subjects{margin-top:clamp(34px,4vw,46px);background:var(--navy);border-radius:var(--r-lg);padding:clamp(26px,4vw,40px);color:var(--on-navy)}
+.subjects h3{color:#fff;font-size:1.25rem;font-family:var(--ff-display);font-weight:600}
+.subjects p{color:var(--on-navy-muted);margin-top:.4rem;font-size:.96rem}
+.chips{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.4rem}
+.chip{display:flex;align-items:baseline;gap:.5rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  border-radius:10px;padding:.6rem .85rem}
+.chip b{font-family:var(--ff-mono);font-size:.82rem;color:var(--gold);font-weight:500;letter-spacing:.04em}
+.chip span{font-size:.85rem;color:var(--on-navy-muted)}
+
+/* ---------- RT spotlight ---------- */
+.rt{background:linear-gradient(180deg,#0d2342 0%,var(--navy-900) 100%);color:var(--on-navy);position:relative;overflow:hidden}
+.rt__in{display:grid;grid-template-columns:1fr 1fr;gap:clamp(34px,5vw,64px);align-items:center;padding-block:var(--band-y)}
+.rt h2{color:#fff;font-size:clamp(1.95rem,3.8vw,2.9rem)}
+.rt__lede{color:var(--on-navy-muted);margin-top:1.1rem;font-size:clamp(1.02rem,1.5vw,1.14rem);max-width:46ch}
+.rt__stats{display:flex;gap:1.8rem;margin-top:1.8rem;flex-wrap:wrap}
+.rt__stats div b{font-family:var(--ff-display);font-weight:700;font-size:1.7rem;color:var(--gold);display:block;line-height:1}
+.rt__stats div span{font-family:var(--ff-mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--on-navy-muted)}
+.comlog{background:rgba(7,18,36,.7);border:1px solid rgba(255,255,255,.12);border-radius:18px;overflow:hidden;
+  box-shadow:var(--shadow-pop);backdrop-filter:blur(6px)}
+.comlog__bar{display:flex;align-items:center;gap:.7rem;padding:.85rem 1.1rem;border-bottom:1px solid rgba(255,255,255,.1);
+  font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.06em;color:var(--on-navy-muted)}
+.comlog__bar .dot{width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 8px var(--success)}
+.comlog__bar .freq{margin-left:auto;color:var(--gold)}
+.comlog__body{padding:1.1rem 1.15rem;display:flex;flex-direction:column;gap:.95rem}
+.line{display:grid;grid-template-columns:auto 1fr;gap:.7rem;align-items:start}
+.line .who{font-family:var(--ff-mono);font-size:.66rem;letter-spacing:.08em;padding:.25em .55em;border-radius:7px;white-space:nowrap;margin-top:.1em}
+.line.pilot .who{background:rgba(91,141,239,.22);color:var(--cobalt-300);border:1px solid rgba(91,141,239,.4)}
+.line.atc .who{background:rgba(237,180,88,.18);color:var(--gold-200);border:1px solid rgba(237,180,88,.4)}
+.line p{font-size:.94rem;color:#dfe8f5;line-height:1.5}
+.comlog__foot{border-top:1px solid rgba(255,255,255,.1);padding:.9rem 1.15rem;display:flex;align-items:center;gap:.7rem;
+  font-size:.82rem;color:var(--on-navy-muted)}
+.comlog__foot .wave{display:flex;gap:3px;align-items:flex-end;height:18px}
+.comlog__foot .wave i{width:3px;background:var(--gold);border-radius:2px;animation:eq 1s ease-in-out infinite}
+@keyframes eq{0%,100%{height:5px}50%{height:18px}}
+.comlog__foot .grade{margin-left:auto;font-family:var(--ff-mono);color:var(--success)}
+
+/* ---------- steps ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,3vw,30px);position:relative}
+.steps::before{content:"";position:absolute;left:8%;right:8%;top:30px;height:2px;
+  background:repeating-linear-gradient(90deg,var(--gold) 0 14px,transparent 14px 26px);opacity:.5}
+.step{position:relative}
+.step .no{font-family:var(--ff-mono);font-size:.8rem;letter-spacing:.1em;color:var(--navy-900);background:var(--gold);
+  width:60px;height:60px;border-radius:50%;display:grid;place-items:center;font-weight:500;position:relative;z-index:1;
+  box-shadow:0 0 0 8px var(--paper)}
+.band--white .step .no{box-shadow:0 0 0 8px var(--surface)}
+.step h3{font-family:var(--ff-display);font-weight:600;font-size:1.25rem;margin-top:1.1rem}
+.step p{color:var(--ink-2);margin-top:.5rem;font-size:.98rem;max-width:30ch}
+
+/* ---------- premium ---------- */
+.prem{background:var(--surface)}
+.prem__card{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-900) 70%);border-radius:var(--r-lg);
+  padding:clamp(34px,5vw,60px);color:var(--on-navy);display:grid;grid-template-columns:1.3fr .7fr;gap:clamp(26px,4vw,48px);
+  align-items:center;position:relative;overflow:hidden;box-shadow:var(--shadow-pop)}
+.prem__card::after{content:"";position:absolute;right:-80px;bottom:-90px;width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(237,180,88,.22),transparent 70%)}
+.prem h2{color:#fff;font-size:clamp(1.8rem,3.4vw,2.6rem)}
+.prem p{color:var(--on-navy-muted);margin-top:.9rem;max-width:42ch}
+.prem__chips{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.5rem}
+.prem__chips span{font-family:var(--ff-mono);font-size:.74rem;color:var(--on-navy);background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:.45em .85em}
+.prem__cta{position:relative;z-index:1;display:flex;flex-direction:column;gap:.8rem;align-items:flex-start}
+.prem__cta .note{font-family:var(--ff-mono);font-size:.68rem;letter-spacing:.06em;color:var(--on-navy-muted)}
+
+/* ---------- final cta ---------- */
+.final{background:
+   radial-gradient(100% 120% at 50% -20%,rgba(26,86,219,.5),transparent 55%),
+   linear-gradient(180deg,var(--navy-900),var(--navy));color:var(--on-navy);text-align:center;position:relative;overflow:hidden}
+.final__in{padding-block:clamp(72px,10vw,120px);position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
+.final .mark{width:84px;height:84px;margin-bottom:1.6rem;filter:drop-shadow(0 18px 30px rgba(0,0,0,.4))}
+.final h2{color:#fff;font-size:clamp(2.1rem,5vw,3.6rem);max-width:16ch}
+.final p{color:var(--on-navy-muted);margin-top:1rem;font-size:1.1rem}
+.final__cta{margin-top:2.2rem;display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center}
+.final__note{font-family:var(--ff-mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--on-navy-muted);margin-top:1.6rem}
+
+/* ---------- footer ---------- */
+.foot{background:var(--navy-900);color:var(--on-navy-muted);border-top:1px solid rgba(255,255,255,.08)}
+.foot__top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2rem;padding-block:clamp(48px,6vw,72px)}
+.foot__brand .word{font-family:var(--ff-display);font-weight:700;color:#fff;font-size:1.2rem}
+.foot__brand .word b{color:var(--gold)}
+.foot__brand p{margin-top:.9rem;max-width:30ch;font-size:.9rem}
+.foot h4{font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin:0 0 1rem}
+.foot ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.6rem}
+.foot a{font-size:.92rem;transition:color .15s}
+.foot a:hover{color:#fff}
+.foot a.foot__mail{display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem;font-family:var(--ff-mono);
+  font-size:.86rem;color:var(--gold);letter-spacing:.01em}
+.foot a.foot__mail svg{width:1.05em;height:1.05em;flex:none;opacity:.9}
+.foot a.foot__mail:hover{color:var(--gold-200)}
+.foot__social{display:flex;gap:.6rem;margin-top:1.1rem}
+.foot__social a{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.16);color:var(--on-navy-muted);transition:color .15s,border-color .15s,background .15s}
+.foot__social a:hover{color:var(--navy-900);background:var(--gold);border-color:var(--gold)}
+.foot__social svg{width:18px;height:18px}
+.foot__bottom{border-top:1px solid rgba(255,255,255,.08);padding-block:1.4rem;display:flex;flex-wrap:wrap;gap:.8rem 1.6rem;align-items:center;font-size:.82rem}
+.foot__bottom .disc{max-width:60ch;color:#7e90ab}
+.foot__bottom .cp{margin-left:auto;font-family:var(--ff-mono);letter-spacing:.04em}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+
+/* ---------- smooth transitions between sections ---------- */
+:root{--fade:clamp(48px,7vw,110px)}
+#funkce{background:linear-gradient(180deg,var(--surface) 0%,var(--paper) 22%,var(--paper) 78%,var(--surface) 100%)}
+#licence{background:var(--surface)}
+#countries{background:linear-gradient(180deg,var(--surface) 0%,var(--paper) 25%,var(--paper) 75%,var(--surface) 100%)}
+.rt::before,.rt::after,.final::before{content:"";position:absolute;left:0;right:0;height:var(--fade);pointer-events:none;z-index:1}
+.rt::before{top:0;background:linear-gradient(180deg,var(--surface),rgba(13,35,66,0))}
+.rt::after{bottom:0;background:linear-gradient(0deg,var(--paper),rgba(10,26,48,0))}
+.rt__in{position:relative;z-index:2}
+#postup{background:linear-gradient(180deg,var(--paper) 0%,var(--paper) 40%,var(--surface) 100%)}
+.final::before{top:0;background:linear-gradient(180deg,var(--surface),rgba(10,26,48,0))}
+.foot{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-900) 60%)!important;border-top:0!important}
+
+/* ---------- responsive ---------- */
+@media(max-width:900px){
+  .lic--en{grid-template-columns:repeat(2,1fr)}
+  .ctry{grid-template-columns:1fr}
+  .nav__links{display:none}
+  .nav__toggle{display:flex}
+  .lang{margin-left:auto}
+  .nav.open .nav__links{display:flex;position:absolute;top:68px;left:0;right:0;flex-direction:column;gap:0;
+    background:var(--navy);border-bottom:1px solid rgba(255,255,255,.1);padding:.5rem var(--pad) 1.1rem}
+  .nav.open .nav__links a{padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.07);width:100%}
+  .nav.open .nav__cta{margin:.8rem 0 0}
+  .hero__in{grid-template-columns:1fr;text-align:left;padding-block:clamp(44px,8vw,72px)}
+  .hero__instr{order:-1}
+  .instrument{width:min(320px,68vw)}
+  .rt__in,.prem__card{grid-template-columns:1fr}
+  .feat,.lic{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:1fr;gap:26px}
+  .steps::before{display:none}
+  .step{display:grid;grid-template-columns:auto 1fr;gap:1.1rem;align-items:start}
+  .step .no{box-shadow:none}
+  .step h3{margin-top:.1rem}
+  .foot__top{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .nav__in{gap:.6rem}
+  .nav__ext{margin-left:0;gap:0}
+  .nav__toggle{margin-left:0}
+}
+@media(max-width:420px){
+  .nav__in{gap:.4rem}
+  .brand{gap:.45rem;min-width:0}
+  .brand .mark{width:28px;height:28px}
+  .brand .word{font-size:1.02rem}
+  .nav__ext a{width:30px;height:30px}
+  .lang button{padding:.45em .55em}
+  .nav__toggle{width:38px;height:36px}
+  .feat,.lic,.lic--en{grid-template-columns:1fr}
+  .ro{padding-right:1.1rem;margin-right:1.1rem}
+  .ro b{font-size:1.3rem}
+  .foot__top{grid-template-columns:1fr 1fr}
+  .foot__brand{grid-column:1/-1}
+  .prem__card{padding:30px 24px}
+}
+@media(max-width:350px){
+  .nav__in{gap:.25rem}
+  .brand .mark{width:24px;height:24px}
+  .brand .word{font-size:.9rem}
+  .nav__ext a{width:28px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto}
+  .reveal{transition:none;opacity:1;transform:none}
+  .comlog__foot .wave i{animation:none;height:10px}
+}
+</style>
+<style>
+/* ===== About page ===== */
+.nav__links a[aria-current="page"]{color:#fff}
+.ab-hero{position:relative;overflow:hidden;isolation:isolate;color:var(--on-navy);
+  background:radial-gradient(120% 80% at 80% -10%,rgba(26,86,219,.55),transparent 55%),
+  linear-gradient(180deg,var(--navy-900) 0%,var(--navy) 60%,#0d2647 100%)}
+.ab-hero .hero__stars{position:absolute;inset:0;z-index:0;pointer-events:none}
+.ab-hero__in{position:relative;z-index:2;display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(28px,5vw,72px);align-items:center;
+  padding-block:clamp(56px,8vw,104px) clamp(64px,9vw,112px)}
+.ab-hero h1{font-size:clamp(2.4rem,5.2vw,4.1rem);color:#fff;margin-top:.9rem}
+.ab-hero h1 .amber{color:var(--gold)}
+.ab-hero__lede{color:var(--on-navy-muted);font-size:clamp(1.04rem,1.6vw,1.2rem);margin-top:1.2rem;max-width:52ch}
+.ab-logo{display:flex;align-items:center;gap:.9rem;margin-top:2.2rem}
+.ab-logo svg{width:64px;height:64px;filter:drop-shadow(0 14px 24px rgba(0,0,0,.4))}
+.ab-logo .word{font-family:var(--ff-display);font-weight:700;font-size:1.9rem;color:#fff;letter-spacing:-.01em}
+.ab-logo .word b{color:var(--gold)}
+.ab-logo small{display:block;font-family:var(--ff-mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--on-navy-muted);margin-top:.15rem}
+
+/* photo as a cockpit window */
+.ab-photo{position:relative;justify-self:center;width:min(400px,86vw)}
+.ab-photo__frame{position:relative;border-radius:34px;padding:12px;background:linear-gradient(160deg,#f4f6fa,#cfd8e4);
+  box-shadow:0 40px 70px -30px rgba(0,0,0,.65)}
+.ab-photo__frame img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:24px}
+.ab-photo__frame::after{content:"";position:absolute;inset:12px;border-radius:24px;pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(10,26,48,.25);background:linear-gradient(200deg,rgba(255,255,255,.14),transparent 40%)}
+.ab-tag{position:absolute;left:-18px;bottom:28px;background:var(--navy-900);color:#fff;border:1px solid rgba(255,255,255,.14);
+  border-radius:14px;padding:.7rem .95rem;box-shadow:0 18px 34px -16px rgba(0,0,0,.6)}
+.ab-tag b{display:block;font-family:var(--ff-display);font-size:1.05rem}
+.ab-tag span{font-family:var(--ff-mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.ab-photo__cap{font-family:var(--ff-mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--on-navy-muted);text-align:center;margin-top:1.1rem}
+
+/* pilots */
+.ab-band{padding-block:var(--band-y);background:linear-gradient(180deg,var(--surface) 0%,var(--paper) 30%,var(--paper) 80%,var(--surface) 100%)}
+.ab-pilots{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.4vw,26px)}
+.pcard{position:relative;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r-lg);
+  padding:30px 28px 28px;box-shadow:var(--shadow-card);overflow:hidden}
+.pcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+.pcard__head{display:flex;align-items:center;gap:1rem}
+.pcard__badge{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;flex:none;color:#fff;
+  background:linear-gradient(145deg,var(--accent),var(--navy))}
+.pcard__badge svg{width:26px;height:26px}
+.pcard .code{font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+.pcard h3{font-size:1.6rem;margin-top:.15rem}
+.pcard p{color:var(--ink-2);margin:1.1rem 0 0}
+.plog{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.3rem}
+.plog span{font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.04em;color:var(--navy);background:var(--paper);
+  border:1px solid var(--line-soft);border-radius:999px;padding:.35rem .75rem}
+.plog span b{color:var(--earth);font-weight:500;margin-right:.35rem}
+
+/* why */
+.ab-why{padding-block:var(--band-y);background:var(--surface)}
+.ab-why__card{position:relative;overflow:hidden;border-radius:var(--r-lg);color:var(--on-navy);
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy-900) 75%);padding:clamp(30px,5vw,60px);
+  display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(24px,4vw,56px);align-items:center}
+.ab-why__card h2{color:#fff;font-size:clamp(1.9rem,3.6vw,2.7rem);margin-top:.7rem}
+.ab-why__card p{color:var(--on-navy-muted);margin:1.1rem 0 0;font-size:1.05rem}
+.ab-why__card p.strong{color:#fff;font-weight:500}
+.ab-route{width:100%;max-width:300px;justify-self:center;color:var(--gold)}
+.ab-cta{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:1.8rem}
+
+@media(max-width:900px){
+  .ab-hero__in{grid-template-columns:1fr}
+  .ab-photo{order:-1}
+  .ab-pilots{grid-template-columns:1fr}
+  .ab-why__card{grid-template-columns:1fr}
+  .ab-route{max-width:220px;order:-1;justify-self:start}
+}
+@media(max-width:560px){ .ab-tag{left:8px} }
+</style>
+</head>
+<body>
+
+<!-- ===== shared instrument mark (level, static) ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="propmark" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="47" fill="#fff"/>
+    <clipPath id="pm-clip"><circle cx="50" cy="50" r="40"/></clipPath>
+    <g clip-path="url(#pm-clip)">
+      <rect x="10" y="10" width="80" height="40" fill="#CADBEA"/>
+      <rect x="10" y="50" width="80" height="40" fill="#E0922F"/>
+    </g>
+    <circle cx="50" cy="50" r="40" fill="none" stroke="#0A1A30" stroke-width="1" opacity=".25"/>
+    <polygon points="50,14 45.5,22 54.5,22" fill="#fff"/>
+    <g fill="#102648">
+      <rect x="26" y="47" width="14" height="6" rx="3"/>
+      <circle cx="50" cy="50" r="4.4"/>
+      <rect x="60" y="47" width="14" height="6" rx="3"/>
+    </g>
+    <rect x="47.5" y="78" width="5" height="3" rx="1.5" fill="#fff" opacity=".75"/>
+  </symbol>
+</svg>
+
+<!-- ===== NAV ===== -->
+<header class="nav" id="nav">
+  <div class="wrap nav__in">
+    <a class="brand" href="index.html" aria-label="Propilot(y)">
+      <svg class="mark" viewBox="0 0 100 100"><use href="#propmark"/></svg>
+      <span class="word">Propilot<b>(y)</b></span>
+    </a>
+    <nav class="nav__links" id="navLinks">
+      <a href="index.html#funkce" data-i18n="nav_features">Funkce</a>
+      <a href="index.html#licence" data-i18n="nav_licences">Licence</a>
+      <a href="index.html#radiotelefonie" data-i18n="nav_rt">Radiotelefonie</a>
+      <a href="index.html#premium" data-i18n="nav_premium">Premium</a>
+      <a href="o-nas.html" data-i18n="nav_about" aria-current="page">O nás</a>
+      <a href="app.html" data-i18n="nav_login">Přihlásit</a>
+      <a class="btn btn--gold nav__cta" href="index.html#stahnout" data-i18n="nav_download">Stáhnout</a>
+    </nav>
+    <div class="lang" id="lang" role="group" aria-label="Jazyk / Language">
+      <button type="button" data-lang="cs" class="is-active" aria-pressed="true">CZ</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <div class="nav__ext">
+      <a href="https://www.facebook.com/profile.php?id=61595491461123" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg></a>
+      <a href="https://www.instagram.com/pro_piloty/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.3"/><circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+    </div>
+    <button class="nav__toggle" id="navToggle" aria-label="Menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+
+<main id="top">
+<!-- ===== ABOUT HERO ===== -->
+<section class="ab-hero">
+  <svg class="hero__stars" id="stars" aria-hidden="true"></svg>
+  <div class="wrap ab-hero__in">
+    <div>
+      <span class="eyebrow eyebrow--gold" data-i18n="ab_eyebrow">O nás</span>
+      <h1 data-i18n="ab_h1">Dva kamarádi, <span class="amber">jedna vášeň: létání.</span></h1>
+      <p class="ab-hero__lede" data-i18n="ab_intro">Jsme dva kamarádi a spojuje nás jedna věc: létání. Za stránkami propiloty.cz stojíme my, Lukáš a Marek. Oba jsme mladí piloti, kteří prošli cestou do kokpitu od úplných začátků, a dobře víme, kolik otázek člověk na začátku má.</p>
+      <div class="ab-logo">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#propmark"/></svg>
+        <div><span class="word">Propilot<b>(y)</b></span><small>propiloty.cz</small></div>
+      </div>
+    </div>
+    <figure class="ab-photo" style="margin:0">
+      <div class="ab-photo__frame">
+        <img src="o-nas-foto.jpg" alt="Lukáš a Marek, zakladatelé propiloty.cz" data-i18n-alt="ab_photo_alt" width="720" height="900" loading="eager">
+      </div>
+      <div class="ab-tag"><span data-i18n="ab_tag_s">Posádka</span><b>Lukáš &amp; Marek</b></div>
+      <figcaption class="ab-photo__cap" data-i18n="ab_cap">Piloti · zakladatelé · kamarádi</figcaption>
+    </figure>
+  </div>
+</section>
+<div class="horizon-edge" aria-hidden="true"></div>
+
+<!-- ===== PILOTS ===== -->
+<section class="ab-band">
+  <div class="wrap">
+    <div class="band__head reveal">
+      <span class="eyebrow" data-i18n="ab_crew_eb">Posádka</span>
+      <h2 data-i18n="ab_crew_h2">Kdo sedí v kokpitu.</h2>
+    </div>
+    <div class="ab-pilots">
+      <article class="pcard reveal" style="--accent:#1A56DB">
+        <div class="pcard__head">
+          <div class="pcard__badge"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.5 15.5v-2l-8-5V3.6c0-.9-.7-1.6-1.5-1.6s-1.5.7-1.5 1.6v4.9l-8 5v2l8-2.5v5.4l-2 1.5V21l3.5-1 3.5 1v-1.6l-2-1.5V13z"/></svg></div>
+          <div><span class="code" data-i18n="ab_l_code">Pilot 01 · PPL(A)</span><h3>Lukáš</h3></div>
+        </div>
+        <p data-i18n="ab_l_p">Za kniplem sedím od svých 15 let. Začínal jsem na ultralehkých letadlech (ULL), a jakmile to šlo, v 17 letech jsem si udělal i licenci soukromého pilota PPL(A). Létání pro mě nikdy nebylo jen koníček. Je to svoboda, disciplína a pohled na svět, který se z žádného jiného místa nedá zažít.</p>
+        <div class="plog">
+          <span data-i18n="ab_l_c1"><b>15</b>let · první let za kniplem</span>
+          <span data-i18n="ab_l_c2"><b>ULL</b>ultralehká letadla</span>
+          <span data-i18n="ab_l_c3"><b>17</b>let · PPL(A)</span>
+        </div>
+      </article>
+      <article class="pcard reveal" style="--accent:#B8742F">
+        <div class="pcard__head">
+          <div class="pcard__badge"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.5 15.5v-2l-8-5V3.6c0-.9-.7-1.6-1.5-1.6s-1.5.7-1.5 1.6v4.9l-8 5v2l8-2.5v5.4l-2 1.5V21l3.5-1 3.5 1v-1.6l-2-1.5V13z"/></svg></div>
+          <div><span class="code" data-i18n="ab_m_code">Pilot 02 · PPL ve výcviku</span><h3>Marek</h3></div>
+        </div>
+        <p data-i18n="ab_m_p">Výcvik na ULL jsem začal v 16 letech a právě teď dokončuji licenci PPL. Všechno, co k tomu patří, mám tedy čerstvě v paměti: teorii, zkoušky, první samostatné lety i nervozitu před přezkoušením.</p>
+        <div class="plog">
+          <span data-i18n="ab_m_c1"><b>16</b>let · začátek výcviku ULL</span>
+          <span data-i18n="ab_m_c2"><b>PPL</b>právě dokončuje</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHY ===== -->
+<section class="ab-why">
+  <div class="wrap">
+    <div class="ab-why__card reveal">
+      <div>
+        <span class="eyebrow eyebrow--gold" data-i18n="ab_why_eb">Naše mise</span>
+        <h2 data-i18n="ab_why_h2">Proč propiloty.cz</h2>
+        <p data-i18n="ab_why_p1">Když jsme začínali, spoustu informací jsme museli pracně dohledávat, skládat z různých zdrojů nebo se doptávat po letištích. Proto jsme založili propiloty.cz. Chceme vytvořit místo, kde najdete srozumitelné informace, praktické tipy a zkušenosti z první ruky, ať už o létání teprve sníte, nebo máte nalétáno pár hodin.</p>
+        <p class="strong" data-i18n="ab_why_p2">Nejsme velká firma. Jsme dva piloti, kteří létání milují a chtějí tuhle vášeň předávat dál.</p>
+        <div class="ab-cta">
+          <a class="btn btn--gold" href="index.html#stahnout" data-i18n="ab_btn1">Stáhnout aplikaci</a>
+          <a class="btn btn--ghost-light" href="mailto:app@propiloty.cz" data-i18n="ab_btn2">Napište nám</a>
+        </div>
+      </div>
+      <svg class="ab-route" viewBox="0 0 300 220" fill="none" aria-hidden="true">
+        <path d="M30 180 C 90 170, 90 60, 160 70 S 250 40, 270 30" stroke="currentColor" stroke-width="2" stroke-dasharray="6 8" opacity=".75"/>
+        <circle cx="30" cy="180" r="7" fill="currentColor"/><circle cx="30" cy="180" r="14" stroke="currentColor" opacity=".35"/>
+        <text x="30" y="208" fill="#C9D6E8" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="middle" letter-spacing="2">ULL</text>
+        <circle cx="160" cy="70" r="5" fill="#C9D6E8"/>
+        <text x="160" y="98" fill="#C9D6E8" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="middle" letter-spacing="2">PPL</text>
+        <g transform="translate(270 30) rotate(55)"><path d="M0-14 1.6-5 11 1v2.4L1.6 0.6v6.6l3 2.2v2L0 10.4l-4.6 1v-2l3-2.2V.6L-11 3.4V1l9.4-6Z" fill="#fff"/></g>
+      </svg>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__top">
+    <div class="foot__brand">
+      <div style="display:flex;align-items:center;gap:.6rem">
+        <svg style="width:30px;height:30px" viewBox="0 0 100 100"><use href="#propmark"/></svg>
+        <span class="word">Propilot<b>(y)</b></span>
+      </div>
+      <p data-i18n="foot_brand_p">Teoretická příprava na pilotní a radiotelefonní zkoušky. Postaveno piloty pro piloty.</p>
+      <a class="foot__mail" href="mailto:app@propiloty.cz">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        app@propiloty.cz
+      </a>
+      <div class="foot__social">
+        <a href="https://www.facebook.com/profile.php?id=61595491461123" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg></a>
+        <a href="https://www.instagram.com/pro_piloty/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.3"/><circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+      </div>
+    </div>
+    <div>
+      <h4 data-i18n="foot_h_product">Produkt</h4>
+      <ul>
+        <li><a href="index.html#funkce" data-i18n="foot_features">Funkce</a></li>
+        <li><a href="index.html#licence" data-i18n="foot_licences">Licence</a></li>
+        <li><a href="index.html#radiotelefonie" data-i18n="foot_rt">Radiotelefonie</a></li>
+        <li><a href="index.html#premium" data-i18n="foot_premium">Premium</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 data-i18n="foot_h_support">Podpora</h4>
+      <ul>
+        <li><a href="o-nas.html" data-i18n="foot_about">O nás</a></li>
+        <li><a href="#" data-i18n="foot_faq">Časté dotazy</a></li>
+        <li><a href="mailto:app@propiloty.cz" data-i18n="foot_contact">Kontakt</a></li>
+        <li><a href="mailto:app@propiloty.cz?subject=Nahl%C3%A1%C5%A1en%C3%AD%20chyby" data-i18n="foot_bug">Nahlásit chybu</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 data-i18n="foot_h_legal">Právní</h4>
+      <ul>
+        <li><a href="ochrana-udaju.html" data-i18n="foot_privacy">Zásady ochrany údajů</a></li>
+        <li><a href="obchodni-podminky.html" data-i18n="foot_terms">Obchodní podmínky</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap foot__bottom">
+    <span class="disc" data-i18n="foot_disc">Propilot(y) je nezávislá studijní pomůcka. Není oficiálním produktem ÚCL, ČTÚ, LAA ČR ani EASA.</span>
+    <span class="cp">© 2026 Propilot(y)</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var EN = {
+    nav_features:"Features", nav_licences:"Licences", nav_rt:"Radiotelephony", nav_premium:"Premium", nav_download:"Download", nav_login:"Sign in", nav_about:"About us",
+    foot_brand_p:"Theory prep for pilot exams. Built by pilots, for pilots.", foot_h_product:"Product", foot_h_support:"Support", foot_h_legal:"Legal", foot_features:"Features", foot_licences:"Licences", foot_rt:"Radiotelephony", foot_premium:"Premium", foot_about:"About us", foot_faq:"FAQ", foot_contact:"Contact", foot_bug:"Report a bug", foot_privacy:"Privacy Policy", foot_terms:"Terms of Service", foot_disc:"Propilot(y) is an independent study aid. It is not an official product of EASA, the ECQB or any national aviation authority.",
+    ab_eyebrow:"About us",
+    ab_h1:"Two friends, <span class=\"amber\">one passion: flying.</span>",
+    ab_intro:"We are two friends brought together by one thing: flying. Behind propiloty.cz are the two of us, Lukáš and Marek. We are both young pilots who made our way into the cockpit from the very beginning, and we know how many questions you have when you are just starting out.",
+    ab_photo_alt:"Lukáš and Marek, founders of propiloty.cz",
+    ab_tag_s:"Crew", ab_cap:"Pilots · founders · friends",
+    ab_crew_eb:"The crew", ab_crew_h2:"Who is in the cockpit.",
+    ab_l_code:"Pilot 01 · PPL(A)",
+    ab_l_p:"I have been at the controls since I was 15. I started on ultralight aircraft (ULL), and as soon as I could, I earned my private pilot licence PPL(A) at 17. Flying has never been just a hobby for me. It is freedom, discipline and a view of the world you cannot get from anywhere else.",
+    ab_l_c1:"<b>15</b>years old · first time at the controls", ab_l_c2:"<b>ULL</b>ultralight aircraft", ab_l_c3:"<b>17</b>years old · PPL(A)",
+    ab_m_code:"Pilot 02 · PPL in training",
+    ab_m_p:"I started ULL training at 16 and I am finishing my PPL right now. So everything that comes with it is fresh in my mind: the theory, the exams, the first solo flights and the nerves before the check ride.",
+    ab_m_c1:"<b>16</b>years old · started ULL training", ab_m_c2:"<b>PPL</b>finishing now",
+    ab_why_eb:"Our mission", ab_why_h2:"Why propiloty.cz",
+    ab_why_p1:"When we started, we had to dig up a lot of information ourselves, piece it together from different sources or ask around at airfields. That is why we founded propiloty.cz. We want to build a place where you find clear information, practical tips and first-hand experience, whether you are only dreaming of flying or already have a few hours in your logbook.",
+    ab_why_p2:"We are not a big company. We are two pilots who love flying and want to pass that passion on.",
+    ab_btn1:"Download the app", ab_btn2:"Write to us"
+  };
+  var els=[].slice.call(document.querySelectorAll('[data-i18n]'));
+  els.forEach(function(el){ el._cs=el.innerHTML; });
+  var img=document.querySelector('[data-i18n-alt]'); if(img) img._cs=img.alt;
+  function setLang(lang){
+    document.documentElement.lang=lang;
+    document.title = lang==='en' ? "About us — Propilot(y)" : "O nás — Propilot(y)";
+    els.forEach(function(el){ var k=el.getAttribute('data-i18n'); el.innerHTML=(lang==='en'&&EN[k]!==undefined)?EN[k]:el._cs; });
+    if(img) img.alt = lang==='en' ? EN.ab_photo_alt : img._cs;
+    document.querySelectorAll('#lang button').forEach(function(b){
+      var on=b.getAttribute('data-lang')===lang; b.classList.toggle('is-active',on); b.setAttribute('aria-pressed',on?'true':'false');
+    });
+  }
+  document.querySelectorAll('#lang button').forEach(function(b){
+    b.addEventListener('click',function(){ var l=b.getAttribute('data-lang'); setLang(l); try{localStorage.setItem('propiloty_lang',l);}catch(e){} });
+  });
+  try{ if(localStorage.getItem('propiloty_lang')==='en') setLang('en'); }catch(e){}
+
+  var stars=document.getElementById('stars');
+  if(stars){ var ns='http://www.w3.org/2000/svg';
+    for(var i=0;i<34;i++){ var c=document.createElementNS(ns,'circle');
+      c.setAttribute('cx',(Math.random()*100).toFixed(2)+'%'); c.setAttribute('cy',(Math.random()*55).toFixed(2)+'%');
+      c.setAttribute('r',(Math.random()*1.3+0.4).toFixed(2)); c.setAttribute('fill','#fff');
+      c.setAttribute('opacity',(Math.random()*0.5+0.15).toFixed(2)); stars.appendChild(c); } }
+
+  var nav=document.getElementById('nav'), tog=document.getElementById('navToggle');
+  if(tog){ tog.addEventListener('click',function(){ var o=nav.classList.toggle('open'); tog.setAttribute('aria-expanded',o?'true':'false'); }); }
+
+  var rev=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window && !reduce){
+    var io=new IntersectionObserver(function(es){ es.forEach(function(en){ if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);} }); },{threshold:0.12,rootMargin:'0px 0px -8% 0px'});
+    rev.forEach(function(el){io.observe(el);});
+  } else { rev.forEach(function(el){el.classList.add('in');}); }
+})();
+</script>
+</body>
+</html>
