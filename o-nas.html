@@ -460,7 +460,7 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
       <a href="index.html#premium" data-i18n="nav_premium">Premium</a>
       <a href="o-nas.html" data-i18n="nav_about" aria-current="page">O nás</a>
       <a href="app.html" data-i18n="nav_login">Přihlásit</a>
-      <a class="btn btn--gold nav__cta" href="index.html#stahnout" data-i18n="nav_download">Stáhnout</a>
+      <a class="btn btn--gold nav__cta" href="app.html" data-i18n="nav_download">Vyzkoušet</a>
     </nav>
     <div class="lang" id="lang" role="group" aria-label="Jazyk / Language">
       <button type="button" data-lang="cs" class="is-active" aria-pressed="true">CZ</button>
@@ -535,7 +535,7 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
         <p data-i18n="ab_why_p1">Když jsme začínali, spoustu informací jsme museli pracně dohledávat, skládat z různých zdrojů nebo se doptávat po letištích. Proto jsme založili propiloty.cz. Chceme vytvořit místo, kde najdete srozumitelné informace, praktické tipy a zkušenosti z první ruky, ať už o létání teprve sníte, nebo máte nalétáno pár hodin.</p>
         <p class="strong" data-i18n="ab_why_p2">Nejsme velká firma. Jsme dva piloti, kteří létání milují a chtějí tuhle vášeň předávat dál.</p>
         <div class="ab-cta">
-          <a class="btn btn--gold" href="index.html#stahnout" data-i18n="ab_btn1">Stáhnout aplikaci</a>
+          <a class="btn btn--gold" href="app.html" data-i18n="ab_btn1">Vyzkoušet zdarma</a>
           <a class="btn btn--ghost-light" href="mailto:app@propiloty.cz" data-i18n="ab_btn2">Napište nám</a>
         </div>
       </div>
@@ -605,7 +605,7 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
 (function(){
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var EN = {
-    nav_features:"Features", nav_licences:"Licences", nav_rt:"Radiotelephony", nav_premium:"Premium", nav_download:"Download", nav_login:"Sign in", nav_about:"About us",
+    nav_features:"Features", nav_licences:"Licences", nav_rt:"Radiotelephony", nav_premium:"Premium", nav_download:"Try it", nav_login:"Sign in", nav_about:"About us",
     foot_brand_p:"Theory prep for pilot exams. Built by pilots, for pilots.", foot_h_product:"Product", foot_h_support:"Support", foot_h_legal:"Legal", foot_features:"Features", foot_licences:"Licences", foot_rt:"Radiotelephony", foot_premium:"Premium", foot_about:"About us", foot_faq:"FAQ", foot_contact:"Contact", foot_bug:"Report a bug", foot_privacy:"Privacy Policy", foot_terms:"Terms of Service", foot_disc:"Propilot(y) is an independent study aid. It is not an official product of EASA, the ECQB or any national aviation authority.",
     ab_eyebrow:"About us",
     ab_h1:"Two friends, <span class=\"amber\">one passion: flying.</span>",
@@ -620,7 +620,7 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
     ab_why_eb:"Our mission", ab_why_h2:"Why propiloty.cz",
     ab_why_p1:"When we started, we had to dig up a lot of information ourselves, piece it together from different sources or ask around at airfields. That is why we founded propiloty.cz. We want to build a place where you find clear information, practical tips and first-hand experience, whether you are only dreaming of flying or already have a few hours in your logbook.",
     ab_why_p2:"We are not a big company. We are two pilots who love flying and want to pass that passion on.",
-    ab_btn1:"Download the app", ab_btn2:"Write to us"
+    ab_btn1:"Try it free", ab_btn2:"Write to us"
   };
   var els=[].slice.call(document.querySelectorAll('[data-i18n]'));
   els.forEach(function(el){ el._cs=el.innerHTML; });
