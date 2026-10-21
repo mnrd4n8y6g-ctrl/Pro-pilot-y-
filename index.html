@@ -300,6 +300,8 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
 .beta__card h2{color:#fff;font-size:clamp(1.8rem,3.6vw,2.7rem);margin-top:1rem}
 .beta__card h2 .amber{color:var(--gold)}
 .beta__card p{color:var(--on-navy-muted);margin:1rem 0 0;font-size:1.05rem;max-width:56ch}
+.beta__card p.beta__reg{color:#fff;background:rgba(237,180,88,.12);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:.7rem .9rem;font-size:.98rem}
+.beta__card p.beta__reg b{color:var(--gold)}
 .beta__cta{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.6rem}
 .beta__plan{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
 .beta__plan li{display:flex;align-items:center;gap:1rem;padding:.95rem 1.1rem;border-radius:var(--r-md);
@@ -459,7 +461,7 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
             <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.6-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>
             <span data-i18n="hero_btn">Vyzkoušet zdarma na webu</span>
           </span>
-          <span class="sub" data-i18n="hero_btn_sub">Testovací verze · bez instalace</span>
+          <span class="sub" data-i18n="hero_btn_sub">Testovací verze · zdarma po registraci</span>
         </a>
         <a class="btn btn--ghost-light" href="#funkce" data-i18n="hero_btn2">Co appka umí</a>
       </div>
@@ -528,7 +530,7 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
           </g>
           <rect x="116" y="198" width="8" height="4" rx="2" fill="#fff" opacity=".8"/>
         </svg>
-        <p class="instrument-caption">Attitude · Heading · Communication</p>
+        <p class="instrument-caption">Altitude · Heading · Communication</p>
       </div>
     </div>
   </div>
@@ -543,13 +545,14 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
         <span class="beta__tag"><span class="dotlive"></span><span data-i18n="beta_tag">Testovací verze · zdarma</span></span>
         <h2 data-i18n="beta_h2">Webová aplikace je spuštěná. <span class="amber">Zdarma, pro všechny.</span></h2>
         <p data-i18n="beta_p">Než vypustíme finální verzi, chceme ji vyladit s vámi. Vyzkoušejte testovací webovou aplikaci a napište nám, co se vám líbí, co vás štve a co chybí. Každý feedback čteme a pomůže nám, aby finální verze byla co nejlepší.</p>
+        <p class="beta__reg" data-i18n="beta_reg"><b>Do aplikace se dostaneš po bezplatné registraci.</b> Stačí e-mail a heslo, účet pak bude platit i v aplikaci pro iOS.</p>
         <div class="beta__cta">
           <a class="btn btn--gold" href="app.html"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.6-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg><span data-i18n="beta_btn1">Spustit webovou aplikaci</span></a>
           <a class="btn btn--ghost-light" href="#feedback" data-feedback><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg><span data-i18n="beta_btn2">Poslat feedback</span></a>
         </div>
       </div>
       <ol class="beta__plan" aria-label="Plán">
-        <li class="is-now"><b>01</b><div><strong data-i18n="beta_s1_t">Testovací webová verze</strong><span data-i18n="beta_s1_p">Právě teď · zdarma</span></div></li>
+        <li class="is-now"><b>01</b><div><strong data-i18n="beta_s1_t">Testovací webová verze</strong><span data-i18n="beta_s1_p">Právě teď · zdarma po registraci</span></div></li>
         <li class="is-now"><b>02</b><div><strong data-i18n="beta_s2_t">Váš feedback</strong><span data-i18n="beta_s2_p">app@propiloty.cz</span></div></li>
         <li><b>03</b><div><strong data-i18n="beta_s3_t">Aplikace pro iOS</strong><span data-i18n="beta_s3_p">Již brzy · i s radiotelefonií</span></div></li>
       </ol>
@@ -789,7 +792,7 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
           <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.6-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>
           <span data-i18n="final_btn">Vyzkoušet zdarma na webu</span>
         </span>
-        <span class="sub" data-i18n="final_btn_sub">Testovací verze · bez instalace</span>
+        <span class="sub" data-i18n="final_btn_sub">Testovací verze · zdarma po registraci</span>
       </a>
       <a class="btn btn--ghost-light" href="#feedback" data-feedback data-i18n="final_btn2">Poslat feedback</a>
     </div>
@@ -860,12 +863,13 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
     hero_h1:"Pass your theory exams <span class=\"amber\">first try.</span>",
     hero_lede:"A study app for pilots. 3,285 ECQB questions with explanations, a realistic exam mode and radiotelephony practice with an AI controller, for PPL(A), PPL(H), SPL and BPL. All offline on Mac, iPad and iPhone.",
     ro_q_n:"3,285", ro_lic_n:"5",
-    hero_btn:"Try it free on the web", hero_btn_sub:"Test version · no install",
+    hero_btn:"Try it free on the web", hero_btn_sub:"Test version · free with registration",
     hero_soon:"The app for iPhone, iPad and Mac is landing soon, right after the test phase.",
     beta_tag:"Test version · free", beta_h2:"The web app is live. <span class=\"amber\">Free, for everyone.</span>",
     beta_p:"Before we release the final version, we want to fine-tune it with you. Try the test web app and tell us what you like, what bugs you and what is missing. We read every piece of feedback, and it helps us make the final version as good as it can be.",
+    beta_reg:"<b>Access requires a free registration.</b> All you need is an e-mail and a password, and the account will also work in the iOS app.",
     beta_btn1:"Launch the web app", beta_btn2:"Send feedback",
-    beta_s1_t:"Test web version", beta_s1_p:"Right now · free", beta_s2_t:"Your feedback", beta_s2_p:"app@propiloty.cz", beta_s3_t:"iOS app", beta_s3_p:"Coming soon · with radiotelephony", hero_btn2:"What it does",
+    beta_s1_t:"Test web version", beta_s1_p:"Right now · free with registration", beta_s2_t:"Your feedback", beta_s2_p:"app@propiloty.cz", beta_s3_t:"iOS app", beta_s3_p:"Coming soon · with radiotelephony", hero_btn2:"What it does",
     ro_q:"questions", ro_lic:"licences", ro_lang:"languages",
     trust_lead:"Questions based on official exam banks",
     trust_items:"<span>ECQB-PPL</span><i>·</i><span>EASA Part-FCL</span><i>·</i><span>ICAO Doc 9432</span>",
@@ -920,7 +924,7 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
     prem_btn:"Try it free", prem_btn_sub:"Test web version", prem_note:"Premium launches together with the iOS app.",
     final_h2:"Ready for your exam date?",
     final_p:"Try the Propilot(y) test version for free and help us fine-tune it.",
-    final_btn:"Try it free on the web", final_btn_sub:"Test version · no install", final_btn2:"Send feedback", final_note:"App for iPhone · iPad · Mac · coming soon",
+    final_btn:"Try it free on the web", final_btn_sub:"Test version · free with registration", final_btn2:"Send feedback", final_note:"App for iPhone · iPad · Mac · coming soon",
     foot_brand_p:"Theory prep for pilot exams. Built by pilots, for pilots.",
     foot_h_product:"Product", foot_h_support:"Support", foot_h_legal:"Legal",
     foot_features:"Features", foot_licences:"Licences", foot_rt:"Radiotelephony", foot_premium:"Premium",

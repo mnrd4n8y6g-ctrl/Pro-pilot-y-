@@ -329,12 +329,12 @@ var STR = {
   set_lang:"Jazyk otázek", set_goal:"Denní cíl", set_goal_n:function(n){ return n+" otázek denně"; }, set_reset:"Smazat můj pokrok",
   reset_confirm:"Opravdu smazat historii, záložky a statistiky v tomto prohlížeči?", reset_done:"Pokrok smazán.",
   set_fb:"Poslat feedback", set_site:"Zpět na propiloty.cz",
-  a_title:"Přihlas se a pokračuj v přípravě", a_in:"Přihlášení", a_up:"Registrace", a_email:"E-mail", a_pass:"Heslo", a_pass2:"Heslo znovu",
+  a_title:"Testovací verze je zdarma. Pro vstup se přihlas, nebo si založ účet.", a_in:"Přihlášení", a_up:"Registrace", a_email:"E-mail", a_pass:"Heslo", a_pass2:"Heslo znovu",
   a_btn_in:"Přihlásit se", a_btn_up:"Vytvořit účet", a_forgot:"Zapomněl/a jsi heslo?", a_or:"nebo", a_guest:"Pokračovat bez účtu",
   a_note:"Jeden účet pro web i budoucí aplikaci pro iOS.", a_reset_sent:"Poslali jsme ti e-mail s odkazem pro nastavení nového hesla.",
   a_confirm:"Účet vytvořen! Zkontroluj e-mail, potvrď registraci a pak se přihlas.", a_mismatch:"Hesla se neshodují.", a_short:"Heslo musí mít aspoň 6 znaků.",
   a_fill:"Vyplň e-mail a heslo.", a_email_first:"Nejdřív vyplň e-mail.", a_bad:"Nesprávný e-mail nebo heslo.", a_unconf:"E-mail ještě není potvrzený. Zkontroluj schránku.",
-  a_offline:"Přihlášení je teď nedostupné. Můžeš pokračovat bez účtu.", a_newpass:"Nastav si nové heslo", a_save:"Uložit heslo", a_saved:"Heslo uloženo.",
+  a_offline:"Přihlášení je teď nedostupné. Zkus to prosím za chvíli znovu.", a_newpass:"Nastav si nové heslo", a_save:"Uložit heslo", a_saved:"Heslo uloženo.",
   err_load:"Nepodařilo se načíst otázky. Zkontroluj připojení a zkus to znovu.", retry:"Zkusit znovu",
   ach_list:[["first_test","První let","Dokonči svůj první test"],["answered_100","Stovka v kapse","Zodpověz 100 otázek"],["answered_1000","Tisíc na účtu","Zodpověz 1000 otázek"],
    ["correct_500","Mistr otázek","500 správných odpovědí"],["streak_3","Tři dny v řadě","Udrž 3denní sérii"],["streak_7","Týdenní pilot","Udrž 7denní sérii"],
@@ -384,12 +384,12 @@ var STR = {
   set_lang:"Question language", set_goal:"Daily goal", set_goal_n:function(n){ return n+" questions a day"; }, set_reset:"Delete my progress",
   reset_confirm:"Really delete history, bookmarks and stats in this browser?", reset_done:"Progress deleted.",
   set_fb:"Send feedback", set_site:"Back to propiloty.cz",
-  a_title:"Sign in and continue studying", a_in:"Sign in", a_up:"Register", a_email:"E-mail", a_pass:"Password", a_pass2:"Repeat password",
+  a_title:"The test version is free. Sign in or create an account to enter.", a_in:"Sign in", a_up:"Register", a_email:"E-mail", a_pass:"Password", a_pass2:"Repeat password",
   a_btn_in:"Sign in", a_btn_up:"Create account", a_forgot:"Forgot your password?", a_or:"or", a_guest:"Continue without an account",
   a_note:"One account for the web and the upcoming iOS app.", a_reset_sent:"We sent you an e-mail with a link to set a new password.",
   a_confirm:"Account created! Check your e-mail, confirm the registration and then sign in.", a_mismatch:"Passwords do not match.", a_short:"Password must be at least 6 characters.",
   a_fill:"Enter your e-mail and password.", a_email_first:"Enter your e-mail first.", a_bad:"Wrong e-mail or password.", a_unconf:"E-mail not confirmed yet. Check your inbox.",
-  a_offline:"Sign-in is unavailable right now. You can continue without an account.", a_newpass:"Set a new password", a_save:"Save password", a_saved:"Password saved.",
+  a_offline:"Sign-in is unavailable right now. Please try again in a moment.", a_newpass:"Set a new password", a_save:"Save password", a_saved:"Password saved.",
   err_load:"Could not load the questions. Check your connection and try again.", retry:"Try again",
   ach_list:[["first_test","First Flight","Complete your first test"],["answered_100","Century Club","Answer 100 questions"],["answered_1000","Thousand Questions","Answer 1000 questions"],
    ["correct_500","Question Master","500 correct answers"],["streak_3","3-Day Streak","Maintain a 3-day streak"],["streak_7","Weekly Pilot","Maintain a 7-day streak"],
@@ -451,7 +451,7 @@ var CAT_COLOR=["g-learn","g-pplh","g-bpl","g-radio","g-spl","g-laa","g-more","g-
 /* ================= STATE & STORAGE ================= */
 var S={ lang:"cs", user:null, guest:false, index:null, groups:{}, quiz:null, lastResult:null, recovering:false };
 try{ var sl=localStorage.getItem("propiloty_lang"); if(sl==="en"||sl==="cs") S.lang=sl; }catch(e){}
-try{ S.guest = localStorage.getItem("pp_guest")==="1"; }catch(e){}
+try{ localStorage.removeItem("pp_guest"); }catch(e){}
 
 function ns(){ return "pp:"+(S.user? S.user.id : "guest")+":"; }
 function lget(k,def){ try{ var v=localStorage.getItem(ns()+k); return v? JSON.parse(v) : def; }catch(e){ return def; } }
@@ -538,7 +538,16 @@ function progressLoad(cat,mode){
 /* ================= DATA ================= */
 function loadIndex(){
   if(S.index) return Promise.resolve(S.index);
-  return fetch(DATA_BASE+"index.json",{cache:"no-cache"}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){
+  var bases=["data/","","nahrat/data/","data/data/","nahrat/"], bi=0;
+  function tryNext(){
+    if(bi>=bases.length) return Promise.reject(new Error("index.json not found"));
+    var base=bases[bi++];
+    return fetch(base+"index.json",{cache:"no-cache"}).then(function(r){
+      if(!r.ok) throw 0;
+      return r.json().then(function(j){ if(!j||!j.groups) throw 0; DATA_BASE=base; return j; });
+    }).catch(function(){ return tryNext(); });
+  }
+  return tryNext().then(function(j){
     S.index=j; S.catMap={}; S.licMap={};
     Object.keys(j.groups).forEach(function(g){ j.groups[g].forEach(function(L){ S.licMap[L.id]={g:g,meta:L}; L.cats.forEach(function(c){ S.catMap[c.id]={g:g,lic:L.id,meta:c,licTitle:L.title}; }); }); });
     return j;
@@ -597,7 +606,7 @@ function route(){
   var parts=h.split("/").map(decodeURIComponent);
   document.body.classList.toggle("inquiz", parts[0]==="quiz");
   if(S.recovering){ return viewNewPassword(); }
-  if(!S.user && !S.guest){ return viewAuth(); }
+  if(!S.user){ return viewAuth(); }
   if(parts[0]!=="quiz" && S.quiz && !S.quiz.finished){ saveQuizProgress(); S.quiz=null; stopTimer(); }
   loading();
   loadIndex().then(function(){
@@ -628,7 +637,7 @@ function route(){
 /* ================= AUTH ================= */
 function viewAuth(){
   setTop("",false); updateAcct();
-  var mode="in";
+  var mode="in"; try{ if(!localStorage.getItem("pp_seen")){ mode="up"; } localStorage.setItem("pp_seen","1"); }catch(e){}
   function draw(){
     render('<div class="auth"><div class="card">'+
       '<div class="auth__brand"><svg viewBox="0 0 100 100"><use href="#pm"/></svg><h1>Propilot<b>(y)</b></h1><p>'+esc(T("a_title"))+'</p></div>'+
@@ -639,14 +648,11 @@ function viewAuth(){
       '<div class="msg" id="aM" aria-live="polite"></div>'+
       '<button class="btn btn--gold btn--block" id="aGo" style="margin-top:.6rem">'+esc(mode==="in"?T("a_btn_in"):T("a_btn_up"))+'</button>'+
       (mode==="in"?'<p style="text-align:center;margin:.9rem 0 0"><button class="linkbtn" id="aF">'+esc(T("a_forgot"))+'</button></p>':'')+
-      '<div class="or">'+esc(T("a_or"))+'</div>'+
-      '<button class="btn btn--ghost btn--block" id="aG">'+esc(T("a_guest"))+'</button>'+
       '<p class="note">'+esc(T("a_note"))+'</p></div></div>');
     V.querySelectorAll(".seg button").forEach(function(b){ b.onclick=function(){ mode=b.getAttribute("data-m"); draw(); }; });
     var M=document.getElementById("aM");
     function say(t,ok){ M.textContent=t; M.className="msg "+(ok?"ok":"err"); }
     if(!sb) say(T("a_offline"),false);
-    document.getElementById("aG").onclick=function(){ S.guest=true; try{ localStorage.setItem("pp_guest","1"); }catch(e){} go("#/"); route(); };
     var go_=document.getElementById("aGo");
     function submit(){
       var e=document.getElementById("aE").value.trim(), p=document.getElementById("aP").value;
