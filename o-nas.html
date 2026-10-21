@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>O nás — Propilot(y)</title>
+<title>O nás | Propilot(y)</title>
 <meta name="description" content="Za propiloty.cz stojí dva mladí piloti, Lukáš a Marek. Kdo jsme a proč jsme aplikaci vytvořili.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
@@ -12,7 +12,7 @@
 <link rel="manifest" href="site.webmanifest">
 <meta name="theme-color" content="#102648">
 <meta property="og:type" content="website">
-<meta property="og:title" content="O nás — Propilot(y)">
+<meta property="og:title" content="O nás | Propilot(y)">
 <meta property="og:description" content="Dva kamarádi, jedna vášeň: létání. Kdo stojí za propiloty.cz.">
 <meta property="og:image" content="icon-512.png">
 <meta name="twitter:card" content="summary">
@@ -627,7 +627,7 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
   var img=document.querySelector('[data-i18n-alt]'); if(img) img._cs=img.alt;
   function setLang(lang){
     document.documentElement.lang=lang;
-    document.title = lang==='en' ? "About us — Propilot(y)" : "O nás — Propilot(y)";
+    document.title = lang==='en' ? "About us | Propilot(y)" : "O nás | Propilot(y)";
     els.forEach(function(el){ var k=el.getAttribute('data-i18n'); el.innerHTML=(lang==='en'&&EN[k]!==undefined)?EN[k]:el._cs; });
     if(img) img.alt = lang==='en' ? EN.ab_photo_alt : img._cs;
     document.querySelectorAll('#lang button').forEach(function(b){
@@ -663,11 +663,11 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
   var ACCESS_KEY = "a6792b34-9b65-4115-8650-1feee6b8c20d";
 
   var T = {
-    cs:{ eb:"Testovací verze · feedback", h:"Napiš, co máš na srdci", p:"Co se ti líbí, co tě štve, co chybí? Každou zprávu čteme a pomůže nám vyladit finální verzi.",
+    cs:{ eb:"Testovací verze · feedback", h:"Napiš, co máš na srdci", p:"Co se ti líbí, co tě štve, co ti chybí? Každou zprávu čteme a pomůže nám vyladit finální verzi.",
          ph:"Tvůj vzkaz…", em:"E-mail (nepovinné, pro odpověď)", send:"Odeslat", sending:"Odesílám…",
          ok_h:"Děkujeme!", ok_p:"Tvůj vzkaz dorazil přímo k nám. Moc si toho vážíme.", close:"Zavřít",
          err:"Odeslání se nepovedlo. Zkus to prosím znovu za chvíli.", empty:"Napiš nám prosím aspoň pár slov." },
-    en:{ eb:"Test version · feedback", h:"Tell us what’s on your mind", p:"What do you like, what bugs you, what’s missing? We read every message and it helps us fine-tune the final version.",
+    en:{ eb:"Test version · feedback", h:"Tell us what’s on your mind", p:"What do you like, what bugs you, what are you missing? We read every message and it helps us fine-tune the final version.",
          ph:"Your message…", em:"E-mail (optional, for a reply)", send:"Send", sending:"Sending…",
          ok_h:"Thank you!", ok_p:"Your message went straight to us. We really appreciate it.", close:"Close",
          err:"Sending failed. Please try again in a moment.", empty:"Please write at least a few words." }
@@ -763,7 +763,7 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
       body:JSON.stringify({
         access_key:ACCESS_KEY,
         subject:'Feedback z webu propiloty.cz ('+page+')',
-        from_name:'Propilot(y) – feedback',
+        from_name:'Propilot(y) feedback',
         message:text,
         email:em.value.trim()||undefined,
         stranka:page, jazyk:L

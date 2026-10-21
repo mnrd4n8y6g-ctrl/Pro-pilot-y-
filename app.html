@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Propilot(y) — webová aplikace</title>
+<title>Propilot(y) | webová aplikace</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="manifest" href="app-manifest.webmanifest">
 <meta name="theme-color" content="#0A1A30">
@@ -175,7 +175,7 @@ h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0}
     <div id="authMsg" class="auth__msg"></div>
     <button id="authSubmit" class="btn btn--gold btn--block" type="button">Přihlásit se</button>
     <p id="devNote" class="auth__dev hide"></p>
-    <p class="auth__note">Pro vstup do aplikace je nutný účet. Jeden účet platí pro web i mobilní aplikaci — co si koupíš, máš na iPhonu, Androidu i ve Windows.</p>
+    <p class="auth__note">Pro vstup do aplikace je nutný účet. Jeden účet platí pro web i mobilní aplikaci. Co si koupíš, máš na iPhonu, Androidu i ve Windows.</p>
   </div>
 </section>
 
@@ -247,7 +247,7 @@ h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0}
         : await sb.auth.signUp({email:email,password:pw});
       if(res.error){ msg(res.error.message,true); return; }
       var user = res.data && res.data.user;
-      if(mode==="reg" && (!res.data.session)){ msg("Hotovo — potvrď e-mail a přihlas se."); return; }
+      if(mode==="reg" && (!res.data.session)){ msg("Hotovo! Potvrď e-mail a přihlas se."); return; }
       await loadEntitlement(user);
       enterApp({email:user?user.email:email});
     }catch(e){ msg("Chyba spojení. "+(e&&e.message||""),true); }
@@ -315,7 +315,7 @@ h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0}
     }).join("");
     mainEl.innerHTML='<h1 class="screen-title">Ahoj '+esc(name)+' 👋</h1>'+
       '<p class="screen-sub">Vyber si licenci a pusť se do přípravy.</p>'+
-      (state.premium?'':'<div class="banner">Účet je v režimu <b>Zdarma</b> — v každém předmětu máš '+FREE_LIMIT+' otázky zdarma. Celý obsah odemkne Premium.</div>')+
+      (state.premium?'':'<div class="banner">Účet je v režimu <b>Zdarma</b>. V každém předmětu máš '+FREE_LIMIT+' otázky zdarma. Celý obsah odemkne Premium.</div>')+
       '<div class="cards">'+cards+'</div>';
     [].forEach.call(mainEl.querySelectorAll(".card"),function(b){ b.onclick=function(){ state.lic=DATA.licenses[+b.dataset.lic]; go("license"); }; });
   }
@@ -382,7 +382,7 @@ h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0}
         [].forEach.call(mainEl.querySelectorAll(".opt"),function(x){ x.disabled=true;
           var xi=+x.dataset.i; if(xi===q.correct)x.classList.add("ok"); else if(xi===pick)x.classList.add("bad"); });
         var ok=pick===q.correct;
-        if(q.explanation) $("explBox").innerHTML='<div class="expl '+(ok?"ok":"bad")+'"><b>'+(ok?"Správně":"Špatně — vysvětlení")+'</b>'+esc(q.explanation)+'</div>';
+        if(q.explanation) $("explBox").innerHTML='<div class="expl '+(ok?"ok":"bad")+'"><b>'+(ok?"Správně":"Špatně · vysvětlení")+'</b>'+esc(q.explanation)+'</div>';
         else $("explBox").innerHTML='<div class="expl '+(ok?"ok":"bad")+'"><b>'+(ok?"Správně":"Špatně")+'</b>Správná odpověď: '+letters[q.correct]+'.</div>';
         $("qnav").classList.remove("hide");
       };
@@ -407,7 +407,7 @@ h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0}
     var review = state.mode==="exam" ? ('<div class="review"><h3>Rozbor odpovědí</h3>'+pool.map(function(q,i){
         var a=state.answers[i], ok=a===q.correct;
         return '<div class="rev"><div class="rq">'+(i+1)+'. '+esc(q.text.split(" a)")[0].slice(0,160))+'…</div>'+
-          '<div class="ra '+(ok?"ok":"bad")+'">Tvá odpověď: '+(a!=null?letters[a]:"—")+(ok?" ✓":" ✗")+'</div>'+
+          '<div class="ra '+(ok?"ok":"bad")+'">Tvá odpověď: '+(a!=null?letters[a]:"nezodpovězeno")+(ok?" ✓":" ✗")+'</div>'+
           (ok?'':'<div class="ra ok">Správně: '+letters[q.correct]+'</div>')+
           (q.explanation?'<div class="ra" style="color:var(--ink-2);margin-top:.3rem">'+esc(q.explanation)+'</div>':'')+'</div>';
       }).join("")+'</div>') : '';
@@ -420,13 +420,13 @@ h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0}
   }
 
   function renderPaywall(fromQuiz){
-    var plans=[["1 měsíc","199 Kč",""],["6 měsíců","699 Kč","–42 %"],["12 měsíců","999 Kč","nejvýhodnější"]];
+    var plans=[["1 měsíc","199 Kč",""],["6 měsíců","699 Kč","sleva 42 %"],["12 měsíců","999 Kč","nejvýhodnější"]];
     mainEl.innerHTML='<div class="pay"><svg class="mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="#fff"/><clipPath id="mp"><circle cx="50" cy="50" r="40"/></clipPath><g clip-path="url(#mp)"><rect x="10" y="10" width="80" height="40" fill="#CADBEA"/><rect x="10" y="50" width="80" height="40" fill="#E0922F"/></g><polygon points="50,14 45.5,22 54.5,22" fill="#fff"/><g fill="#102648"><rect x="26" y="47" width="14" height="6" rx="3"/><circle cx="50" cy="50" r="4.4"/><rect x="60" y="47" width="14" height="6" rx="3"/></g></svg>'+
       '<h2>'+(fromQuiz?"Konec otázek zdarma":"Odemkni celý obsah")+'</h2>'+
-      '<p>'+(fromQuiz?"Tohle byly otázky zdarma. ":"")+'Premium odemkne všech 14 619 otázek se všemi vysvětleními, zkouškový režim i radiotelefonii — na webu i v mobilní aplikaci.</p>'+
+      '<p>'+(fromQuiz?"Tohle byly otázky zdarma. ":"")+'Premium odemkne všech 14 619 otázek se všemi vysvětleními, zkouškový režim i radiotelefonii, na webu i v mobilní aplikaci.</p>'+
       '<div class="pay__plans">'+plans.map(function(p){return '<div class="plan"><span><b>'+p[0]+'</b>'+(p[2]?'<span class="save">'+p[2]+'</span>':'')+'</span><b>'+p[1]+'</b></div>';}).join("")+'</div>'+
       '<button class="btn btn--gold btn--block" id="buyBtn">Koupit a odemknout</button>'+
-      '<p class="pay__note">Platba na webu přes Stripe / GoPay — bez poplatku Apple. Co koupíš tady, platí i v iOS aplikaci přes tvůj účet.</p></div>';
+      '<p class="pay__note">Platba na webu přes Stripe / GoPay, bez poplatku Apple. Co koupíš tady, platí i v iOS aplikaci přes tvůj účet.</p></div>';
     $("buyBtn").onclick=function(){
       // DEMO: v ostré verzi zde proběhne přesměrování na Stripe/GoPay Checkout a po úhradě se zapíše entitlement do Supabase
       state.premium=true; refreshStatus();
@@ -438,7 +438,7 @@ h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0}
   // start: require account. If backend configured, resume existing session; otherwise show dev note.
   (async function(){
     if(sb){ try{ var r=await sb.auth.getSession(); if(r.data&&r.data.session){ var u=r.data.session.user; await loadEntitlement(u); enterApp({email:u.email}); return; } }catch(e){} }
-    else { var dn=$("devNote"); if(dn){ dn.textContent="Supabase zatím není připojen — přihlášení běží lokálně (režim vývoje)."; dn.classList.remove("hide"); } }
+    else { var dn=$("devNote"); if(dn){ dn.textContent="Supabase zatím není připojen, přihlášení běží lokálně (režim vývoje)."; dn.classList.remove("hide"); } }
   })();
 
   // PWA service worker
@@ -455,7 +455,7 @@ h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0}
 .fbk svg{width:18px;height:18px}
 .fbk small{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;opacity:.75}
 </style>
-<a class="fbk" href="#feedback" data-feedback title="Testovací verze – pošlete nám feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg>Feedback <small>beta</small></a>
+<a class="fbk" href="#feedback" data-feedback title="Testovací verze: pošlete nám feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg>Feedback <small>beta</small></a>
 <!-- ===== FEEDBACK MODAL (Web3Forms) ===== -->
 <script>
 (function(){
@@ -463,11 +463,11 @@ h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0}
   var ACCESS_KEY = "a6792b34-9b65-4115-8650-1feee6b8c20d";
 
   var T = {
-    cs:{ eb:"Testovací verze · feedback", h:"Napiš, co máš na srdci", p:"Co se ti líbí, co tě štve, co chybí? Každou zprávu čteme a pomůže nám vyladit finální verzi.",
+    cs:{ eb:"Testovací verze · feedback", h:"Napiš, co máš na srdci", p:"Co se ti líbí, co tě štve, co ti chybí? Každou zprávu čteme a pomůže nám vyladit finální verzi.",
          ph:"Tvůj vzkaz…", em:"E-mail (nepovinné, pro odpověď)", send:"Odeslat", sending:"Odesílám…",
          ok_h:"Děkujeme!", ok_p:"Tvůj vzkaz dorazil přímo k nám. Moc si toho vážíme.", close:"Zavřít",
          err:"Odeslání se nepovedlo. Zkus to prosím znovu za chvíli.", empty:"Napiš nám prosím aspoň pár slov." },
-    en:{ eb:"Test version · feedback", h:"Tell us what’s on your mind", p:"What do you like, what bugs you, what’s missing? We read every message and it helps us fine-tune the final version.",
+    en:{ eb:"Test version · feedback", h:"Tell us what’s on your mind", p:"What do you like, what bugs you, what are you missing? We read every message and it helps us fine-tune the final version.",
          ph:"Your message…", em:"E-mail (optional, for a reply)", send:"Send", sending:"Sending…",
          ok_h:"Thank you!", ok_p:"Your message went straight to us. We really appreciate it.", close:"Close",
          err:"Sending failed. Please try again in a moment.", empty:"Please write at least a few words." }
@@ -563,7 +563,7 @@ h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0}
       body:JSON.stringify({
         access_key:ACCESS_KEY,
         subject:'Feedback z webu propiloty.cz ('+page+')',
-        from_name:'Propilot(y) – feedback',
+        from_name:'Propilot(y) feedback',
         message:text,
         email:em.value.trim()||undefined,
         stranka:page, jazyk:L
