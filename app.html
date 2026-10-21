@@ -177,6 +177,18 @@ h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0;line-height:1.15
 .dots button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:#fff;font-family:var(--ff-m);font-size:.72rem;color:var(--ink-3)}
 .dots button.a{background:#DCE7FB;border-color:#B4C9F2;color:var(--navy)}
 .dots button.cur{outline:2px solid var(--gold);outline-offset:1px}
+.qnavp{margin-top:18px;border-top:1px solid var(--line-soft);padding-top:14px}
+.qnavp__head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.qnavp__head .linkbtn{display:inline-flex;align-items:center;gap:.4rem}
+.qnavp__go{display:inline-flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--ink-3);white-space:nowrap}
+.qnavp__go input{width:84px;padding:.45rem .6rem}
+.dots{max-height:240px;overflow-y:auto;padding:2px}
+.dots button.r{background:var(--ok-bg);border-color:#9AD9B0;color:var(--ok)}
+.dots button.w{background:var(--bad-bg);border-color:#F2B1B1;color:var(--bad)}
+.qnavp__leg{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;font-size:.78rem;color:var(--ink-3);margin:.6rem 0 0}
+.lg{width:12px;height:12px;border-radius:3px;border:1px solid var(--line);background:#fff;display:inline-block;margin-left:.6rem}
+.lg:first-child{margin-left:0}
+.lg.r{background:var(--ok-bg);border-color:#9AD9B0}.lg.w{background:var(--bad-bg);border-color:#F2B1B1}
 .hint{margin-top:10px;font-size:.78rem;color:var(--ink-3);text-align:center}
 @media(hover:none){.hint{display:none}}
 
@@ -306,11 +318,12 @@ var STR = {
   timer:"Časový limit zkoušky", timer_d:"~1 min na otázku, po uplynutí se test automaticky odevzdá",
   resume:"Pokračovat, kde jsi skončil/a", resume_d:function(i,n,c){ return "Otázka "+i+" z "+n+" · "+c+" správně"; }, restart:"Začít znovu",
   subj_hist:"Historie tohoto předmětu", no_att:"Zatím žádné pokusy", n_att:function(n){ return n+" pokusů, klikni pro detail"; },
-  qof:function(i,n){ return i+" / "+n; }, question:"Otázka", next:"Další otázka", finish:"Dokončit", prev:"Předchozí", nextq:"Další",
-  submit:"Odevzdat test", correct:"Správně", wrong:"Špatně", expl:"Vysvětlení",
+  qof:function(i,n){ return i+" / "+n; }, question:"Otázka", next:"Další otázka", finish:"Vyhodnotit", prev:"Předchozí", nextq:"Další",
+  submit:"Odevzdat test", skip:"Přeskočit", nav_all:"Přehled otázek", nav_go:"Přejít na", nav_open:"Nezodpovězeno",
+  confirm_finish:function(a,n){ return "Zodpověděl/a jsi "+a+" z "+n+" otázek. Vyhodnotit jen zodpovězené otázky?"; }, correct:"Správně", wrong:"Špatně", expl:"Vysvětlení",
   confirm_submit:function(a,n){ return a<n? "Máš zodpovězeno "+a+" z "+n+" otázek. Nezodpovězené se počítají jako chyba. Opravdu odevzdat?" : "Opravdu odevzdat test?"; },
   confirm_leave:"Opravdu ukončit test? Rozpracovaný stav se uloží a můžeš pokračovat později.",
-  keys:"Tip: odpovídej klávesami 1–4 nebo A–D, Enter = další",
+  keys:"Tip: odpovídej klávesami 1–4 nebo A–D, šipky ← → přepínají otázky",
   res_t:"Výsledek", passed:"Úspěšně složeno", failed:"Neprošlo, potřebuješ "+PASS+" %", score_of:function(s,n){ return s+" z "+n+" správně"; },
   your:"Tvoje odpověď", right:"Správná odpověď", none:"bez odpovědi", mistakes:"Chybné odpovědi", nomist:"Bez jediné chyby. Výborně!",
   again:"Zkusit znovu", to_subj:"Zpět na předmět", home:"Domů",
@@ -361,11 +374,12 @@ var STR = {
   timer:"Real-exam timer", timer_d:"~1 min per question, auto-submits when time is up",
   resume:"Continue where you left off", resume_d:function(i,n,c){ return "Question "+i+" of "+n+" · "+c+" correct"; }, restart:"Reset",
   subj_hist:"Subject history", no_att:"No attempts yet", n_att:function(n){ return n+" attempt(s), tap to review"; },
-  qof:function(i,n){ return i+" / "+n; }, question:"Question", next:"Next question", finish:"Finish", prev:"Previous", nextq:"Next",
-  submit:"Submit exam", correct:"Correct", wrong:"Incorrect", expl:"Explanation",
+  qof:function(i,n){ return i+" / "+n; }, question:"Question", next:"Next question", finish:"Evaluate", prev:"Previous", nextq:"Next",
+  submit:"Submit exam", skip:"Skip", nav_all:"All questions", nav_go:"Go to", nav_open:"Unanswered",
+  confirm_finish:function(a,n){ return "You answered "+a+" of "+n+" questions. Evaluate only the answered ones?"; }, correct:"Correct", wrong:"Incorrect", expl:"Explanation",
   confirm_submit:function(a,n){ return a<n? "You answered "+a+" of "+n+" questions. Unanswered ones count as wrong. Submit anyway?" : "Submit the exam?"; },
   confirm_leave:"Leave the test? Your progress is saved and you can continue later.",
-  keys:"Tip: answer with keys 1–4 or A–D, Enter = next",
+  keys:"Tip: answer with keys 1–4 or A–D, arrows ← → switch questions",
   res_t:"Result", passed:"Passed", failed:"Not passed, you need "+PASS+" %", score_of:function(s,n){ return s+" of "+n+" correct"; },
   your:"Your answer", right:"Correct answer", none:"no answer", mistakes:"Incorrect answers", nomist:"Not a single mistake. Great job!",
   again:"Try again", to_subj:"Back to subject", home:"Home",
@@ -777,7 +791,7 @@ function viewCat(catId){
     var timerOn=false; try{ timerOn=localStorage.getItem("pp_timer")==="1"; }catch(e){}
     function card(mode,saved,g,icon,title,desc,badge){
       var h='<div class="mode">'+tile({href:"#/quiz/"+catId+"/"+mode,g:g,icon:ic(icon),t:title,s:desc,badge:badge});
-      if(saved && saved.index>0) h+='<div class="mode__resume">'+ic("hist").replace('<svg','<svg width="18" height="18"')+'<span><b>'+esc(T("resume"))+'</b><br><small>'+esc(T("resume_d")(saved.index+1,saved.ids.length,saved.correct||0))+'</small></span><button class="btn btn--ghost" data-reset="'+mode+'" style="padding:.45rem .8rem;font-size:.85rem">'+esc(T("restart"))+'</button></div>';
+      if(saved && (saved.index>0 || Object.keys(saved.answers||{}).length)) h+='<div class="mode__resume">'+ic("hist").replace('<svg','<svg width="18" height="18"')+'<span><b>'+esc(T("resume"))+'</b><br><small>'+esc(T("resume_d")(saved.index+1,saved.ids.length,saved.correct||0))+'</small></span><button class="btn btn--ghost" data-reset="'+mode+'" style="padding:.45rem .8rem;font-size:.85rem">'+esc(T("restart"))+'</button></div>';
       return h+'</div>';
     }
     var html='<div class="pagehead"><h1>'+esc(c.title)+'</h1><p>'+esc(m.licTitle)+'</p></div>'+
@@ -823,15 +837,15 @@ function viewQuiz(catId,mode,extra){
       if(!resumed){ var w=weighted(c.q); list = mode==="exam" ? w.slice(0,Math.min(c.exam,w.length)) : w; }
       var timer=false; try{ timer = mode==="exam" && localStorage.getItem("pp_timer")==="1"; }catch(e){}
       startQuiz({ catId:catId, mode:mode, title:c.title, licTitle:c.licTitle, list:list, timer:timer,
-        index: resumed ? Math.min(saved.index, list.length-1) : 0, answers: resumed && saved.answers ? saved.answers : {}, correctSoFar: resumed? (saved.correct||0):0 });
+        index: resumed ? Math.min(saved.index, list.length-1) : 0, answers: resumed && saved.answers ? saved.answers : {} });
     });
   }).catch(function(e){ console.error(e); failed(); });
 }
 function startQuiz(o){
   stopTimer();
+  /* answers are stored per question index as the ORIGINAL option index, so they survive reshuffling on resume */
   var Q={ catId:o.catId, mode:o.mode, title:o.title, licTitle:o.licTitle, adhoc:!!o.adhoc,
-    items:o.list.map(mkShuffled), i:o.index||0, answers:o.answers||{}, revealed:false, records:[], finished:false,
-    correctSoFar:o.correctSoFar||0, remaining:null };
+    items:o.list.map(mkShuffled), i:o.index||0, answers:o.answers||{}, finished:false, remaining:null, nav:false };
   if(Q.mode==="exam" && o.timer){ Q.remaining=Math.max(60,Q.items.length*60); }
   S.quiz=Q;
   if(!Q.adhoc) saveQuizProgress();
@@ -846,17 +860,41 @@ function startQuiz(o){
   drawQuiz();
 }
 function mmss(s){ s=Math.max(0,s); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+function selOf(Q,idx){ var a=Q.answers[idx]; return a===undefined? undefined : Q.items[idx].order.indexOf(a); }
+function isRight(Q,idx){ var a=Q.answers[idx]; return a!==undefined && a===Q.items[idx].q.c; }
+function answeredCount(Q){ return Object.keys(Q.answers).length; }
+function correctCount(Q){ var n=0; for(var k in Q.answers) if(isRight(Q,+k)) n++; return n; }
 function saveQuizProgress(){
   var Q=S.quiz; if(!Q||Q.adhoc||Q.finished) return;
   progressSave({ catId:Q.catId, mode:Q.mode, index:Q.i, ids:Q.items.map(function(x){ return x.q.i; }),
-    correct: Q.mode==="learning" ? Q.correctSoFar : 0, answers: Q.mode==="exam" ? Q.answers : {} });
+    correct: Q.mode==="learning" ? correctCount(Q) : 0, answers: Q.answers });
+}
+function goTo(idx){
+  var Q=S.quiz; if(!Q) return;
+  idx=Math.max(0,Math.min(Q.items.length-1,idx)); if(idx===Q.i) return;
+  Q.i=idx; saveQuizProgress(); drawQuiz(); window.scrollTo(0,0);
+}
+function drawNav(Q){
+  var n=Q.items.length, h='<div class="qnavp"><div class="qnavp__head"><button class="linkbtn" id="navTog">'+ic("grid").replace('<svg','<svg width="16" height="16"')+' '+esc(T("nav_all"))+' ('+answeredCount(Q)+' / '+n+')</button>'+
+    '<span class="qnavp__go"><label for="goN">'+esc(T("nav_go"))+'</label><input class="in" id="goN" type="number" min="1" max="'+n+'" inputmode="numeric" placeholder="'+(Q.i+1)+'"></span></div>';
+  if(Q.nav || Q.mode==="exam"){
+    h+='<div class="dots">';
+    for(var d=0;d<n;d++){
+      var cls="";
+      if(Q.answers[d]!==undefined) cls = Q.mode==="learning" ? (isRight(Q,d)?"r":"w") : "a";
+      h+='<button data-d="'+d+'" class="'+cls+(d===Q.i?' cur':'')+'">'+(d+1)+'</button>';
+    }
+    h+='</div>';
+    if(Q.mode==="learning") h+='<p class="qnavp__leg"><span class="lg r"></span>'+esc(T("correct"))+'<span class="lg w"></span>'+esc(T("wrong"))+'<span class="lg"></span>'+esc(T("nav_open"))+'</p>';
+  }
+  return h+'</div>';
 }
 function drawQuiz(){
   var Q=S.quiz; if(!Q) return go("#/");
   setTop(Q.title,true);
   var it=Q.items[Q.i], q=it.q, n=Q.items.length, letters="ABCDEF";
-  var sel = Q.mode==="exam" ? Q.answers[Q.i] : Q.sel;
-  var answered = Q.mode==="exam" ? Object.keys(Q.answers).length : Q.i + (Q.revealed?1:0);
+  var sel=selOf(Q,Q.i), revealed = Q.mode==="learning" && sel!==undefined;
+  var answered=answeredCount(Q);
   var bm=DB.bookmarks()[q.i]!==undefined;
   var html='<div class="qbar"><div class="qbar__prog"><i style="width:'+Math.round(answered/n*100)+'%"></i></div><span class="qbar__n">'+T("qof")(Q.i+1,n)+'</span>'+
     (Q.remaining!=null?'<span class="timer'+(Q.remaining<=60?' low':'')+'"><span id="tmrv">'+mmss(Q.remaining)+'</span></span>':'')+'</div>'+
@@ -866,30 +904,34 @@ function drawQuiz(){
     '<div class="opts">';
   it.order.forEach(function(oi,k){
     var cls="";
-    if(Q.mode==="learning" && Q.revealed){ if(k===it.correct) cls="ok"; else if(k===sel) cls="bad"; }
+    if(revealed){ if(k===it.correct) cls="ok"; else if(k===sel) cls="bad"; }
     else if(k===sel) cls="sel";
-    html+='<button class="opt '+cls+'" data-k="'+k+'"'+(Q.mode==="learning"&&Q.revealed?' disabled':'')+'><span class="k">'+letters[k]+'</span><span>'+esc(q.o[oi])+'</span></button>';
+    html+='<button class="opt '+cls+'" data-k="'+k+'"'+(revealed?' disabled':'')+'><span class="k">'+letters[k]+'</span><span>'+esc(q.o[oi])+'</span></button>';
   });
   html+='</div>';
-  if(Q.mode==="learning" && Q.revealed){
+  if(revealed){
     var ok=sel===it.correct;
-    html+='<div class="expl'+(ok?'':' bad')+'"><b>'+esc(ok?T("correct"):T("wrong")+" · "+T("expl"))+'</b>'+(q.e?'<p>'+esc(q.e)+'</p>':'')+'</div>'+
-      '<div class="qnav"><button class="btn btn--gold" id="nextBtn">'+esc(Q.i+1>=n?T("finish"):T("next"))+'</button></div>';
+    html+='<div class="expl'+(ok?'':' bad')+'"><b>'+esc(ok?T("correct"):T("wrong")+" · "+T("expl"))+'</b>'+(q.e?'<p>'+esc(q.e)+'</p>':'')+'</div>';
   }
-  if(Q.mode==="exam"){
-    html+='<div class="qnav"><button class="btn btn--ghost" id="prevBtn"'+(Q.i===0?' disabled':'')+'>'+esc(T("prev"))+'</button>'+
-      (Q.i+1<n?'<button class="btn btn--navy" id="nextBtn">'+esc(T("nextq"))+'</button>':'')+
-      '<button class="btn btn--gold" id="subBtn">'+esc(T("submit"))+'</button></div><div class="dots">';
-    for(var d=0;d<n;d++) html+='<button data-d="'+d+'" class="'+(Q.answers[d]!==undefined?'a':'')+(d===Q.i?' cur':'')+'">'+(d+1)+'</button>';
-    html+='</div>';
+  html+='<div class="qnav"><button class="btn btn--ghost" id="prevBtn"'+(Q.i===0?' disabled':'')+'>'+esc(T("prev"))+'</button>';
+  if(Q.mode==="learning"){
+    if(Q.i+1<n) html+='<button class="btn '+(revealed?'btn--gold':'btn--navy')+'" id="nextBtn">'+esc(revealed?T("next"):T("skip"))+'</button>';
+    html+='<button class="btn '+(Q.i+1>=n&&revealed?'btn--gold':'btn--ghost')+'" id="finBtn"'+(answered?'':' disabled')+'>'+esc(T("finish"))+'</button>';
+  } else {
+    if(Q.i+1<n) html+='<button class="btn btn--navy" id="nextBtn">'+esc(T("nextq"))+'</button>';
+    html+='<button class="btn btn--gold" id="subBtn">'+esc(T("submit"))+'</button>';
   }
-  html+='</div><p class="hint">'+esc(T("keys"))+'</p>';
+  html+='</div>'+drawNav(Q)+'</div><p class="hint">'+esc(T("keys"))+'</p>';
   V.innerHTML=html;
   V.querySelectorAll(".opt").forEach(function(b){ b.onclick=function(){ answer(+b.getAttribute("data-k")); }; });
-  var nb=document.getElementById("nextBtn"); if(nb) nb.onclick=next;
-  var pb=document.getElementById("prevBtn"); if(pb) pb.onclick=function(){ if(Q.i>0){ Q.i--; saveQuizProgress(); drawQuiz(); } };
-  var sbb=document.getElementById("subBtn"); if(sbb) sbb.onclick=function(){ if(confirm(T("confirm_submit")(Object.keys(Q.answers).length,n))) submitExam(); };
-  V.querySelectorAll("[data-d]").forEach(function(b){ b.onclick=function(){ Q.i=+b.getAttribute("data-d"); drawQuiz(); }; });
+  var nb=document.getElementById("nextBtn"); if(nb) nb.onclick=function(){ goTo(Q.i+1); };
+  var pb=document.getElementById("prevBtn"); if(pb) pb.onclick=function(){ goTo(Q.i-1); };
+  var fb=document.getElementById("finBtn"); if(fb) fb.onclick=function(){ if(answered<n && !confirm(T("confirm_finish")(answered,n))) return; finishQuiz(); };
+  var sbb=document.getElementById("subBtn"); if(sbb) sbb.onclick=function(){ if(confirm(T("confirm_submit")(answered,n))) submitExam(); };
+  V.querySelectorAll("[data-d]").forEach(function(b){ b.onclick=function(){ goTo(+b.getAttribute("data-d")); }; });
+  var nt=document.getElementById("navTog"); if(nt) nt.onclick=function(){ Q.nav=!Q.nav; drawQuiz(); if(Q.nav){ var c=V.querySelector(".dots .cur"); if(c) c.scrollIntoView({block:"nearest"}); } };
+  var gn=document.getElementById("goN"); if(gn) gn.addEventListener("keydown",function(e){ if(e.key==="Enter"){ var v=parseInt(gn.value,10); if(v>=1&&v<=n) goTo(v-1); } });
+  if(gn) gn.addEventListener("change",function(){ var v=parseInt(gn.value,10); if(v>=1&&v<=n) goTo(v-1); });
   document.getElementById("bmBtn").onclick=function(){
     var b=DB.bookmarks(); if(b[q.i]!==undefined){ delete b[q.i]; toast(T("unsaved")); } else { b[q.i]=q.cat; toast(T("saved")); }
     lset("bookmarks",b); cloudDataSoon(); drawQuiz();
@@ -898,32 +940,39 @@ function drawQuiz(){
 }
 function answer(k){
   var Q=S.quiz; if(!Q||Q.finished) return;
-  var it=Q.items[Q.i];
-  if(Q.mode==="exam"){ Q.answers[Q.i]=k; saveQuizProgress(); drawQuiz(); return; }
-  if(Q.revealed) return;
-  Q.sel=k; Q.revealed=true;
-  var ok=k===it.correct; if(ok) Q.correctSoFar++;
-  Q.records.push({ q:it.q, order:it.order, sel:k, correct:it.correct });
-  wrongRecord(it.q.i,ok); streakRecord(1);
-  drawQuiz();
+  var it=Q.items[Q.i], orig=it.order[k];
+  if(Q.mode==="exam"){ Q.answers[Q.i]=orig; saveQuizProgress(); drawQuiz(); return; }
+  if(Q.answers[Q.i]!==undefined) return;
+  Q.answers[Q.i]=orig;
+  wrongRecord(it.q.i, orig===it.q.c); streakRecord(1);
+  saveQuizProgress(); drawQuiz();
 }
 function next(){
   var Q=S.quiz; if(!Q) return;
-  if(Q.mode==="exam"){ if(Q.i+1<Q.items.length){ Q.i++; saveQuizProgress(); drawQuiz(); } return; }
-  if(!Q.revealed) return;
-  if(Q.i+1>=Q.items.length){ finishQuiz(); return; }
-  Q.i++; Q.revealed=false; Q.sel=null; saveQuizProgress(); drawQuiz(); window.scrollTo(0,0);
+  if(Q.i+1<Q.items.length){ goTo(Q.i+1); return; }
+  if(Q.mode==="learning" && Q.answers[Q.i]!==undefined) finishQuiz();
+}
+function buildRecords(Q,onlyAnswered){
+  var out=[];
+  Q.items.forEach(function(it,idx){
+    var a=Q.answers[idx];
+    if(a===undefined && onlyAnswered) return;
+    out.push({ q:it.q, order:it.order, sel:(a===undefined?null:it.order.indexOf(a)), correct:it.correct });
+  });
+  return out;
 }
 function submitExam(){
   var Q=S.quiz; if(!Q||Q.finished) return;
-  Q.records=Q.items.map(function(it,idx){ var s=Q.answers[idx]; return { q:it.q, order:it.order, sel:(s===undefined?null:s), correct:it.correct }; });
+  Q.records=buildRecords(Q,false);
   Q.records.forEach(function(r){ if(r.sel!==null) wrongRecord(r.q.i, r.sel===r.correct); });
-  var answered=Q.records.filter(function(r){ return r.sel!==null; }).length;
+  var answered=answeredCount(Q);
   if(answered) streakRecord(answered);
   finishQuiz();
 }
 function finishQuiz(){
-  var Q=S.quiz; stopTimer(); Q.finished=true;
+  var Q=S.quiz; if(!Q||Q.finished) return;
+  stopTimer(); Q.finished=true;
+  if(Q.mode==="learning") Q.records=buildRecords(Q,true);
   var score=Q.records.filter(function(r){ return r.sel===r.correct; }).length;
   var total=Q.mode==="exam" ? Q.items.length : Q.records.length;
   var att={ id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random()), categoryId:Q.catId, categoryTitle:Q.title, licenseTitle:Q.licTitle,
@@ -942,8 +991,8 @@ document.addEventListener("keydown",function(e){
   var k=e.key.toLowerCase(), map={"1":0,"2":1,"3":2,"4":3,"a":0,"b":1,"c":2,"d":3}, n=Q.items[Q.i].order.length;
   if(map[k]!==undefined && map[k]<n){ e.preventDefault(); answer(map[k]); }
   else if(e.key==="Enter"){ e.preventDefault(); next(); }
-  else if(e.key==="ArrowRight" && Q.mode==="exam"){ next(); }
-  else if(e.key==="ArrowLeft" && Q.mode==="exam" && Q.i>0){ Q.i--; drawQuiz(); }
+  else if(e.key==="ArrowRight"){ e.preventDefault(); goTo(Q.i+1); }
+  else if(e.key==="ArrowLeft"){ e.preventDefault(); goTo(Q.i-1); }
 });
 
 /* ================= RESULT ================= */
