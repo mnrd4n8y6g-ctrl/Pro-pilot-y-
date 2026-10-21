@@ -385,6 +385,7 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
   .comlog__foot .wave i{animation:none;height:10px}
 }
 </style>
+<style>.foot__off{color:var(--on-navy-muted);opacity:.55;cursor:default}.foot__off em{font-style:normal;font-family:var(--ff-mono,"IBM Plex Mono",monospace);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;display:block;width:max-content;margin-top:.3rem;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:.1rem .45rem}</style>
 </head>
 <body>
 
@@ -833,7 +834,6 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
       <h4 data-i18n="foot_h_support">Podpora</h4>
       <ul>
         <li><a href="o-nas.html" data-i18n="foot_about">O nás</a></li>
-        <li><a href="#" data-i18n="foot_faq">Časté dotazy</a></li>
         <li><a href="mailto:app@propiloty.cz" data-i18n="foot_contact">Kontakt</a></li>
         <li><a href="mailto:app@propiloty.cz?subject=Nahl%C3%A1%C5%A1en%C3%AD%20chyby" data-i18n="foot_bug">Nahlásit chybu</a></li>
       </ul>
@@ -841,8 +841,8 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
     <div>
       <h4 data-i18n="foot_h_legal">Právní</h4>
       <ul>
-        <li><a href="ochrana-udaju.html" data-i18n="foot_privacy">Zásady ochrany údajů</a></li>
-        <li><a href="obchodni-podminky.html" data-i18n="foot_terms">Obchodní podmínky</a></li>
+        <li><span class="foot__off" aria-disabled="true"><span data-i18n="foot_privacy">Zásady ochrany údajů</span> <em data-i18n="foot_soon">připravujeme</em></span></li>
+        <li><span class="foot__off" aria-disabled="true"><span data-i18n="foot_terms">Obchodní podmínky</span> <em data-i18n="foot_soon">připravujeme</em></span></li>
       </ul>
     </div>
   </div>
@@ -928,7 +928,7 @@ html:not([lang="en"]) [data-only="en"]{display:none!important}
     foot_brand_p:"Theory prep for pilot exams. Built by pilots, for pilots.",
     foot_h_product:"Product", foot_h_support:"Support", foot_h_legal:"Legal",
     foot_features:"Features", foot_licences:"Licences", foot_rt:"Radiotelephony", foot_premium:"Premium",
-    foot_about:"About us", foot_faq:"FAQ", foot_contact:"Contact", foot_bug:"Report a bug",
+    foot_about:"About us", foot_soon:"coming soon", foot_faq:"FAQ", foot_contact:"Contact", foot_bug:"Report a bug",
     foot_privacy:"Privacy Policy", foot_terms:"Terms of Service",
     foot_disc:"Propilot(y) is an independent study aid. It is not an official product of EASA, the ECQB or any national aviation authority."
   };
