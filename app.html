@@ -1,461 +1,1126 @@
-<!-- PROTOTYP webové aplikace Propilot(y). Demo režim funguje bez backendu; pro ostrý provoz doplňte Supabase klíče níže. -->
 <!DOCTYPE html>
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Propilot(y) | webová aplikace</title>
+<meta name="description" content="Testovací webová verze aplikace Propilot(y): otázky s vysvětlením, zkouškový režim, historie testů a slabá místa.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="manifest" href="app-manifest.webmanifest">
-<meta name="theme-color" content="#0A1A30">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#0A1A30">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --navy-900:#0A1A30;--navy:#102648;--navy-700:#173766;--cobalt:#1A56DB;--cobalt-300:#5B8DEF;
+  --navy-900:#0A1A30;--navy:#102648;--navy-700:#173766;--cobalt:#1A56DB;
   --sky:#CADBEA;--gold:#EDB458;--gold-200:#F6D79B;--earth:#B8742F;
-  --bg:#EDF1F7;--surface:#FFFFFF;--line:#D7DFEA;--line-soft:#E7EDF5;
+  --bg:#EDF1F7;--surface:#fff;--line:#D7DFEA;--line-soft:#E7EDF5;
   --ink:#0E1B2E;--ink-2:#3C4B61;--ink-3:#6C7C93;--on-navy:#EAF1FA;--on-navy-muted:#A6B9D4;
-  --ok:#16A34A;--ok-bg:#E7F6EC;--bad:#DC2626;--bad-bg:#FBEAEA;
+  --ok:#16A34A;--ok-bg:#E7F6EC;--bad:#DC2626;--bad-bg:#FBEAEA;--warn:#D97706;
   --ff-d:"Space Grotesk",system-ui,sans-serif;--ff-b:"IBM Plex Sans",system-ui,sans-serif;--ff-m:"IBM Plex Mono",ui-monospace,monospace;
+  --r:18px;--shadow:0 10px 30px -18px rgba(16,38,72,.35),0 2px 6px -2px rgba(16,38,72,.08);
 }
 *{box-sizing:border-box}
-html,body{margin:0;height:100%}
-body{background:var(--bg);color:var(--ink);font-family:var(--ff-b);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
-button{font-family:inherit;cursor:pointer}
-:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
-h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--ff-b);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;color:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:8px}
+h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0;line-height:1.15}
 .mono{font-family:var(--ff-m)}
-.hide{display:none!important}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;border:1px solid transparent;border-radius:11px;
-  padding:.8em 1.2em;font-weight:600;font-size:.98rem;transition:transform .15s,background .15s,border-color .15s}
-.btn:active{transform:translateY(1px)}
-.btn--gold{background:var(--gold);color:var(--navy-900)}
+[hidden]{display:none!important}
+
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:40;background:rgba(10,26,48,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  color:var(--on-navy);padding-top:env(safe-area-inset-top,0px)}
+.top__in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:.6rem;padding:.65rem clamp(14px,4vw,24px)}
+.top__back{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:transparent;color:#fff}
+.top__back svg{width:18px;height:18px}
+.brand{display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;color:#fff;font-family:var(--ff-d);font-weight:700;font-size:1.12rem;white-space:nowrap}
+.brand svg{width:30px;height:30px}
+.brand b{color:var(--gold)}
+.top__title{font-family:var(--ff-d);font-weight:600;font-size:1rem;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.top__sp{flex:1}
+.lang{display:inline-flex;border:1px solid rgba(255,255,255,.18);border-radius:9px;overflow:hidden;flex:none}
+.lang button{border:0;background:transparent;color:var(--on-navy-muted);font-family:var(--ff-m);font-size:.72rem;padding:.42em .62em}
+.lang button.on{background:var(--gold);color:var(--navy-900)}
+.acct{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:var(--navy-700);color:#fff;font-family:var(--ff-d);font-weight:700;flex:none}
+.beta-strip{background:var(--gold);color:var(--navy-900);text-align:center;font-family:var(--ff-m);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;padding:.35rem .8rem}
+
+/* ---------- layout ---------- */
+.wrap{max-width:900px;margin:0 auto;padding:clamp(16px,3.5vw,28px) clamp(14px,4vw,24px) 110px}
+.hero{background:radial-gradient(120% 90% at 85% -20%,rgba(26,86,219,.5),transparent 60%),linear-gradient(180deg,var(--navy-900),var(--navy));
+  color:#fff;border-radius:24px;padding:clamp(22px,4vw,34px);display:flex;align-items:center;gap:1.2rem;box-shadow:var(--shadow)}
+.hero svg.mk{width:64px;height:64px;flex:none;filter:drop-shadow(0 10px 18px rgba(0,0,0,.35))}
+.hero h1{font-size:clamp(1.5rem,3.6vw,2rem)}
+.hero h1 b{color:var(--gold)}
+.hero p{margin:.3rem 0 0;color:var(--on-navy-muted)}
+.sec-h{font-family:var(--ff-m);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--earth);margin:1.8rem 0 .8rem}
+.grid{display:grid;gap:14px}
+@media(min-width:720px){.grid--2{grid-template-columns:1fr 1fr}}
+
+/* tiles */
+.tile{display:flex;align-items:center;gap:16px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);
+  padding:16px 16px;box-shadow:var(--shadow);text-decoration:none;color:var(--ink);transition:transform .12s,box-shadow .12s}
+.tile:hover{transform:translateY(-2px);box-shadow:0 18px 36px -20px rgba(16,38,72,.45)}
+.tile.is-off{opacity:.62;cursor:default}
+.tile.is-off:hover{transform:none}
+.ico{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;flex:none;color:#fff;box-shadow:0 6px 14px -6px rgba(0,0,0,.35)}
+.ico svg{width:26px;height:26px}
+.ico--sm{width:44px;height:44px;border-radius:12px}
+.ico--sm svg{width:20px;height:20px}
+.tile__t{flex:1;min-width:0}
+.tile__t h3{font-size:1.08rem}
+.tile__t p{margin:.15rem 0 0;color:var(--ink-3);font-size:.9rem}
+.tile__r{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none}
+.badge{font-size:.74rem;font-weight:600;color:#fff;padding:.22rem .6rem;border-radius:999px;white-space:nowrap}
+.chev{width:16px;height:16px;color:#A9B6C8}
+.soon{font-family:var(--ff-m);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;background:var(--gold);color:var(--navy-900);padding:.2rem .5rem;border-radius:999px}
+
+/* gradients */
+.g-ppl{background:linear-gradient(135deg,#1A56DB,#102648)}.g-pplh{background:linear-gradient(135deg,#14B8A6,#0F766E)}
+.g-bpl{background:linear-gradient(135deg,#22D3EE,#0E9AA7)}.g-spl{background:linear-gradient(135deg,#34D399,#16A34A)}
+.g-radio{background:linear-gradient(135deg,#EDB458,#B8742F)}.g-laa{background:linear-gradient(135deg,#A855F7,#4F46E5)}
+.g-rt{background:linear-gradient(135deg,#FB923C,#DC2626)}.g-hist{background:linear-gradient(135deg,#22C55E,#0D9488)}
+.g-more{background:linear-gradient(135deg,#6366F1,#102648)}.g-book{background:linear-gradient(135deg,#F59E0B,#B45309)}
+.g-exam{background:linear-gradient(135deg,#22C55E,#15803D)}.g-learn{background:linear-gradient(135deg,#1A56DB,#173766)}
+.g-weak{background:linear-gradient(135deg,#F43F5E,#BE123C)}.g-ach{background:linear-gradient(135deg,#FACC15,#CA8A04)}
+.g-set{background:linear-gradient(135deg,#64748B,#334155)}.g-mis{background:linear-gradient(135deg,#FB7185,#E11D48)}
+
+/* streak */
+.streak{display:flex;align-items:center;gap:16px;margin-top:14px;background:linear-gradient(120deg,#1A56DB,#173766);color:#fff;border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow)}
+.ring{--p:0;width:58px;height:58px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:conic-gradient(var(--gold) calc(var(--p)*1%),rgba(255,255,255,.18) 0)}
+.ring>span{width:46px;height:46px;border-radius:50%;background:#173766;display:grid;place-items:center}
+.ring svg{width:22px;height:22px;color:var(--gold)}
+.streak h3{font-size:1.15rem}
+.streak p{margin:.1rem 0 0;color:#C8D7EE;font-size:.9rem}
+
+/* cards & lists */
+.card{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
+.list{display:grid;gap:10px}
+.row{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;padding:12px 14px;
+  text-decoration:none;color:var(--ink);width:100%;text-align:left}
+.row:hover{border-color:var(--line)}
+.row h4{margin:0;font-size:1rem;font-family:var(--ff-b);font-weight:600}
+.row small{display:block;color:var(--ink-3);font-size:.84rem}
+.row .r{margin-left:auto;display:flex;align-items:center;gap:8px;color:var(--ink-3);font-size:.86rem;flex:none}
+.pagehead{margin:.2rem 0 1.1rem}
+.pagehead h1{font-size:clamp(1.5rem,3.5vw,2rem)}
+.pagehead p{margin:.35rem 0 0;color:var(--ink-3)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px}
+.stat{background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;padding:12px 14px}
+.stat b{display:block;font-family:var(--ff-d);font-size:1.5rem}
+.stat span{font-size:.8rem;color:var(--ink-3)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border:0;border-radius:12px;padding:.8rem 1.2rem;font-weight:600;font-size:1rem;text-decoration:none}
+.btn svg{width:18px;height:18px}
+.btn--gold{background:var(--gold);color:var(--navy-900);box-shadow:0 8px 20px -10px rgba(237,180,88,.9)}
 .btn--gold:hover{background:var(--gold-200)}
 .btn--navy{background:var(--navy);color:#fff}
 .btn--navy:hover{background:var(--navy-700)}
-.btn--ghost{background:transparent;color:var(--navy);border-color:var(--line)}
-.btn--ghost:hover{border-color:var(--navy)}
+.btn--ghost{background:var(--surface);border:1px solid var(--line);color:var(--ink)}
+.btn--ghost:hover{border-color:#B9C6D8}
+.btn--danger{background:var(--bad-bg);color:var(--bad)}
 .btn--block{width:100%}
+.btn[disabled]{opacity:.5;cursor:default}
+.linkbtn{background:none;border:0;color:var(--cobalt);font-weight:600;padding:0;font-size:.92rem}
 
-/* ---------- AUTH ---------- */
-.auth{min-height:100%;display:grid;place-items:center;padding:24px;
-  background:radial-gradient(120% 80% at 80% -10%,rgba(26,86,219,.5),transparent 55%),linear-gradient(180deg,var(--navy-900),var(--navy))}
-.auth__card{width:100%;max-width:400px;background:var(--surface);border-radius:22px;padding:32px 28px;box-shadow:0 30px 70px -25px rgba(0,0,0,.6)}
-.auth__logo{display:flex;align-items:center;gap:.6rem;justify-content:center;margin-bottom:.4rem}
-.auth__logo .mark{width:40px;height:40px}
-.auth__logo .word{font-family:var(--ff-d);font-weight:700;font-size:1.3rem;color:var(--navy)}
-.auth__logo .word b{color:var(--gold)}
-.auth__sub{text-align:center;color:var(--ink-3);font-size:.92rem;margin:.1rem 0 1.4rem}
-.tabs{display:flex;background:var(--bg);border-radius:11px;padding:4px;margin-bottom:1.2rem}
-.tabs button{flex:1;border:0;background:transparent;border-radius:8px;padding:.6em;font-weight:600;color:var(--ink-3);font-size:.92rem}
-.tabs button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(16,38,72,.12)}
-.field{margin-bottom:.9rem}
-.field label{display:block;font-size:.82rem;color:var(--ink-2);margin-bottom:.3rem;font-weight:500}
-.field input{width:100%;border:1px solid var(--line);border-radius:10px;padding:.75em .85em;font-size:1rem;font-family:inherit;background:#fff}
-.field input:focus{outline:none;border-color:var(--cobalt)}
-.auth__msg{font-size:.85rem;margin:.2rem 0 .9rem;min-height:1.1em}
-.auth__msg.err{color:var(--bad)}
-.auth__demo{display:block;text-align:center;margin-top:1rem;color:var(--cobalt);background:none;border:0;font-size:.9rem;width:100%}
-.auth__dev{font-size:.78rem;color:var(--ink-3);text-align:center;margin:.6rem 0 0}
-.auth__note{margin-top:1.3rem;padding-top:1.1rem;border-top:1px solid var(--line-soft);font-size:.8rem;color:var(--ink-3);text-align:center;line-height:1.5}
+/* mode cards */
+.mode{display:block;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.mode .tile{box-shadow:none;border:0;border-radius:0}
+.mode__resume{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line-soft);padding:10px 16px;font-size:.88rem;color:var(--ink-2);background:#F7F9FC}
+.mode__resume button{margin-left:auto}
+.toggle{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);cursor:pointer}
+.toggle input{appearance:none;-webkit-appearance:none;width:46px;height:28px;border-radius:999px;background:#CBD5E1;position:relative;flex:none;margin:0;cursor:pointer;transition:background .15s}
+.toggle input::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .15s}
+.toggle input:checked{background:var(--ok)}
+.toggle input:checked::after{left:21px}
+.toggle b{display:block}
+.toggle small{color:var(--ink-3)}
 
-/* ---------- APP SHELL ---------- */
-.shell{min-height:100%;display:flex;flex-direction:column}
-.bar{position:sticky;top:0;z-index:10;background:var(--navy-900);color:#fff;display:flex;align-items:center;gap:.7rem;
-  padding:0 16px;height:58px;padding-top:env(safe-area-inset-top)}
-.bar .mark{width:30px;height:30px;flex:none}
-.bar .word{font-family:var(--ff-d);font-weight:700;font-size:1.06rem}
-.bar .word b{color:var(--gold)}
-.bar__back{background:none;border:0;color:var(--on-navy-muted);font-size:1.4rem;line-height:1;padding:.2rem .4rem;margin-left:-6px}
-.bar__sp{flex:1}
-.chip{font-family:var(--ff-m);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;padding:.35em .6em;border-radius:999px}
-.chip--free{background:rgba(255,255,255,.1);color:var(--on-navy-muted)}
-.chip--pro{background:var(--gold);color:var(--navy-900)}
-.acct{position:relative}
-.acct__btn{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-weight:600;font-size:.85rem}
-.acct__menu{position:absolute;right:0;top:42px;background:#fff;color:var(--ink);border-radius:12px;box-shadow:0 18px 40px -16px rgba(0,0,0,.4);min-width:200px;padding:.5rem;border:1px solid var(--line)}
-.acct__menu .em{font-size:.8rem;color:var(--ink-3);padding:.5rem .6rem;word-break:break-all}
-.acct__menu button{display:block;width:100%;text-align:left;border:0;background:none;padding:.6rem;border-radius:8px;font-size:.92rem;color:var(--ink)}
-.acct__menu button:hover{background:var(--bg)}
-
-.main{flex:1;max-width:760px;width:100%;margin:0 auto;padding:22px 16px 40px}
-.screen-title{font-size:1.5rem;margin-bottom:.3rem}
-.screen-sub{color:var(--ink-3);font-size:.95rem;margin-bottom:1.4rem}
-
-/* license / subject cards */
-.cards{display:grid;gap:12px}
-.card{background:var(--surface);border:1px solid var(--line-soft);border-radius:16px;padding:18px 18px;
-  box-shadow:0 1px 2px rgba(16,38,72,.05);text-align:left;border-left:4px solid var(--accent,var(--cobalt));
-  transition:transform .15s,box-shadow .15s;display:flex;align-items:center;gap:.8rem;width:100%}
-.card:hover{transform:translateY(-2px);box-shadow:0 16px 36px -22px rgba(16,38,72,.5)}
-.card__body{flex:1;min-width:0}
-.card__code{font-family:var(--ff-m);font-size:.72rem;color:var(--accent,var(--cobalt));letter-spacing:.04em}
-.card__name{font-family:var(--ff-d);font-weight:600;font-size:1.06rem;margin-top:.15rem}
-.card__meta{font-family:var(--ff-m);font-size:.72rem;color:var(--ink-3);margin-top:.35rem}
-.card__chev{color:var(--ink-3);font-size:1.3rem;flex:none}
-
-/* mode chooser */
-.modes{display:grid;gap:12px;margin-top:.4rem}
-.mode{background:var(--surface);border:1px solid var(--line-soft);border-radius:16px;padding:20px;text-align:left;width:100%;display:flex;gap:1rem;align-items:flex-start}
-.mode:hover{border-color:var(--navy)}
-.mode__ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;flex:none;background:linear-gradient(150deg,var(--navy),var(--cobalt));color:#fff;font-size:1.3rem}
-.mode--exam .mode__ic{background:linear-gradient(150deg,var(--earth),var(--gold));color:var(--navy-900)}
-.mode__t{font-family:var(--ff-d);font-weight:600;font-size:1.1rem}
-.mode__d{color:var(--ink-2);font-size:.9rem;margin-top:.2rem}
-
-/* quiz */
-.quizbar{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem}
-.progress{flex:1;height:7px;background:var(--line-soft);border-radius:99px;overflow:hidden}
-.progress>i{display:block;height:100%;background:var(--gold);width:0;transition:width .25s}
-.qcount{font-family:var(--ff-m);font-size:.78rem;color:var(--ink-3);white-space:nowrap}
-.timer{font-family:var(--ff-m);font-size:.78rem;color:var(--navy);background:var(--surface);border:1px solid var(--line);padding:.2em .5em;border-radius:8px}
-.qcard{background:var(--surface);border:1px solid var(--line-soft);border-radius:18px;padding:22px 20px;box-shadow:0 1px 2px rgba(16,38,72,.05)}
-.qtext{font-size:1.08rem;line-height:1.5;margin-bottom:1.1rem}
-.opts{display:grid;gap:10px}
-.opt{display:flex;gap:.7rem;align-items:flex-start;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:.85em .9em;font-size:.98rem;width:100%;transition:border-color .12s,background .12s}
-.opt:hover{border-color:var(--cobalt-300)}
-.opt .lt{font-family:var(--ff-m);font-weight:600;color:var(--ink-3);flex:none}
-.opt.sel{border-color:var(--cobalt);background:#F3F7FF}
+/* ---------- quiz ---------- */
+.qbar{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.qbar__prog{flex:1;height:8px;background:#DCE4EF;border-radius:999px;overflow:hidden}
+.qbar__prog i{display:block;height:100%;background:linear-gradient(90deg,var(--cobalt),#5B8DEF);border-radius:999px;transition:width .25s}
+.qbar__n{font-family:var(--ff-m);font-size:.8rem;color:var(--ink-3);white-space:nowrap}
+.timer{font-family:var(--ff-m);font-size:.85rem;background:var(--navy);color:#fff;border-radius:999px;padding:.25rem .7rem}
+.timer.low{background:var(--bad)}
+.qcard{background:var(--surface);border:1px solid var(--line-soft);border-radius:22px;box-shadow:var(--shadow);padding:clamp(18px,3.5vw,28px)}
+.qcard__top{display:flex;align-items:flex-start;gap:12px}
+.qcard__top .mono{font-size:.72rem;letter-spacing:.12em;color:var(--earth);text-transform:uppercase}
+.qtext{font-size:clamp(1.05rem,2.2vw,1.2rem);font-weight:500;margin:.5rem 0 0;white-space:pre-line}
+.bm{margin-left:auto;flex:none;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;color:var(--ink-3)}
+.bm svg{width:20px;height:20px}
+.bm.on{color:var(--earth);background:#FFF6E6;border-color:#F3D7A4}
+.qimg{display:block;max-width:100%;max-height:340px;margin:16px auto 0;border-radius:12px;border:1px solid var(--line-soft);cursor:zoom-in}
+.opts{display:grid;gap:10px;margin-top:18px}
+.opt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:#F7F9FC;border:1.5px solid var(--line);border-radius:14px;padding:13px 14px;font-size:1rem;line-height:1.4;transition:border-color .12s,background .12s}
+.opt:hover:not([disabled]){border-color:#9DB3D3;background:#fff}
+.opt .k{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:#fff;border:1px solid var(--line);font-family:var(--ff-m);font-size:.8rem;color:var(--ink-2)}
+.opt.sel{border-color:var(--cobalt);background:#EEF3FE}
+.opt.sel .k{background:var(--cobalt);color:#fff;border-color:var(--cobalt)}
 .opt.ok{border-color:var(--ok);background:var(--ok-bg)}
-.opt.ok .lt{color:var(--ok)}
+.opt.ok .k{background:var(--ok);color:#fff;border-color:var(--ok)}
 .opt.bad{border-color:var(--bad);background:var(--bad-bg)}
-.opt.bad .lt{color:var(--bad)}
-.opt:disabled{cursor:default}
-.expl{margin-top:1rem;border-radius:12px;padding:14px 16px;font-size:.92rem;line-height:1.5;background:#F4F8FD;border:1px solid var(--line)}
-.expl b{display:block;font-family:var(--ff-m);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem}
-.expl.ok b{color:var(--ok)} .expl.bad b{color:var(--bad)}
-.qnav{display:flex;gap:.7rem;margin-top:1.2rem}
-
-/* paywall */
-.pay{background:linear-gradient(135deg,var(--navy),var(--navy-900));color:var(--on-navy);border-radius:18px;padding:28px 24px;text-align:center}
-.pay .mark{width:54px;height:54px;margin:0 auto 1rem}
-.pay h2{color:#fff;font-size:1.4rem}
-.pay p{color:var(--on-navy-muted);font-size:.95rem;margin:.7rem auto 1.3rem;max-width:42ch}
-.pay__plans{display:grid;gap:10px;max-width:320px;margin:0 auto 1.1rem}
-.plan{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:.8em 1em;color:#fff;font-size:.95rem}
-.plan b{font-family:var(--ff-d)}
-.plan .save{font-family:var(--ff-m);font-size:.66rem;color:var(--navy-900);background:var(--gold);padding:.2em .5em;border-radius:999px;margin-left:.5rem}
-.pay__note{font-family:var(--ff-m);font-size:.68rem;color:var(--on-navy-muted);margin-top:1rem;line-height:1.5}
+.opt.bad .k{background:var(--bad);color:#fff;border-color:var(--bad)}
+.opt[disabled]{cursor:default}
+.expl{margin-top:16px;border-radius:14px;padding:14px 16px;border-left:4px solid var(--ok);background:var(--ok-bg)}
+.expl.bad{border-color:var(--bad);background:var(--bad-bg)}
+.expl b{display:block;margin-bottom:.2rem}
+.expl p{margin:0;color:var(--ink-2);white-space:pre-line}
+.qnav{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.qnav .btn{flex:1;min-width:130px}
+.dots{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+.dots button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:#fff;font-family:var(--ff-m);font-size:.72rem;color:var(--ink-3)}
+.dots button.a{background:#DCE7FB;border-color:#B4C9F2;color:var(--navy)}
+.dots button.cur{outline:2px solid var(--gold);outline-offset:1px}
+.hint{margin-top:10px;font-size:.78rem;color:var(--ink-3);text-align:center}
+@media(hover:none){.hint{display:none}}
 
 /* results */
-.result{text-align:center;background:var(--surface);border:1px solid var(--line-soft);border-radius:20px;padding:32px 24px}
-.score{font-family:var(--ff-d);font-weight:700;font-size:3.4rem;line-height:1;color:var(--navy)}
-.score.pass{color:var(--ok)} .score.fail{color:var(--bad)}
-.result__sub{color:var(--ink-2);margin:.5rem 0 1.4rem}
-.review{margin-top:1.6rem;text-align:left}
-.review h3{font-size:1.05rem;margin-bottom:.6rem}
-.rev{border:1px solid var(--line-soft);border-radius:12px;padding:14px;margin-bottom:10px;background:var(--surface)}
-.rev .rq{font-size:.95rem;margin-bottom:.5rem}
-.rev .ra{font-size:.85rem;margin:.15rem 0}
-.rev .ra.ok{color:var(--ok)} .rev .ra.bad{color:var(--bad)}
-.appfoot{text-align:center;padding:18px;color:var(--ink-3);font-size:.8rem}
-.appfoot a{color:var(--ink-2)}
-.banner{background:#FBF6EC;border:1px solid #ECD9AE;border-radius:12px;padding:12px 14px;font-size:.85rem;color:#5a4410;margin-bottom:1.2rem}
+.res{text-align:center}
+.score{--p:0;--c:var(--ok);width:150px;height:150px;border-radius:50%;margin:6px auto 14px;display:grid;place-items:center;background:conic-gradient(var(--c) calc(var(--p)*1%),#E3E9F2 0)}
+.score>div{width:124px;height:124px;border-radius:50%;background:#fff;display:grid;place-items:center;align-content:center}
+.score b{font-family:var(--ff-d);font-size:2.2rem;line-height:1}
+.score span{font-size:.8rem;color:var(--ink-3)}
+.pill{display:inline-block;font-weight:600;font-size:.86rem;border-radius:999px;padding:.3rem .8rem}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}.pill.bad{background:var(--bad-bg);color:var(--bad)}
+.wrong{background:var(--surface);border:1px solid var(--line-soft);border-left:4px solid var(--bad);border-radius:14px;padding:14px 16px;text-align:left}
+.wrong p{margin:.2rem 0}
+.wrong .q{font-weight:600}
+.wrong .y{color:var(--bad)}.wrong .c{color:var(--ok)}
+.wrong .e{color:var(--ink-2);font-size:.92rem;white-space:pre-line}
+
+/* achievements */
+.ach{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;padding:12px 14px}
+.ach.lock{opacity:.62}
+.ach .ico{width:46px;height:46px;border-radius:50%}
+.ach .ico svg{width:22px;height:22px}
+.ach h4{margin:0;font-size:1rem}
+.ach small{color:var(--ink-3)}
+.bar{height:6px;background:#E3E9F2;border-radius:999px;margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold)}
+
+/* auth */
+.auth{max-width:440px;margin:clamp(20px,6vh,60px) auto 0}
+.auth .card{padding:clamp(22px,4vw,32px)}
+.auth__brand{display:flex;flex-direction:column;align-items:center;gap:.4rem;text-align:center;margin-bottom:1.2rem}
+.auth__brand svg{width:64px;height:64px}
+.auth__brand h1{font-size:1.6rem}
+.auth__brand h1 b{color:#D99A35}
+.auth__brand p{margin:0;color:var(--ink-3)}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:1rem}
+.seg button{border:0;background:transparent;padding:.55rem;border-radius:9px;font-weight:600;color:var(--ink-3)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+label.f{display:block;font-size:.85rem;font-weight:600;color:var(--ink-2);margin:.8rem 0 .3rem}
+input.in,select.in{width:100%;border:1px solid var(--line);border-radius:12px;padding:.8rem .9rem;font:inherit;background:#fff;color:var(--ink)}
+input.in:focus,select.in:focus{outline:2px solid var(--gold);outline-offset:0;border-color:var(--gold)}
+.msg{font-size:.88rem;margin-top:.8rem;min-height:1.2em}
+.msg.err{color:var(--bad)}.msg.ok{color:var(--ok)}
+.or{display:flex;align-items:center;gap:.8rem;color:var(--ink-3);font-size:.8rem;margin:1.2rem 0}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.note{font-size:.82rem;color:var(--ink-3);text-align:center;margin-top:1rem}
+
+.empty{text-align:center;padding:40px 16px;color:var(--ink-3)}
+.empty svg{width:44px;height:44px;color:#A9B6C8}
+.empty h3{color:var(--ink);margin:.6rem 0 .3rem}
+.loading{display:flex;flex-direction:column;align-items:center;gap:12px;padding:60px 0;color:var(--ink-3)}
+.spin{width:34px;height:34px;border-radius:50%;border:3px solid #D5DEEA;border-top-color:var(--cobalt);animation:sp 0.8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--navy-900);color:#fff;padding:.6rem 1rem;border-radius:12px;font-size:.9rem;z-index:60;box-shadow:0 12px 30px -12px rgba(0,0,0,.5)}
+.lb{position:fixed;inset:0;z-index:70;background:rgba(6,16,32,.85);display:grid;place-items:center;padding:16px;cursor:zoom-out}
+.lb img{max-width:100%;max-height:100%;border-radius:12px;background:#fff}
+
+/* feedback floating button */
+.fbk{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:50;display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--gold);color:var(--navy-900);font-weight:600;font-size:.9rem;padding:.7rem 1rem;border-radius:999px;text-decoration:none;box-shadow:0 12px 28px -10px rgba(10,26,48,.55)}
+.fbk:hover{background:var(--gold-200)}
+.fbk svg{width:18px;height:18px}
+.fbk small{font-family:var(--ff-m);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+body.inquiz .fbk{display:none}
+@media(max-width:560px){.brand span.w{display:none}.tile{padding:14px}.ico{width:50px;height:50px}}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="pm" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="47" fill="#fff"/>
+    <clipPath id="pm-c"><circle cx="50" cy="50" r="40"/></clipPath>
+    <g clip-path="url(#pm-c)"><rect x="10" y="10" width="80" height="40" fill="#CADBEA"/><rect x="10" y="50" width="80" height="40" fill="#E0922F"/></g>
+    <circle cx="50" cy="50" r="40" fill="none" stroke="#0A1A30" stroke-width="1" opacity=".25"/>
+    <polygon points="50,14 45.5,22 54.5,22" fill="#fff"/>
+    <g fill="#102648"><rect x="26" y="47" width="14" height="6" rx="3"/><circle cx="50" cy="50" r="4.4"/><rect x="60" y="47" width="14" height="6" rx="3"/></g>
+    <rect x="47.5" y="78" width="5" height="3" rx="1.5" fill="#fff" opacity=".75"/>
+  </symbol>
+</svg>
 
-<!-- ============ AUTH SCREEN ============ -->
-<section id="auth" class="auth">
-  <div class="auth__card">
-    <div class="auth__logo">
-      <svg class="mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="#102648"/><circle cx="50" cy="50" r="37" fill="#fff"/><clipPath id="ma"><circle cx="50" cy="50" r="31"/></clipPath><g clip-path="url(#ma)"><rect x="15" y="15" width="70" height="35" fill="#CADBEA"/><rect x="15" y="50" width="70" height="35" fill="#E0922F"/></g><polygon points="50,21 46,28 54,28" fill="#fff"/><g fill="#102648"><rect x="31" y="47.5" width="11" height="5" rx="2.5"/><circle cx="50" cy="50" r="3.6"/><rect x="58" y="47.5" width="11" height="5" rx="2.5"/></g></svg>
-      <span class="word">Propilot<b>(y)</b></span>
-    </div>
-    <p class="auth__sub">Přihlas se a pokračuj v přípravě v prohlížeči.</p>
-    <div class="tabs">
-      <button id="tabLogin" class="on" type="button">Přihlášení</button>
-      <button id="tabReg" type="button">Registrace</button>
-    </div>
-    <div class="field"><label for="email">E-mail</label><input id="email" type="email" autocomplete="email" placeholder="vas@email.cz"></div>
-    <div class="field"><label for="pw">Heslo</label><input id="pw" type="password" autocomplete="current-password" placeholder="••••••••"></div>
-    <div id="authMsg" class="auth__msg"></div>
-    <button id="authSubmit" class="btn btn--gold btn--block" type="button">Přihlásit se</button>
-    <p id="devNote" class="auth__dev hide"></p>
-    <p class="auth__note">Pro vstup do aplikace je nutný účet. Jeden účet platí pro web i mobilní aplikaci. Co si koupíš, máš na iPhonu, Androidu i ve Windows.</p>
+<header class="top">
+  <div class="beta-strip" id="betaStrip">Testovací verze · zdarma</div>
+  <div class="top__in">
+    <button class="top__back" id="backBtn" aria-label="Zpět" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <a class="brand" href="index.html" id="brand"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#pm"/></svg><span class="w">Propilot<b>(y)</b></span></a>
+    <span class="top__title" id="topTitle"></span>
+    <span class="top__sp"></span>
+    <div class="lang" id="lang" role="group" aria-label="Jazyk"><button data-l="cs">CZ</button><button data-l="en">EN</button></div>
+    <button class="acct" id="acct" aria-label="Účet" hidden></button>
   </div>
-</section>
+</header>
 
-<!-- ============ APP SHELL ============ -->
-<section id="app" class="shell hide">
-  <header class="bar">
-    <button id="backBtn" class="bar__back hide" type="button" aria-label="Zpět">‹</button>
-    <svg class="mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="#fff"/><clipPath id="mb"><circle cx="50" cy="50" r="40"/></clipPath><g clip-path="url(#mb)"><rect x="10" y="10" width="80" height="40" fill="#CADBEA"/><rect x="10" y="50" width="80" height="40" fill="#E0922F"/></g><polygon points="50,14 45.5,22 54.5,22" fill="#fff"/><g fill="#102648"><rect x="26" y="47" width="14" height="6" rx="3"/><circle cx="50" cy="50" r="4.4"/><rect x="60" y="47" width="14" height="6" rx="3"/></g></svg>
-    <span class="word">Propilot<b>(y)</b></span>
-    <span class="bar__sp"></span>
-    <span id="statusChip" class="chip chip--free">Zdarma</span>
-    <div class="acct">
-      <button id="acctBtn" class="acct__btn" type="button" aria-label="Účet">U</button>
-      <div id="acctMenu" class="acct__menu hide">
-        <div class="em" id="acctEmail">ukázka</div>
-        <button id="goPremium" type="button">Koupit licenci</button>
-        <button id="logoutBtn" type="button">Odhlásit se</button>
-      </div>
-    </div>
-  </header>
+<main class="wrap" id="view"><div class="loading"><div class="spin"></div></div></main>
 
-  <main id="main" class="main"><!-- rendered by JS --></main>
+<a class="fbk" href="#feedback" data-feedback id="fbkBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg>Feedback <small>beta</small></a>
 
-  <footer class="appfoot">Prototyp webové aplikace · <a href="index.html">zpět na propiloty.cz</a></footer>
-</section>
-
-<script src="app-data.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
 <script>
 (function(){
-  "use strict";
-  // ===== KONFIGURACE: doplň pro ostrý provoz (anon klíč je veřejný, smí být v kódu) =====
-  var SUPABASE_URL = "";        // např. https://xxxx.supabase.co
-  var SUPABASE_ANON_KEY = "";   // veřejný anon klíč
-  // =====================================================================================
-  var sb = null;
-  try { if (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e){}
+"use strict";
 
-  var FREE_LIMIT = 3; // počet otázek zdarma v každém předmětu (ukázka)
-  var DATA = window.QUESTION_DATA || {licenses:[]};
-  var ACCENTS = ["#1A56DB","#0EA5A0","#22A04A","#3AA9C9","#EDB458","#B8742F"];
+/* ================= CONFIG ================= */
+var SUPABASE_URL = "https://ofwigvvueabspjndobxu.supabase.co";
+var SUPABASE_KEY = "sb_publishable_mKBcNfv0aktizqxi1DJmkg_jzdPDXVg";
+var DATA_BASE = "data/";
+var PASS = 75;
 
-  var state = { user:null, premium:false, screen:"auth", lic:null, cat:null, mode:null, qi:0, answers:[], tStart:0, tTimer:null };
+var sb = null;
+try { if (window.supabase && window.supabase.createClient) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e){ sb = null; }
 
-  var $ = function(id){ return document.getElementById(id); };
-  var authEl=$("auth"), appEl=$("app"), mainEl=$("main"), backBtn=$("backBtn");
+/* ================= I18N ================= */
+var STR = {
+ cs:{
+  beta:"Testovací verze · zdarma", back:"Zpět",
+  hero_t:"Příprava na letecké zkoušky", hero_p:"Testovací webová verze. Vyber licenci a začni.",
+  streak:function(n){ return n===1?"1 den v řadě":(n>=2&&n<=4? n+" dny v řadě": n+" dní v řadě"); },
+  today:function(a,b){ return "Dnes "+a+" / "+b+" otázek"; }, goal_ok:"Denní cíl splněn",
+  t_pilot:"Pilotní licence", t_bpl:"Pilotní licence balónu", t_spl:"Pilotní licence větroně", t_radio:"Radiotelefonní průkaz",
+  t_laa:"LAA průkazy", t_rt:"Radiotelefonie", t_rt_s:"Simulace AI řídícího · trénink frazeologie", t_hist:"Historie testů",
+  t_hist_s:"Předchozí pokusy · skóre · chyby", t_more:"Další", t_more_s:"Slabá místa · záložky · odznaky · nastavení",
+  q:function(n){ return fmt(n)+" otázek"; }, stats:"Statistiky", tools:"Nástroje", ios_soon:"Brzy v iOS",
+  rt_info:"Trénink radiotelefonie s AI řídícím bude dostupný v aplikaci pro iOS, která vyjde hned po testovací fázi.",
+  choose_lic:"Vyber licenci", subjects:"Předměty", subj_n:function(n){return n+" předmětů";},
+  total:"Celkem", in_exam:"Ve zkoušce", choose_mode:"Vyber režim",
+  learn:"Režim učení", learn_d:function(n){ return "Všech "+fmt(n)+" otázek · okamžitá zpětná vazba"; },
+  exam:"Zkouškový režim", exam_d_ucl:"Bez nápověd, jako u skutečné zkoušky ÚCL", exam_d_ctu:"Bez nápověd, jako u skutečné zkoušky ČTÚ", exam_d_laa:"Bez nápověd, jako u skutečné zkoušky LAA",
+  timer:"Časový limit zkoušky", timer_d:"~1 min na otázku, po uplynutí se test automaticky odevzdá",
+  resume:"Pokračovat, kde jsi skončil/a", resume_d:function(i,n,c){ return "Otázka "+i+" z "+n+" · "+c+" správně"; }, restart:"Začít znovu",
+  subj_hist:"Historie tohoto předmětu", no_att:"Zatím žádné pokusy", n_att:function(n){ return n+" pokusů, klikni pro detail"; },
+  qof:function(i,n){ return i+" / "+n; }, question:"Otázka", next:"Další otázka", finish:"Dokončit", prev:"Předchozí", nextq:"Další",
+  submit:"Odevzdat test", correct:"Správně", wrong:"Špatně", expl:"Vysvětlení",
+  confirm_submit:function(a,n){ return a<n? "Máš zodpovězeno "+a+" z "+n+" otázek. Nezodpovězené se počítají jako chyba. Opravdu odevzdat?" : "Opravdu odevzdat test?"; },
+  confirm_leave:"Opravdu ukončit test? Rozpracovaný stav se uloží a můžeš pokračovat později.",
+  keys:"Tip: odpovídej klávesami 1–4 nebo A–D, Enter = další",
+  res_t:"Výsledek", passed:"Úspěšně složeno", failed:"Neprošlo, potřebuješ "+PASS+" %", score_of:function(s,n){ return s+" z "+n+" správně"; },
+  your:"Tvoje odpověď", right:"Správná odpověď", none:"bez odpovědi", mistakes:"Chybné odpovědi", nomist:"Bez jediné chyby. Výborně!",
+  again:"Zkusit znovu", to_subj:"Zpět na předmět", home:"Domů",
+  hist_t:"Historie testů", hist_empty:"Zatím žádné testy", hist_empty_p:"Dokonči první test a uvidíš ho tady.",
+  attempts:"Pokusů", avg:"Průměr", passes:"Složeno", mode_learn:"Učení", mode_exam:"Zkouška",
+  detail:"Detail pokusu", wrong_list:"Chybné otázky", no_wrong:"V tomto pokusu nebyla žádná chyba.",
+  more_t:"Další nástroje", weak:"Slabá místa", weak_s:"Předměty s nejnižší úspěšností", bm:"Záložky", bm_s:"Uložené otázky",
+  mis:"Procvičit chyby", mis_s:"Otázky, ve kterých jsi chyboval/a", ach:"Odznaky", ach_s:"Tvoje úspěchy", set:"Nastavení", set_s:"Účet, jazyk, denní cíl",
+  weak_empty:"Zatím málo dat", weak_empty_p:"Dokonči pár testů, abychom mohli ukázat tvá slabá místa.",
+  weak_row:function(a,p){ return a+" pokusů · průměr "+p+" %"; },
+  bm_empty:"Žádné záložky", bm_empty_p:"U otázky klikni na ikonu záložky a uloží se sem.", bm_practice:function(n){ return "Procvičit záložky ("+n+")"; },
+  mis_empty:"Žádné chyby", mis_empty_p:"Až někde uděláš chybu, objeví se zde otázka k procvičení.",
+  mis_p:function(n){ return "Sebrali jsme "+n+" otázek, ve kterých jsi v minulosti chyboval/a. Procvič je v režimu učení."; }, mis_start:function(n){ return "Spustit procvičování ("+n+")"; },
+  mis_title:"Procvičování chyb", bm_title:"Záložky",
+  set_acc:"Účet", guest:"Host (bez účtu)", guest_note:"Bez účtu se pokrok ukládá jen v tomto prohlížeči.", signout:"Odhlásit se", signin:"Přihlásit se / registrovat",
+  set_lang:"Jazyk otázek", set_goal:"Denní cíl", set_goal_n:function(n){ return n+" otázek denně"; }, set_reset:"Smazat můj pokrok",
+  reset_confirm:"Opravdu smazat historii, záložky a statistiky v tomto prohlížeči?", reset_done:"Pokrok smazán.",
+  set_fb:"Poslat feedback", set_site:"Zpět na propiloty.cz",
+  a_title:"Přihlas se a pokračuj v přípravě", a_in:"Přihlášení", a_up:"Registrace", a_email:"E-mail", a_pass:"Heslo", a_pass2:"Heslo znovu",
+  a_btn_in:"Přihlásit se", a_btn_up:"Vytvořit účet", a_forgot:"Zapomněl/a jsi heslo?", a_or:"nebo", a_guest:"Pokračovat bez účtu",
+  a_note:"Jeden účet pro web i budoucí aplikaci pro iOS.", a_reset_sent:"Poslali jsme ti e-mail s odkazem pro nastavení nového hesla.",
+  a_confirm:"Účet vytvořen! Zkontroluj e-mail, potvrď registraci a pak se přihlas.", a_mismatch:"Hesla se neshodují.", a_short:"Heslo musí mít aspoň 6 znaků.",
+  a_fill:"Vyplň e-mail a heslo.", a_email_first:"Nejdřív vyplň e-mail.", a_bad:"Nesprávný e-mail nebo heslo.", a_unconf:"E-mail ještě není potvrzený. Zkontroluj schránku.",
+  a_offline:"Přihlášení je teď nedostupné. Můžeš pokračovat bez účtu.", a_newpass:"Nastav si nové heslo", a_save:"Uložit heslo", a_saved:"Heslo uloženo.",
+  err_load:"Nepodařilo se načíst otázky. Zkontroluj připojení a zkus to znovu.", retry:"Zkusit znovu",
+  ach_list:[["first_test","První let","Dokonči svůj první test"],["answered_100","Stovka v kapse","Zodpověz 100 otázek"],["answered_1000","Tisíc na účtu","Zodpověz 1000 otázek"],
+   ["correct_500","Mistr otázek","500 správných odpovědí"],["streak_3","Tři dny v řadě","Udrž 3denní sérii"],["streak_7","Týdenní pilot","Udrž 7denní sérii"],
+   ["streak_30","Měsíc bez vynechání","Udrž 30denní sérii"],["exam_first_pass","První zkouška prošla","Projdi zkouškový režim na 75 %+"],
+   ["exam_10_pass","Sériový zkoušející","Projdi 10 zkoušek"],["perfect_score","Bez jediné chyby","Dokonči libovolný test bez chyby"],
+   ["subjects_explored","Rozhled pilota","Vyzkoušej 5 různých předmětů"],["bookmark_5","Sbírka záložek","Ulož 5 oblíbených otázek"]],
+  laa_fam:[["laa_pl_","PL · Padákový kluzák"],["laa_mpk_","MPK · Motorový padákový kluzák"],["laa_zk_","ZK · Závěsný kluzák"],["laa_mzk_","MZK · Motorový závěsný kluzák"],
+   ["laa_ull_","ULL · Ultralehký letoun"],["laa_ulh_","ULH · Ultralehký vrtulník"],["laa_ulk_","ULK · Ultralehký kluzák"],["laa_ulv_","ULV · Ultralehký vírník"],["laa_ub_","UB · Ultralehký balón"]],
+  saved:"Uloženo do záložek", unsaved:"Odebráno ze záložek", dateLoc:"cs-CZ"
+ },
+ en:{
+  beta:"Test version · free", back:"Back",
+  hero_t:"Practice for your aviation exam", hero_p:"Test web version. Pick a licence and start.",
+  streak:function(n){ return n+"-day streak"; }, today:function(a,b){ return "Today "+a+" / "+b+" questions"; }, goal_ok:"Daily goal reached",
+  t_pilot:"Pilot Licence", t_bpl:"Balloon Pilot Licence", t_spl:"Sailplane Pilot Licence", t_radio:"", t_laa:"",
+  t_rt:"Radiotelephony", t_rt_s:"AI ATC simulation · phraseology training", t_hist:"Test History", t_hist_s:"Past attempts · score · mistakes",
+  t_more:"More", t_more_s:"Weak spots · bookmarks · achievements · settings",
+  q:function(n){ return fmt(n)+" questions"; }, stats:"Stats", tools:"Tools", ios_soon:"Soon on iOS",
+  rt_info:"Radiotelephony training with an AI controller will be available in the iOS app, launching right after the test phase.",
+  choose_lic:"Choose a licence", subjects:"Subjects", subj_n:function(n){return n+" subjects";},
+  total:"Total", in_exam:"In exam", choose_mode:"Select mode",
+  learn:"Study Mode", learn_d:function(n){ return "All "+fmt(n)+" questions · immediate feedback"; },
+  exam:"Exam Mode", exam_d_ucl:"No hints, as in the real exam", exam_d_ctu:"No hints, as in the real exam", exam_d_laa:"No hints, as in the real exam",
+  timer:"Real-exam timer", timer_d:"~1 min per question, auto-submits when time is up",
+  resume:"Continue where you left off", resume_d:function(i,n,c){ return "Question "+i+" of "+n+" · "+c+" correct"; }, restart:"Reset",
+  subj_hist:"Subject history", no_att:"No attempts yet", n_att:function(n){ return n+" attempt(s), tap to review"; },
+  qof:function(i,n){ return i+" / "+n; }, question:"Question", next:"Next question", finish:"Finish", prev:"Previous", nextq:"Next",
+  submit:"Submit exam", correct:"Correct", wrong:"Incorrect", expl:"Explanation",
+  confirm_submit:function(a,n){ return a<n? "You answered "+a+" of "+n+" questions. Unanswered ones count as wrong. Submit anyway?" : "Submit the exam?"; },
+  confirm_leave:"Leave the test? Your progress is saved and you can continue later.",
+  keys:"Tip: answer with keys 1–4 or A–D, Enter = next",
+  res_t:"Result", passed:"Passed", failed:"Not passed, you need "+PASS+" %", score_of:function(s,n){ return s+" of "+n+" correct"; },
+  your:"Your answer", right:"Correct answer", none:"no answer", mistakes:"Incorrect answers", nomist:"Not a single mistake. Great job!",
+  again:"Try again", to_subj:"Back to subject", home:"Home",
+  hist_t:"Test History", hist_empty:"No tests yet", hist_empty_p:"Finish your first test and it will show up here.",
+  attempts:"Attempts", avg:"Average", passes:"Passed", mode_learn:"Study", mode_exam:"Exam",
+  detail:"Attempt detail", wrong_list:"Incorrect questions", no_wrong:"No mistakes in this attempt.",
+  more_t:"More tools", weak:"Weak spots", weak_s:"Subjects with the lowest score", bm:"Bookmarks", bm_s:"Saved questions",
+  mis:"Wrong-answer practice", mis_s:"Questions you got wrong", ach:"Achievements", ach_s:"Your milestones", set:"Settings", set_s:"Account, language, daily goal",
+  weak_empty:"Not enough data yet", weak_empty_p:"Complete a few tests so we can show your weak spots.",
+  weak_row:function(a,p){ return a+" attempt(s) · avg "+p+" %"; },
+  bm_empty:"No bookmarks", bm_empty_p:"Tap the bookmark icon on a question to save it here.", bm_practice:function(n){ return "Practise bookmarks ("+n+")"; },
+  mis_empty:"No mistakes recorded", mis_empty_p:"Once you make mistakes in quizzes, they will appear here for focused practice.",
+  mis_p:function(n){ return "We gathered "+n+" question(s) you got wrong in the past. Practise them in study mode."; }, mis_start:function(n){ return "Start practice ("+n+")"; },
+  mis_title:"Mistakes practice", bm_title:"Bookmarks",
+  set_acc:"Account", guest:"Guest (no account)", guest_note:"Without an account, progress is stored only in this browser.", signout:"Sign out", signin:"Sign in / register",
+  set_lang:"Question language", set_goal:"Daily goal", set_goal_n:function(n){ return n+" questions a day"; }, set_reset:"Delete my progress",
+  reset_confirm:"Really delete history, bookmarks and stats in this browser?", reset_done:"Progress deleted.",
+  set_fb:"Send feedback", set_site:"Back to propiloty.cz",
+  a_title:"Sign in and continue studying", a_in:"Sign in", a_up:"Register", a_email:"E-mail", a_pass:"Password", a_pass2:"Repeat password",
+  a_btn_in:"Sign in", a_btn_up:"Create account", a_forgot:"Forgot your password?", a_or:"or", a_guest:"Continue without an account",
+  a_note:"One account for the web and the upcoming iOS app.", a_reset_sent:"We sent you an e-mail with a link to set a new password.",
+  a_confirm:"Account created! Check your e-mail, confirm the registration and then sign in.", a_mismatch:"Passwords do not match.", a_short:"Password must be at least 6 characters.",
+  a_fill:"Enter your e-mail and password.", a_email_first:"Enter your e-mail first.", a_bad:"Wrong e-mail or password.", a_unconf:"E-mail not confirmed yet. Check your inbox.",
+  a_offline:"Sign-in is unavailable right now. You can continue without an account.", a_newpass:"Set a new password", a_save:"Save password", a_saved:"Password saved.",
+  err_load:"Could not load the questions. Check your connection and try again.", retry:"Try again",
+  ach_list:[["first_test","First Flight","Complete your first test"],["answered_100","Century Club","Answer 100 questions"],["answered_1000","Thousand Questions","Answer 1000 questions"],
+   ["correct_500","Question Master","500 correct answers"],["streak_3","3-Day Streak","Maintain a 3-day streak"],["streak_7","Weekly Pilot","Maintain a 7-day streak"],
+   ["streak_30","Month of No Breaks","Maintain a 30-day streak"],["exam_first_pass","First Exam Passed","Pass exam mode with 75%+"],
+   ["exam_10_pass","Serial Examiner","Pass 10 exams"],["perfect_score","Flawless","Complete any test without a mistake"],
+   ["subjects_explored","Broad Horizon","Try 5 different subjects"],["bookmark_5","Bookmark Collection","Save 5 favourite questions"]],
+  laa_fam:[], saved:"Bookmarked", unsaved:"Bookmark removed", dateLoc:"en-GB"
+ }
+};
+function T(k){ var v=STR[S.lang][k]; return v===undefined? (STR.cs[k]||k) : v; }
+function fmt(n){ return S.lang==="cs" ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g,"\u00a0") : String(n).replace(/\B(?=(\d{3})+(?!\d))/g,","); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 
-  /* ---------------- AUTH ---------------- */
-  var mode="login";
-  function setTab(m){ mode=m;
-    $("tabLogin").classList.toggle("on",m==="login"); $("tabReg").classList.toggle("on",m==="reg");
-    $("authSubmit").textContent = m==="login" ? "Přihlásit se" : "Vytvořit účet";
-    $("pw").setAttribute("autocomplete", m==="login"?"current-password":"new-password");
-    msg(""); }
-  function msg(t,err){ var e=$("authMsg"); e.textContent=t||""; e.classList.toggle("err",!!err); }
-  $("tabLogin").onclick=function(){setTab("login");};
-  $("tabReg").onclick=function(){setTab("reg");};
+/* ================= ICONS ================= */
+var P={
+ plane:'<path d="M21.5 15.5v-2l-8-5V3.6c0-.9-.7-1.6-1.5-1.6s-1.5.7-1.5 1.6v4.9l-8 5v2l8-2.5v5.4l-2 1.5V21l3.5-1 3.5 1v-1.6l-2-1.5V13z" fill="currentColor" stroke="none"/>',
+ heli:'<path d="M3 5h14M10 5v3M5 12a5 4 0 0 1 5-4h3a4 4 0 0 1 4 4v1H5zM17 12h4M21 10v4M8 16v2M14 16v2M6 18h10"/>',
+ wind:'<path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h7"/>',
+ up:'<path d="M12 20V6M6 11l6-6 6 6M5 3h14"/>',
+ radio:'<path d="M5 12a7 7 0 0 1 14 0M8.5 12a3.5 3.5 0 0 1 7 0"/><circle cx="12" cy="13" r="1.4" fill="currentColor"/><path d="M12 14.5V21"/>',
+ paper:'<path d="M21 3 3 10.5l7 2.5 2.5 7z"/><path d="M10 13 21 3"/>',
+ hist:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
+ grid:'<rect x="4" y="4" width="7" height="7" rx="1.6" fill="currentColor" stroke="none"/><rect x="13" y="4" width="7" height="7" rx="1.6" fill="currentColor" stroke="none"/><rect x="4" y="13" width="7" height="7" rx="1.6" fill="currentColor" stroke="none"/><rect x="13" y="13" width="7" height="7" rx="1.6" fill="currentColor" stroke="none"/>',
+ book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/>',
+ check:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>',
+ timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/>',
+ bm:'<path d="M6 3h12v18l-6-4-6 4z"/>',
+ bmf:'<path d="M6 3h12v18l-6-4-6 4z" fill="currentColor"/>',
+ flame:'<path d="M12 22c4 0 7-2.7 7-7 0-4.5-4-7-4.5-11-2.5 2-4 4.5-4 7-1-.8-1.7-2-2-3.5C6.5 9.3 5 11.6 5 15c0 4.3 3 7 7 7Z" fill="currentColor" stroke="none"/>',
+ chev:'<path d="M9 5l7 7-7 7"/>',
+ chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+ trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>',
+ gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/>',
+ x:'<path d="M18 6 6 18M6 6l12 12"/>',
+ star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="currentColor" stroke="none"/>',
+ play:'<path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.6-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" fill="currentColor" stroke="none"/>',
+ doc:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/>',
+ brain:'<path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3V4zM15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3V4z"/>',
+ cloud:'<path d="M7 18a4 4 0 0 1-.6-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/>',
+ clip:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/>',
+ map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
+ cog:'<circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/>',
+ compass:'<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5z" fill="currentColor"/>',
+ bolt:'<path d="M13 2 4 14h7l-1 8 9-12h-7z" fill="currentColor" stroke="none"/>',
+ wave:'<path d="M3 12h2l2-6 3 12 3-9 2 5 2-2h4"/>',
+ list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+ globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+ target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/>',
+ trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+ msg:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/>',
+ out:'<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/>'
+};
+function ic(n){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(P[n]||P.doc)+'</svg>'; }
+var CAT_ICON={"book.closed":"book","brain.head.profile":"brain","cloud.sun":"cloud","antenna.radiowaves.left.and.right":"radio","wind":"wind",
+  "list.clipboard":"clip","map":"map","gearshape":"cog","location.north":"compass","doc.text":"doc","waveform":"wave","bolt":"bolt","list.bullet.rectangle":"list"};
+var CAT_COLOR=["g-learn","g-pplh","g-bpl","g-radio","g-spl","g-laa","g-more","g-book","g-weak"];
 
-  async function submitAuth(){
-    var email=$("email").value.trim(), pw=$("pw").value;
-    if(!email || !pw){ msg("Vyplň e-mail i heslo.",true); return; }
-    if(!sb){ // DEMO režim
-      enterApp({email:email}); return;
+/* ================= STATE & STORAGE ================= */
+var S={ lang:"cs", user:null, guest:false, index:null, groups:{}, quiz:null, lastResult:null, recovering:false };
+try{ var sl=localStorage.getItem("propiloty_lang"); if(sl==="en"||sl==="cs") S.lang=sl; }catch(e){}
+try{ S.guest = localStorage.getItem("pp_guest")==="1"; }catch(e){}
+
+function ns(){ return "pp:"+(S.user? S.user.id : "guest")+":"; }
+function lget(k,def){ try{ var v=localStorage.getItem(ns()+k); return v? JSON.parse(v) : def; }catch(e){ return def; } }
+function lset(k,v){ try{ localStorage.setItem(ns()+k, JSON.stringify(v)); }catch(e){} }
+
+var DB={
+  attempts:function(){ return lget("attempts",[]); },
+  bookmarks:function(){ return lget("bookmarks",{}); },     // qid -> catId
+  wrong:function(){ return lget("wrong",{}); },             // qid -> consecutive wrong
+  streak:function(){ return lget("streak",{cur:0,best:0,today:0,last:null,goal:20}); },
+  progress:function(){ return lget("progress",{}); }        // "cat|mode" -> {...}
+};
+
+function dayKey(d){ d=d||new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function dayDiff(a,b){ var x=new Date(a+"T00:00:00"), y=new Date(b+"T00:00:00"); return Math.round((y-x)/86400000); }
+function streakRoll(){
+  var s=DB.streak(), t=dayKey();
+  if(s.last && s.last!==t){ s.today=0; if(dayDiff(s.last,t)>=2) s.cur=0; lset("streak",s); }
+  return s;
+}
+function streakRecord(n){
+  var s=streakRoll(), t=dayKey();
+  if(s.last!==t){ s.cur = (s.last && dayDiff(s.last,t)===1) ? s.cur+1 : 1; }
+  s.best=Math.max(s.best||0,s.cur); s.today=(s.today||0)+n; s.last=t;
+  lset("streak",s); cloudDataSoon();
+}
+function wrongRecord(qid,ok){ var w=DB.wrong(); if(ok) delete w[qid]; else w[qid]=(w[qid]||0)+1; lset("wrong",w); cloudDataSoon(); }
+
+/* ================= SUPABASE SYNC ================= */
+function cloudOn(){ return !!(sb && S.user); }
+function cloudUploadAttempt(a){
+  if(!cloudOn()) return;
+  sb.from("exam_attempts").upsert({ id:a.id, user_id:S.user.id, category_id:a.categoryId, category_title:a.categoryTitle, license_title:a.licenseTitle,
+    mode:a.mode, score:a.score, total:a.total, finished_at:a.finishedAt, incorrect_question_ids:a.incorrect }, { onConflict:"id" }).then(function(){},function(){});
+}
+function cloudPullAttempts(){
+  if(!cloudOn()) return Promise.resolve();
+  return sb.from("exam_attempts").select("*").eq("user_id",S.user.id).order("finished_at",{ascending:false}).then(function(r){
+    if(r.error||!r.data) return;
+    var local=DB.attempts(), have={}; local.forEach(function(a){ have[a.id]=1; });
+    r.data.forEach(function(x){ if(!have[x.id]) local.push({ id:x.id, categoryId:x.category_id, categoryTitle:x.category_title, licenseTitle:x.license_title,
+      mode:x.mode, score:x.score, total:x.total, finishedAt:x.finished_at, incorrect:x.incorrect_question_ids||[] }); });
+    local.sort(function(a,b){ return new Date(b.finishedAt)-new Date(a.finishedAt); });
+    lset("attempts",local);
+  },function(){});
+}
+var dataTimer=null;
+function cloudDataSoon(){ if(!cloudOn()) return; clearTimeout(dataTimer); dataTimer=setTimeout(cloudPushData,1500); }
+function cloudPushData(){
+  if(!cloudOn()) return;
+  sb.from("user_data").upsert({ user_id:S.user.id, bookmarks:DB.bookmarks(), wrong_streaks:DB.wrong(), streak:DB.streak(), updated_at:new Date().toISOString() },{ onConflict:"user_id" }).then(function(){},function(){});
+}
+function cloudPullData(){
+  if(!cloudOn()) return Promise.resolve();
+  return sb.from("user_data").select("*").eq("user_id",S.user.id).maybeSingle().then(function(r){
+    if(r.error||!r.data) return;
+    var bm=DB.bookmarks(), rb=r.data.bookmarks||{}; for(var k in rb) bm[k]=rb[k]; lset("bookmarks",bm);
+    var w=DB.wrong(), rw=r.data.wrong_streaks||{}; for(var k2 in rw) w[k2]=Math.max(w[k2]||0,rw[k2]); lset("wrong",w);
+    var s=DB.streak(), rs=r.data.streak||{};
+    if(rs.last && (!s.last || rs.last>s.last || (rs.last===s.last && (rs.today||0)>(s.today||0)))){ s.cur=rs.cur||0; s.today=rs.today||0; s.last=rs.last; }
+    s.best=Math.max(s.best||0,rs.best||0); if(rs.goal) s.goal=rs.goal; lset("streak",s);
+  },function(){});
+}
+function progKey(cat,mode){ return cat+"|"+mode; }
+function progressSave(p){
+  var all=DB.progress(); all[progKey(p.catId,p.mode)]=p; lset("progress",all);
+  if(cloudOn()) sb.from("user_progress").upsert({ user_id:S.user.id, category_id:p.catId, mode:p.mode, current_question_index:p.index,
+    questions_total:p.ids.length, correct_count:p.correct, question_ids:p.ids },{ onConflict:"user_id,category_id,mode" }).then(function(){},function(){});
+}
+function progressDelete(cat,mode){
+  var all=DB.progress(); delete all[progKey(cat,mode)]; lset("progress",all);
+  if(cloudOn()) sb.from("user_progress").delete().eq("user_id",S.user.id).eq("category_id",cat).eq("mode",mode).then(function(){},function(){});
+}
+function progressLoad(cat,mode){
+  var local=DB.progress()[progKey(cat,mode)]||null;
+  if(!cloudOn()) return Promise.resolve(local);
+  return sb.from("user_progress").select("*").eq("user_id",S.user.id).eq("category_id",cat).eq("mode",mode).limit(1).then(function(r){
+    var x=r.data&&r.data[0]; if(!x) return local;
+    if(local && local.ids && local.ids.join()===(x.question_ids||[]).join() && local.index>=x.current_question_index) return local;
+    return { catId:cat, mode:mode, index:x.current_question_index, ids:x.question_ids||[], correct:x.correct_count, answers:{} };
+  },function(){ return local; });
+}
+
+/* ================= DATA ================= */
+function loadIndex(){
+  if(S.index) return Promise.resolve(S.index);
+  return fetch(DATA_BASE+"index.json",{cache:"no-cache"}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){
+    S.index=j; S.catMap={}; S.licMap={};
+    Object.keys(j.groups).forEach(function(g){ j.groups[g].forEach(function(L){ S.licMap[L.id]={g:g,meta:L}; L.cats.forEach(function(c){ S.catMap[c.id]={g:g,lic:L.id,meta:c,licTitle:L.title}; }); }); });
+    return j;
+  });
+}
+function loadGroup(g){
+  if(S.groups[g]) return Promise.resolve(S.groups[g]);
+  return fetch(DATA_BASE+g+".json").then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){
+    var lics={}, cats={}, qs={};
+    j.licenses.forEach(function(L){ lics[L.id]=L; L.cats.forEach(function(c){ c.licId=L.id; c.licTitle=L.title; cats[c.id]=c; c.q.forEach(function(q){ q.cat=c.id; qs[q.i]=q; }); }); });
+    S.groups[g]={lics:lics,cats:cats,qs:qs}; return S.groups[g];
+  });
+}
+function groupOfCat(cat){ var m=S.catMap[cat]; return m? m.g : null; }
+function loadCats(catIds){
+  var gs={}; catIds.forEach(function(c){ var g=groupOfCat(c); if(g) gs[g]=1; });
+  return Promise.all(Object.keys(gs).map(loadGroup));
+}
+function findQ(qid){ for(var g in S.groups){ var q=S.groups[g].qs[qid]; if(q) return q; } return null; }
+function lp(){ return S.lang==="en" ? "en-" : "cs-"; }
+function licCount(ids){ var n=0; ids.forEach(function(id){ var L=S.licMap[id]; if(L) L.meta.cats.forEach(function(c){ n+=c.n; }); }); return n; }
+
+/* ================= UI HELPERS ================= */
+var V=document.getElementById("view");
+function setTop(title,back){
+  document.getElementById("topTitle").textContent=title||"";
+  document.getElementById("backBtn").hidden=!back;
+  document.getElementById("brand").style.display = title ? "none" : "";
+  document.getElementById("betaStrip").textContent=T("beta");
+  document.getElementById("backBtn").setAttribute("aria-label",T("back"));
+}
+function render(html){ V.innerHTML=html; window.scrollTo(0,0); }
+function loading(){ V.innerHTML='<div class="loading"><div class="spin"></div></div>'; }
+function failed(){ render('<div class="empty">'+ic("cloud")+'<h3>'+esc(T("err_load"))+'</h3><p><button class="btn btn--navy" id="retry">'+esc(T("retry"))+'</button></p></div>'); document.getElementById("retry").onclick=route; }
+function toast(t){ var d=document.createElement("div"); d.className="toast"; d.textContent=t; document.body.appendChild(d); setTimeout(function(){ d.remove(); },1800); }
+function tile(o){
+  return '<a class="tile'+(o.off?' is-off':'')+'" '+(o.href?'href="'+o.href+'"':'')+(o.id?' id="'+o.id+'"':'')+'>'+
+    '<span class="ico '+o.g+'">'+o.icon+'</span><span class="tile__t"><h3>'+esc(o.t)+'</h3>'+(o.s?'<p>'+esc(o.s)+'</p>':'')+'</span>'+
+    '<span class="tile__r">'+(o.badge?'<span class="badge '+o.g+'">'+esc(o.badge)+'</span>':'')+(o.soon?'<span class="soon">'+esc(o.soon)+'</span>':'')+(o.off?'':'<span class="chev">'+ic("chev")+'</span>')+'</span></a>';
+}
+function go(h){ if(location.hash===h) route(); else location.hash=h; }
+function pct(s,n){ return n? Math.round(s/n*100) : 0; }
+function dateStr(iso){ try{ return new Date(iso).toLocaleString(T("dateLoc"),{day:"numeric",month:"numeric",year:"numeric",hour:"2-digit",minute:"2-digit"}); }catch(e){ return iso; } }
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function weighted(qs){ var w=DB.wrong(); return qs.map(function(q){ return [Math.max(0.0001,Math.random())/(1+(w[q.i]||0)), q]; }).sort(function(a,b){ return a[0]-b[0]; }).map(function(x){ return x[1]; }); }
+function isExamCat(cat){ return cat.indexOf("laa_")===0 ? "laa" : (cat.indexOf("ofl_")===0||cat.indexOf("vfl_")===0) ? "ctu" : "ucl"; }
+
+/* ================= ROUTER ================= */
+window.addEventListener("hashchange",route);
+document.getElementById("backBtn").onclick=function(){
+  if(S.quiz && !S.quiz.finished && !confirm(T("confirm_leave"))) return;
+  history.back();
+};
+function route(){
+  var h=location.hash.replace(/^#\/?/,"") || "";
+  var parts=h.split("/").map(decodeURIComponent);
+  document.body.classList.toggle("inquiz", parts[0]==="quiz");
+  if(S.recovering){ return viewNewPassword(); }
+  if(!S.user && !S.guest){ return viewAuth(); }
+  if(parts[0]!=="quiz" && S.quiz && !S.quiz.finished){ saveQuizProgress(); S.quiz=null; stopTimer(); }
+  loading();
+  loadIndex().then(function(){
+    switch(parts[0]){
+      case "": case "home": return viewHome();
+      case "pilot": return viewPick("pilot");
+      case "bpl": return viewPick("bpl");
+      case "radio": return viewPick("radio");
+      case "laa": return viewLAA();
+      case "lic": return viewLicense(parts[1]);
+      case "cat": return viewCat(parts[1]);
+      case "quiz": return viewQuiz(parts[1],parts[2],parts[3]);
+      case "result": return viewResult();
+      case "history": return parts[1]? viewAttempt(parts[1]) : viewHistory(parts[2]||null);
+      case "subjhist": return viewHistory(parts[1]);
+      case "more": return viewMore();
+      case "weak": return viewWeak();
+      case "bookmarks": return viewBookmarks();
+      case "mistakes": return viewMistakes();
+      case "ach": return viewAch();
+      case "settings": return viewSettings();
+      case "rt": return viewRT();
+      default: return viewHome();
     }
-    msg("Pracuji…");
-    try{
-      var res = mode==="login"
-        ? await sb.auth.signInWithPassword({email:email,password:pw})
-        : await sb.auth.signUp({email:email,password:pw});
-      if(res.error){ msg(res.error.message,true); return; }
-      var user = res.data && res.data.user;
-      if(mode==="reg" && (!res.data.session)){ msg("Hotovo! Potvrď e-mail a přihlas se."); return; }
-      await loadEntitlement(user);
-      enterApp({email:user?user.email:email});
-    }catch(e){ msg("Chyba spojení. "+(e&&e.message||""),true); }
-  }
-  $("authSubmit").onclick=submitAuth;
-  $("pw").addEventListener("keydown",function(e){ if(e.key==="Enter") submitAuth(); });
+  }).catch(function(e){ console.error(e); failed(); });
+}
 
-  async function loadEntitlement(user){
-    state.premium=false;
-    if(!sb || !user) return;
-    try{ // očekává tabulku 'entitlements' (user_id, status, expires_at)
-      var r = await sb.from("entitlements").select("status,expires_at").eq("user_id",user.id);
-      if(r.data){ state.premium = r.data.some(function(e){ return e.status==="active" && (!e.expires_at || new Date(e.expires_at)>new Date()); }); }
-    }catch(e){}
-  }
-
-  function enterApp(u){ state.user=u; authEl.classList.add("hide"); appEl.classList.remove("hide");
-    $("acctEmail").textContent=u.email; $("acctBtn").textContent=(u.email[0]||"U").toUpperCase();
-    refreshStatus(); go("home"); }
-
-  function refreshStatus(){ var c=$("statusChip");
-    c.className="chip "+(state.premium?"chip--pro":"chip--free"); c.textContent=state.premium?"Premium":"Zdarma"; }
-
-  /* ---------------- ACCOUNT MENU ---------------- */
-  $("acctBtn").onclick=function(e){ e.stopPropagation(); $("acctMenu").classList.toggle("hide"); };
-  document.addEventListener("click",function(){ $("acctMenu").classList.add("hide"); });
-  $("acctMenu").onclick=function(e){ e.stopPropagation(); };
-  $("logoutBtn").onclick=async function(){ if(sb){ try{await sb.auth.signOut();}catch(e){} }
-    state={user:null,premium:false,screen:"auth",lic:null,cat:null,mode:null,qi:0,answers:[],tStart:0,tTimer:null};
-    appEl.classList.add("hide"); authEl.classList.remove("hide"); $("acctMenu").classList.add("hide"); };
-  $("goPremium").onclick=function(){ $("acctMenu").classList.add("hide"); go("paywall"); };
-
-  /* ---------------- NAVIGATION ---------------- */
-  function go(screen){ state.screen=screen; if(state.tTimer){clearInterval(state.tTimer);state.tTimer=null;}
-    backBtn.classList.toggle("hide", screen==="home");
-    window.scrollTo(0,0); render(); }
-  backBtn.onclick=function(){
-    if(state.screen==="quiz"||state.screen==="result"||state.screen==="paywall") return go(state.cat?"mode":"license");
-    if(state.screen==="mode") return go("license");
-    if(state.screen==="license") return go("home");
-    go("home");
-  };
-
-  /* ---------------- RENDER ---------------- */
-  function esc(s){ return (s||"").replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];}); }
-  function render(){
-    var s=state.screen;
-    if(s==="home") return renderHome();
-    if(s==="license") return renderLicense();
-    if(s==="mode") return renderMode();
-    if(s==="quiz") return renderQuiz();
-    if(s==="result") return renderResult();
-    if(s==="paywall") return renderPaywall();
-  }
-
-  function renderHome(){
-    var name=(state.user.email||"").split("@")[0];
-    var cards = DATA.licenses.map(function(L,i){
-      var nq=L.categories.reduce(function(a,c){return a+c.questions.length;},0);
-      return '<button class="card" data-lic="'+i+'" style="--accent:'+ACCENTS[i%ACCENTS.length]+'">'+
-        '<div class="card__body"><div class="card__code">'+esc(L.id.toUpperCase())+'</div>'+
-        '<div class="card__name">'+esc(L.name)+'</div>'+
-        '<div class="card__meta">'+L.categories.length+' předmětů · '+nq+' otázek v ukázce</div></div>'+
-        '<span class="card__chev">›</span></button>';
-    }).join("");
-    mainEl.innerHTML='<h1 class="screen-title">Ahoj '+esc(name)+' 👋</h1>'+
-      '<p class="screen-sub">Vyber si licenci a pusť se do přípravy.</p>'+
-      (state.premium?'':'<div class="banner">Účet je v režimu <b>Zdarma</b>. V každém předmětu máš '+FREE_LIMIT+' otázky zdarma. Celý obsah odemkne Premium.</div>')+
-      '<div class="cards">'+cards+'</div>';
-    [].forEach.call(mainEl.querySelectorAll(".card"),function(b){ b.onclick=function(){ state.lic=DATA.licenses[+b.dataset.lic]; go("license"); }; });
-  }
-
-  function renderLicense(){
-    var L=state.lic;
-    var cards=L.categories.map(function(c,i){
-      var locked = !state.premium && c.questions.length>FREE_LIMIT;
-      return '<button class="card" data-cat="'+i+'" style="--accent:'+ACCENTS[i%ACCENTS.length]+'">'+
-        '<div class="card__body"><div class="card__name">'+esc(c.name)+'</div>'+
-        '<div class="card__meta">'+c.questions.length+' otázek'+(locked?' · '+FREE_LIMIT+' zdarma':'')+'</div></div>'+
-        '<span class="card__chev">›</span></button>';
-    }).join("");
-    mainEl.innerHTML='<div class="card__code mono" style="color:var(--ink-3)">'+esc(L.id.toUpperCase())+'</div>'+
-      '<h1 class="screen-title">'+esc(L.name)+'</h1>'+
-      '<p class="screen-sub">Vyber předmět.</p><div class="cards">'+cards+'</div>';
-    [].forEach.call(mainEl.querySelectorAll(".card"),function(b){ b.onclick=function(){ state.cat=L.categories[+b.dataset.cat]; go("mode"); }; });
-  }
-
-  function renderMode(){
-    mainEl.innerHTML='<h1 class="screen-title">'+esc(state.cat.name)+'</h1>'+
-      '<p class="screen-sub">Jak se chceš učit?</p><div class="modes">'+
-      '<button class="mode" data-m="learn"><div class="mode__ic">📖</div><div><div class="mode__t">Učení</div>'+
-      '<div class="mode__d">Otázky s okamžitým vyhodnocením a vysvětlením, proč je odpověď správná.</div></div></button>'+
-      '<button class="mode mode--exam" data-m="exam"><div class="mode__ic">⏱</div><div><div class="mode__t">Zkouška</div>'+
-      '<div class="mode__d">Časovaná simulace bez nápovědy. Na konci skóre a rozbor každé chyby.</div></div></button></div>';
-    [].forEach.call(mainEl.querySelectorAll(".mode"),function(b){ b.onclick=function(){ startQuiz(b.dataset.m); }; });
-  }
-
-  function poolQuestions(){
-    var qs=state.cat.questions.slice();
-    if(!state.premium) qs=qs.slice(0,FREE_LIMIT);
-    return qs;
-  }
-  function startQuiz(m){ state.mode=m; state.qi=0; state.answers=[]; state.tStart=Date.now(); go("quiz"); }
-
-  function renderQuiz(){
-    // paywall hit: free user reached limit but category has more
-    if(!state.premium && state.qi>=FREE_LIMIT && state.cat.questions.length>FREE_LIMIT && state.qi>=poolQuestions().length){
-      return renderPaywall(true);
+/* ================= AUTH ================= */
+function viewAuth(){
+  setTop("",false); updateAcct();
+  var mode="in";
+  function draw(){
+    render('<div class="auth"><div class="card">'+
+      '<div class="auth__brand"><svg viewBox="0 0 100 100"><use href="#pm"/></svg><h1>Propilot<b>(y)</b></h1><p>'+esc(T("a_title"))+'</p></div>'+
+      '<div class="seg"><button data-m="in" class="'+(mode==="in"?"on":"")+'">'+esc(T("a_in"))+'</button><button data-m="up" class="'+(mode==="up"?"on":"")+'">'+esc(T("a_up"))+'</button></div>'+
+      '<label class="f" for="aE">'+esc(T("a_email"))+'</label><input class="in" id="aE" type="email" autocomplete="email" placeholder="vas@email.cz">'+
+      '<label class="f" for="aP">'+esc(T("a_pass"))+'</label><input class="in" id="aP" type="password" autocomplete="'+(mode==="in"?"current-password":"new-password")+'">'+
+      (mode==="up"?'<label class="f" for="aP2">'+esc(T("a_pass2"))+'</label><input class="in" id="aP2" type="password" autocomplete="new-password">':'')+
+      '<div class="msg" id="aM" aria-live="polite"></div>'+
+      '<button class="btn btn--gold btn--block" id="aGo" style="margin-top:.6rem">'+esc(mode==="in"?T("a_btn_in"):T("a_btn_up"))+'</button>'+
+      (mode==="in"?'<p style="text-align:center;margin:.9rem 0 0"><button class="linkbtn" id="aF">'+esc(T("a_forgot"))+'</button></p>':'')+
+      '<div class="or">'+esc(T("a_or"))+'</div>'+
+      '<button class="btn btn--ghost btn--block" id="aG">'+esc(T("a_guest"))+'</button>'+
+      '<p class="note">'+esc(T("a_note"))+'</p></div></div>');
+    V.querySelectorAll(".seg button").forEach(function(b){ b.onclick=function(){ mode=b.getAttribute("data-m"); draw(); }; });
+    var M=document.getElementById("aM");
+    function say(t,ok){ M.textContent=t; M.className="msg "+(ok?"ok":"err"); }
+    if(!sb) say(T("a_offline"),false);
+    document.getElementById("aG").onclick=function(){ S.guest=true; try{ localStorage.setItem("pp_guest","1"); }catch(e){} go("#/"); route(); };
+    var go_=document.getElementById("aGo");
+    function submit(){
+      var e=document.getElementById("aE").value.trim(), p=document.getElementById("aP").value;
+      if(!sb){ say(T("a_offline"),false); return; }
+      if(!e||!p){ say(T("a_fill"),false); return; }
+      if(mode==="up"){
+        if(p.length<6){ say(T("a_short"),false); return; }
+        if(p!==document.getElementById("aP2").value){ say(T("a_mismatch"),false); return; }
+      }
+      go_.disabled=true;
+      var pr = mode==="in" ? sb.auth.signInWithPassword({email:e,password:p})
+        : sb.auth.signUp({email:e,password:p,options:{emailRedirectTo:location.origin+location.pathname}});
+      pr.then(function(r){
+        go_.disabled=false;
+        if(r.error){ var m=(r.error.message||"").toLowerCase(); say(m.indexOf("confirm")>=0?T("a_unconf"):(mode==="in"?T("a_bad"):r.error.message),false); return; }
+        if(mode==="up" && !r.data.session){ say(T("a_confirm"),true); return; }
+      },function(){ go_.disabled=false; say(T("a_offline"),false); });
     }
-    var pool=poolQuestions();
-    if(state.qi>=pool.length) return finishQuiz();
-    var q=pool[state.qi], total=pool.length;
-    var letters=["A","B","C","D","E","F"];
-    var opts=q.options.map(function(o,i){ return '<button class="opt" data-i="'+i+'"><span class="lt">'+letters[i]+'</span><span>'+esc(o)+'</span></button>'; }).join("");
-    var timerHtml = state.mode==="exam" ? '<span class="timer" id="timer">0:00</span>' : '';
-    mainEl.innerHTML='<div class="quizbar"><div class="progress"><i style="width:'+Math.round(state.qi/total*100)+'%"></i></div>'+
-      '<span class="qcount">'+(state.qi+1)+' / '+total+'</span>'+timerHtml+'</div>'+
-      '<div class="qcard"><div class="qtext">'+esc(q.text)+'</div><div class="opts" id="opts">'+opts+'</div>'+
-      '<div id="explBox"></div><div class="qnav hide" id="qnav"><button class="btn btn--gold btn--block" id="nextBtn">Další otázka</button></div></div>';
-    if(state.mode==="exam") startTimer();
-    var answered=false;
-    [].forEach.call(mainEl.querySelectorAll(".opt"),function(b){
-      b.onclick=function(){
-        if(answered && state.mode==="learn") return;
-        var pick=+b.dataset.i;
-        if(state.mode==="exam"){ // single select, advance via Další
-          [].forEach.call(mainEl.querySelectorAll(".opt"),function(x){x.classList.remove("sel");});
-          b.classList.add("sel"); state._pick=pick; $("qnav").classList.remove("hide"); return;
-        }
-        // LEARN: immediate feedback
-        answered=true; state.answers.push(pick);
-        [].forEach.call(mainEl.querySelectorAll(".opt"),function(x){ x.disabled=true;
-          var xi=+x.dataset.i; if(xi===q.correct)x.classList.add("ok"); else if(xi===pick)x.classList.add("bad"); });
-        var ok=pick===q.correct;
-        if(q.explanation) $("explBox").innerHTML='<div class="expl '+(ok?"ok":"bad")+'"><b>'+(ok?"Správně":"Špatně · vysvětlení")+'</b>'+esc(q.explanation)+'</div>';
-        else $("explBox").innerHTML='<div class="expl '+(ok?"ok":"bad")+'"><b>'+(ok?"Správně":"Špatně")+'</b>Správná odpověď: '+letters[q.correct]+'.</div>';
-        $("qnav").classList.remove("hide");
-      };
+    go_.onclick=submit;
+    V.querySelectorAll("input").forEach(function(i){ i.addEventListener("keydown",function(ev){ if(ev.key==="Enter") submit(); }); });
+    var f=document.getElementById("aF");
+    if(f) f.onclick=function(){
+      var e=document.getElementById("aE").value.trim(); if(!e){ say(T("a_email_first"),false); return; }
+      if(!sb){ say(T("a_offline"),false); return; }
+      sb.auth.resetPasswordForEmail(e,{redirectTo:location.origin+location.pathname}).then(function(r){ if(r.error) say(r.error.message,false); else say(T("a_reset_sent"),true); });
+    };
+  }
+  draw();
+}
+function viewNewPassword(){
+  setTop("",false);
+  render('<div class="auth"><div class="card"><div class="auth__brand"><svg viewBox="0 0 100 100"><use href="#pm"/></svg><h1>'+esc(T("a_newpass"))+'</h1></div>'+
+    '<label class="f" for="nP">'+esc(T("a_pass"))+'</label><input class="in" id="nP" type="password" autocomplete="new-password">'+
+    '<div class="msg" id="nM"></div><button class="btn btn--gold btn--block" id="nGo" style="margin-top:.6rem">'+esc(T("a_save"))+'</button></div></div>');
+  document.getElementById("nGo").onclick=function(){
+    var p=document.getElementById("nP").value, M=document.getElementById("nM");
+    if(p.length<6){ M.textContent=T("a_short"); M.className="msg err"; return; }
+    sb.auth.updateUser({password:p}).then(function(r){
+      if(r.error){ M.textContent=r.error.message; M.className="msg err"; return; }
+      S.recovering=false; toast(T("a_saved")); go("#/");
     });
-    $("nextBtn").onclick=function(){
-      if(state.mode==="exam"){ if(state._pick==null){return;} state.answers.push(state._pick); state._pick=null; }
-      state.qi++; go("quiz");
-    };
+  };
+}
+function updateAcct(){
+  var b=document.getElementById("acct");
+  if(S.user){ b.hidden=false; b.textContent=(S.user.email||"?").charAt(0).toUpperCase(); b.title=S.user.email; }
+  else if(S.guest){ b.hidden=false; b.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>'; b.title=T("guest"); }
+  else b.hidden=true;
+}
+document.getElementById("acct").onclick=function(){ go("#/settings"); };
+
+/* ================= HOME ================= */
+function viewHome(){
+  setTop("",false); updateAcct();
+  var en=S.lang==="en", s=streakRoll(), goal=s.goal||20, p=Math.min(100,Math.round((s.today||0)/goal*100));
+  var html='<section class="hero"><svg class="mk" viewBox="0 0 100 100"><use href="#pm"/></svg><div><h1>Propilot<b>(y)</b></h1><p>'+esc(T("hero_t"))+'</p></div></section>'+
+    '<div class="streak"><div class="ring" style="--p:'+p+'"><span>'+ic("flame")+'</span></div><div><h3>'+esc(T("streak")(s.cur||0))+'</h3><p>'+esc((s.today||0)>=goal?T("goal_ok")+" · "+T("today")(s.today||0,goal):T("today")(s.today||0,goal))+'</p></div></div>'+
+    '<div class="grid grid--2" style="margin-top:14px">';
+  var pIds=en?["ppla_en","pplh_en"]:["ppl","pplh"], bIds=en?["bpl_gas_en","bpl_hotair_en"]:["bpl_gas","bpl_hotair"], sId=en?"spl_en":"spl";
+  html+=tile({href:"#/pilot",g:"g-ppl",icon:ic("plane"),t:T("t_pilot"),s:"PPL(A) · PPL(H)",badge:T("q")(licCount(pIds))});
+  html+=tile({href:"#/bpl",g:"g-bpl",icon:ic("wind"),t:T("t_bpl"),s:"BPL(GAS) · BPL(H)",badge:T("q")(licCount(bIds))});
+  html+=tile({href:"#/lic/"+sId,g:"g-spl",icon:ic("up"),t:T("t_spl"),s:"SPL",badge:T("q")(licCount([sId]))});
+  if(!en){
+    html+=tile({href:"#/radio",g:"g-radio",icon:ic("radio"),t:T("t_radio"),s:"OFL · VFL",badge:T("q")(licCount(["ofl","vfl"]))});
+    var laa=Object.keys(S.licMap).filter(function(k){ return k.indexOf("laa_")===0; });
+    html+=tile({href:"#/laa",g:"g-laa",icon:ic("paper"),t:T("t_laa"),s:"PL · MPK · ZK · MZK · ULL · ULH · ULK · ULV · UB",badge:T("q")(licCount(laa))});
   }
+  html+=tile({href:"#/rt",g:"g-rt",icon:ic("radio"),t:T("t_rt"),s:T("t_rt_s"),soon:T("ios_soon")});
+  html+=tile({href:"#/history",g:"g-hist",icon:ic("hist"),t:T("t_hist"),s:T("t_hist_s"),badge:T("stats")});
+  html+=tile({href:"#/more",g:"g-more",icon:ic("grid"),t:T("t_more"),s:T("t_more_s"),badge:T("tools")});
+  html+='</div>';
+  render(html);
+}
+function viewRT(){
+  setTop(T("t_rt"),true);
+  render('<div class="empty">'+'<span class="ico g-rt" style="margin:0 auto;width:72px;height:72px;border-radius:20px">'+ic("radio")+'</span><h3>'+esc(T("ios_soon"))+'</h3><p style="max-width:44ch;margin:0 auto">'+esc(T("rt_info"))+'</p><p style="margin-top:1.4rem"><a class="btn btn--gold" href="#/">'+esc(T("home"))+'</a></p></div>');
+}
+function viewPick(kind){
+  var en=S.lang==="en", items, title;
+  if(kind==="pilot"){ title=T("t_pilot"); items=en?[["ppla_en","g-ppl","plane"],["pplh_en","g-pplh","heli"]]:[["ppl","g-ppl","plane"],["pplh","g-pplh","heli"]]; }
+  else if(kind==="bpl"){ title=T("t_bpl"); items=en?[["bpl_gas_en","g-bpl","wind"],["bpl_hotair_en","g-radio","flame"]]:[["bpl_gas","g-bpl","wind"],["bpl_hotair","g-radio","flame"]]; }
+  else { title=T("t_radio"); items=[["ofl","g-radio","radio"],["vfl","g-laa","radio"]]; }
+  setTop(title,true);
+  var html='<div class="pagehead"><h1>'+esc(title)+'</h1><p>'+esc(T("choose_lic"))+'</p></div><div class="grid">';
+  items.forEach(function(it){ var L=S.licMap[it[0]]; if(!L) return;
+    html+=tile({href:"#/lic/"+it[0],g:it[1],icon:ic(it[2]),t:L.meta.title,s:L.meta.desc,badge:T("q")(licCount([it[0]]))}); });
+  render(html+'</div>');
+}
+function viewLAA(){
+  setTop(T("t_laa"),true);
+  var cols=["g-laa","g-weak","g-more","g-learn","g-bpl","g-pplh","g-spl","g-radio","g-mis"];
+  var html='<div class="pagehead"><h1>'+esc(T("t_laa"))+'</h1><p>'+esc(T("choose_lic"))+'</p></div>';
+  STR.cs.laa_fam.forEach(function(f,fi){
+    var ids=Object.keys(S.licMap).filter(function(k){ return k.indexOf(f[0])===0; }); if(!ids.length) return;
+    html+='<div class="sec-h">'+esc(f[1])+'</div><div class="list">';
+    ids.forEach(function(id){ var L=S.licMap[id].meta;
+      html+='<a class="row" href="#/lic/'+id+'"><span class="ico ico--sm '+cols[fi%cols.length]+'">'+ic("paper")+'</span><span><h4>'+esc(L.title)+'</h4><small>'+esc(L.desc)+'</small></span><span class="r">'+esc(T("q")(licCount([id])))+'<span class="chev">'+ic("chev")+'</span></span></a>'; });
+    html+='</div>';
+  });
+  render(html);
+}
+function viewLicense(id){
+  var L=S.licMap[id]; if(!L) return go("#/");
+  if(L.meta.cats.length===1) { location.replace("#/cat/"+L.meta.cats[0].id); return; }
+  setTop(L.meta.title,true);
+  var html='<div class="pagehead"><h1>'+esc(L.meta.title)+'</h1><p>'+esc(L.meta.desc)+' · '+esc(T("subj_n")(L.meta.cats.length))+'</p></div><div class="list">';
+  var att=DB.attempts();
+  L.meta.cats.forEach(function(c,i){
+    var mine=att.filter(function(a){ return a.categoryId===c.id; }), last=mine[0];
+    html+='<a class="row" href="#/cat/'+c.id+'"><span class="ico ico--sm '+CAT_COLOR[i%CAT_COLOR.length]+'">'+ic(CAT_ICON[c.icon]||"doc")+'</span><span><h4>'+esc(c.title)+'</h4><small>'+esc(T("q")(c.n))+(last?' · '+pct(last.score,last.total)+' %':'')+'</small></span><span class="r"><span class="chev">'+ic("chev")+'</span></span></a>';
+  });
+  render(html+'</div>');
+}
 
-  function startTimer(){ var t=$("timer"); if(!t)return;
-    state.tTimer=setInterval(function(){ var s=Math.floor((Date.now()-state.tStart)/1000);
-      t.textContent=Math.floor(s/60)+":"+("0"+(s%60)).slice(-2); },500); }
+/* ================= CATEGORY / MODE ================= */
+function viewCat(catId){
+  var m=S.catMap[catId]; if(!m) return go("#/");
+  var c=m.meta, kind=isExamCat(catId);
+  setTop(c.title,true);
+  Promise.all([progressLoad(catId,"learning"),progressLoad(catId,"exam")]).then(function(pr){
+    var att=DB.attempts().filter(function(a){ return a.categoryId===catId; }).length;
+    var timerOn=false; try{ timerOn=localStorage.getItem("pp_timer")==="1"; }catch(e){}
+    function card(mode,saved,g,icon,title,desc,badge){
+      var h='<div class="mode">'+tile({href:"#/quiz/"+catId+"/"+mode,g:g,icon:ic(icon),t:title,s:desc,badge:badge});
+      if(saved && saved.index>0) h+='<div class="mode__resume">'+ic("hist").replace('<svg','<svg width="18" height="18"')+'<span><b>'+esc(T("resume"))+'</b><br><small>'+esc(T("resume_d")(saved.index+1,saved.ids.length,saved.correct||0))+'</small></span><button class="btn btn--ghost" data-reset="'+mode+'" style="padding:.45rem .8rem;font-size:.85rem">'+esc(T("restart"))+'</button></div>';
+      return h+'</div>';
+    }
+    var html='<div class="pagehead"><h1>'+esc(c.title)+'</h1><p>'+esc(m.licTitle)+'</p></div>'+
+      '<div class="stats"><div class="stat"><b>'+fmt(c.n)+'</b><span>'+esc(T("total"))+'</span></div><div class="stat"><b>'+c.exam+'</b><span>'+esc(T("in_exam"))+'</span></div><div class="stat"><b>'+att+'</b><span>'+esc(T("attempts"))+'</span></div></div>'+
+      '<div class="sec-h">'+esc(T("choose_mode"))+'</div><div class="grid">'+
+      card("learning",pr[0],"g-learn","book",T("learn"),T("learn_d")(c.n))+
+      card("exam",pr[1],"g-exam","check",T("exam"),T("exam_d_"+kind),String(c.exam))+
+      '<label class="toggle"><span class="ico ico--sm g-radio">'+ic("timer")+'</span><span style="flex:1"><b>'+esc(T("timer"))+'</b><small>'+esc(T("timer_d"))+'</small></span><input type="checkbox" id="tmr"'+(timerOn?" checked":"")+'></label>'+
+      tile({href:"#/subjhist/"+catId,g:"g-hist",icon:ic("hist"),t:T("subj_hist"),s:att?T("n_att")(att):T("no_att")})+
+      '</div>';
+    render(html);
+    document.getElementById("tmr").onchange=function(){ try{ localStorage.setItem("pp_timer",this.checked?"1":"0"); }catch(e){} };
+    V.querySelectorAll("[data-reset]").forEach(function(b){ b.onclick=function(ev){ ev.preventDefault(); progressDelete(catId,b.getAttribute("data-reset")); viewCat(catId); }; });
+  });
+}
 
-  function finishQuiz(){ if(state.tTimer){clearInterval(state.tTimer);state.tTimer=null;} go("result"); }
+/* ================= QUIZ ================= */
+var timerId=null;
+function stopTimer(){ if(timerId){ clearInterval(timerId); timerId=null; } }
+function mkShuffled(q){ var order=shuffle(q.o.map(function(_,i){ return i; })); return { q:q, order:order, correct:order.indexOf(q.c) }; }
 
-  function renderResult(){
-    var pool=poolQuestions();
-    var correct=0; pool.forEach(function(q,i){ if(state.answers[i]===q.correct)correct++; });
-    var pct=Math.round(correct/pool.length*100), pass=pct>=75;
-    var letters=["A","B","C","D","E","F"];
-    var review = state.mode==="exam" ? ('<div class="review"><h3>Rozbor odpovědí</h3>'+pool.map(function(q,i){
-        var a=state.answers[i], ok=a===q.correct;
-        return '<div class="rev"><div class="rq">'+(i+1)+'. '+esc(q.text.split(" a)")[0].slice(0,160))+'…</div>'+
-          '<div class="ra '+(ok?"ok":"bad")+'">Tvá odpověď: '+(a!=null?letters[a]:"nezodpovězeno")+(ok?" ✓":" ✗")+'</div>'+
-          (ok?'':'<div class="ra ok">Správně: '+letters[q.correct]+'</div>')+
-          (q.explanation?'<div class="ra" style="color:var(--ink-2);margin-top:.3rem">'+esc(q.explanation)+'</div>':'')+'</div>';
-      }).join("")+'</div>') : '';
-    mainEl.innerHTML='<div class="result"><div class="score '+(pass?"pass":"fail")+'">'+pct+'%</div>'+
-      '<p class="result__sub">'+correct+' z '+pool.length+' správně · '+(pass?"prošel jsi":"ještě potrénuj")+'</p>'+
-      '<button class="btn btn--gold" id="againBtn">Zkusit znovu</button> '+
-      '<button class="btn btn--ghost" id="homeBtn">Na přehled</button></div>'+review;
-    $("againBtn").onclick=function(){ startQuiz(state.mode); };
-    $("homeBtn").onclick=function(){ go("home"); };
+function viewQuiz(catId,mode,extra){
+  mode = mode==="exam" ? "exam" : "learning";
+  var adhoc = catId==="__mistakes" || catId==="__bookmarks";
+  if(S.quiz && S.quiz.catId===catId && S.quiz.mode===mode && !S.quiz.finished) return drawQuiz();
+  if(adhoc){
+    var ids = catId==="__mistakes" ? mistakeIds() : Object.keys(DB.bookmarks());
+    var cats = catId==="__mistakes" ? DB.attempts().map(function(a){ return a.categoryId; }) : ids.map(function(i){ return DB.bookmarks()[i]; });
+    return loadCats(cats).then(function(){
+      var qs=ids.map(findQ).filter(Boolean); if(!qs.length) return go("#/");
+      startQuiz({ catId:catId, mode:"learning", title: catId==="__mistakes"?T("mis_title"):T("bm_title"), licTitle:"", list:weighted(qs), adhoc:true });
+    });
   }
-
-  function renderPaywall(fromQuiz){
-    var plans=[["1 měsíc","199 Kč",""],["6 měsíců","699 Kč","sleva 42 %"],["12 měsíců","999 Kč","nejvýhodnější"]];
-    mainEl.innerHTML='<div class="pay"><svg class="mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="#fff"/><clipPath id="mp"><circle cx="50" cy="50" r="40"/></clipPath><g clip-path="url(#mp)"><rect x="10" y="10" width="80" height="40" fill="#CADBEA"/><rect x="10" y="50" width="80" height="40" fill="#E0922F"/></g><polygon points="50,14 45.5,22 54.5,22" fill="#fff"/><g fill="#102648"><rect x="26" y="47" width="14" height="6" rx="3"/><circle cx="50" cy="50" r="4.4"/><rect x="60" y="47" width="14" height="6" rx="3"/></g></svg>'+
-      '<h2>'+(fromQuiz?"Konec otázek zdarma":"Odemkni celý obsah")+'</h2>'+
-      '<p>'+(fromQuiz?"Tohle byly otázky zdarma. ":"")+'Premium odemkne všech 14 619 otázek se všemi vysvětleními, zkouškový režim i radiotelefonii, na webu i v mobilní aplikaci.</p>'+
-      '<div class="pay__plans">'+plans.map(function(p){return '<div class="plan"><span><b>'+p[0]+'</b>'+(p[2]?'<span class="save">'+p[2]+'</span>':'')+'</span><b>'+p[1]+'</b></div>';}).join("")+'</div>'+
-      '<button class="btn btn--gold btn--block" id="buyBtn">Koupit a odemknout</button>'+
-      '<p class="pay__note">Platba na webu přes Stripe / GoPay, bez poplatku Apple. Co koupíš tady, platí i v iOS aplikaci přes tvůj účet.</p></div>';
-    $("buyBtn").onclick=function(){
-      // DEMO: v ostré verzi zde proběhne přesměrování na Stripe/GoPay Checkout a po úhradě se zapíše entitlement do Supabase
-      state.premium=true; refreshStatus();
-      alert("Ukázka: tady by se v ostré verzi otevřela platební brána (Stripe / GoPay). Po zaplacení se účtu nastaví Premium.\n\nPro demo jsme Premium odemkli rovnou.");
-      go(state.cat?"mode":"home");
-    };
+  var m=S.catMap[catId]; if(!m) return go("#/");
+  loadGroup(m.g).then(function(G){
+    var c=G.cats[catId];
+    return progressLoad(catId,mode).then(function(saved){
+      var list;
+      if(saved && saved.ids && saved.ids.length){
+        list=saved.ids.map(function(id){ return G.qs[id]; }).filter(Boolean);
+      }
+      var resumed = !!(list && list.length);
+      if(!resumed){ var w=weighted(c.q); list = mode==="exam" ? w.slice(0,Math.min(c.exam,w.length)) : w; }
+      var timer=false; try{ timer = mode==="exam" && localStorage.getItem("pp_timer")==="1"; }catch(e){}
+      startQuiz({ catId:catId, mode:mode, title:c.title, licTitle:c.licTitle, list:list, timer:timer,
+        index: resumed ? Math.min(saved.index, list.length-1) : 0, answers: resumed && saved.answers ? saved.answers : {}, correctSoFar: resumed? (saved.correct||0):0 });
+    });
+  }).catch(function(e){ console.error(e); failed(); });
+}
+function startQuiz(o){
+  stopTimer();
+  var Q={ catId:o.catId, mode:o.mode, title:o.title, licTitle:o.licTitle, adhoc:!!o.adhoc,
+    items:o.list.map(mkShuffled), i:o.index||0, answers:o.answers||{}, revealed:false, records:[], finished:false,
+    correctSoFar:o.correctSoFar||0, remaining:null };
+  if(Q.mode==="exam" && o.timer){ Q.remaining=Math.max(60,Q.items.length*60); }
+  S.quiz=Q;
+  if(!Q.adhoc) saveQuizProgress();
+  if(Q.remaining!=null){
+    timerId=setInterval(function(){
+      if(!S.quiz||S.quiz!==Q||Q.finished){ stopTimer(); return; }
+      Q.remaining--; var el=document.getElementById("tmrv");
+      if(el){ el.textContent=mmss(Q.remaining); el.parentNode.classList.toggle("low",Q.remaining<=60); }
+      if(Q.remaining<=0){ stopTimer(); submitExam(); }
+    },1000);
   }
+  drawQuiz();
+}
+function mmss(s){ s=Math.max(0,s); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+function saveQuizProgress(){
+  var Q=S.quiz; if(!Q||Q.adhoc||Q.finished) return;
+  progressSave({ catId:Q.catId, mode:Q.mode, index:Q.i, ids:Q.items.map(function(x){ return x.q.i; }),
+    correct: Q.mode==="learning" ? Q.correctSoFar : 0, answers: Q.mode==="exam" ? Q.answers : {} });
+}
+function drawQuiz(){
+  var Q=S.quiz; if(!Q) return go("#/");
+  setTop(Q.title,true);
+  var it=Q.items[Q.i], q=it.q, n=Q.items.length, letters="ABCDEF";
+  var sel = Q.mode==="exam" ? Q.answers[Q.i] : Q.sel;
+  var answered = Q.mode==="exam" ? Object.keys(Q.answers).length : Q.i + (Q.revealed?1:0);
+  var bm=DB.bookmarks()[q.i]!==undefined;
+  var html='<div class="qbar"><div class="qbar__prog"><i style="width:'+Math.round(answered/n*100)+'%"></i></div><span class="qbar__n">'+T("qof")(Q.i+1,n)+'</span>'+
+    (Q.remaining!=null?'<span class="timer'+(Q.remaining<=60?' low':'')+'"><span id="tmrv">'+mmss(Q.remaining)+'</span></span>':'')+'</div>'+
+    '<div class="qcard"><div class="qcard__top"><div><span class="mono">'+esc(T("question"))+' '+(Q.i+1)+'</span><p class="qtext">'+esc(q.t)+'</p></div>'+
+    '<button class="bm'+(bm?' on':'')+'" id="bmBtn" aria-label="'+esc(T("bm"))+'">'+ic(bm?"bmf":"bm")+'</button></div>'+
+    (q.m?'<img class="qimg" src="'+DATA_BASE+'img/'+encodeURIComponent(q.m)+'" alt="" loading="lazy" id="qimg">':'')+
+    '<div class="opts">';
+  it.order.forEach(function(oi,k){
+    var cls="";
+    if(Q.mode==="learning" && Q.revealed){ if(k===it.correct) cls="ok"; else if(k===sel) cls="bad"; }
+    else if(k===sel) cls="sel";
+    html+='<button class="opt '+cls+'" data-k="'+k+'"'+(Q.mode==="learning"&&Q.revealed?' disabled':'')+'><span class="k">'+letters[k]+'</span><span>'+esc(q.o[oi])+'</span></button>';
+  });
+  html+='</div>';
+  if(Q.mode==="learning" && Q.revealed){
+    var ok=sel===it.correct;
+    html+='<div class="expl'+(ok?'':' bad')+'"><b>'+esc(ok?T("correct"):T("wrong")+" · "+T("expl"))+'</b>'+(q.e?'<p>'+esc(q.e)+'</p>':'')+'</div>'+
+      '<div class="qnav"><button class="btn btn--gold" id="nextBtn">'+esc(Q.i+1>=n?T("finish"):T("next"))+'</button></div>';
+  }
+  if(Q.mode==="exam"){
+    html+='<div class="qnav"><button class="btn btn--ghost" id="prevBtn"'+(Q.i===0?' disabled':'')+'>'+esc(T("prev"))+'</button>'+
+      (Q.i+1<n?'<button class="btn btn--navy" id="nextBtn">'+esc(T("nextq"))+'</button>':'')+
+      '<button class="btn btn--gold" id="subBtn">'+esc(T("submit"))+'</button></div><div class="dots">';
+    for(var d=0;d<n;d++) html+='<button data-d="'+d+'" class="'+(Q.answers[d]!==undefined?'a':'')+(d===Q.i?' cur':'')+'">'+(d+1)+'</button>';
+    html+='</div>';
+  }
+  html+='</div><p class="hint">'+esc(T("keys"))+'</p>';
+  V.innerHTML=html;
+  V.querySelectorAll(".opt").forEach(function(b){ b.onclick=function(){ answer(+b.getAttribute("data-k")); }; });
+  var nb=document.getElementById("nextBtn"); if(nb) nb.onclick=next;
+  var pb=document.getElementById("prevBtn"); if(pb) pb.onclick=function(){ if(Q.i>0){ Q.i--; saveQuizProgress(); drawQuiz(); } };
+  var sbb=document.getElementById("subBtn"); if(sbb) sbb.onclick=function(){ if(confirm(T("confirm_submit")(Object.keys(Q.answers).length,n))) submitExam(); };
+  V.querySelectorAll("[data-d]").forEach(function(b){ b.onclick=function(){ Q.i=+b.getAttribute("data-d"); drawQuiz(); }; });
+  document.getElementById("bmBtn").onclick=function(){
+    var b=DB.bookmarks(); if(b[q.i]!==undefined){ delete b[q.i]; toast(T("unsaved")); } else { b[q.i]=q.cat; toast(T("saved")); }
+    lset("bookmarks",b); cloudDataSoon(); drawQuiz();
+  };
+  var im=document.getElementById("qimg"); if(im) im.onclick=function(){ var l=document.createElement("div"); l.className="lb"; l.innerHTML='<img src="'+im.src+'" alt="">'; l.onclick=function(){ l.remove(); }; document.body.appendChild(l); };
+}
+function answer(k){
+  var Q=S.quiz; if(!Q||Q.finished) return;
+  var it=Q.items[Q.i];
+  if(Q.mode==="exam"){ Q.answers[Q.i]=k; saveQuizProgress(); drawQuiz(); return; }
+  if(Q.revealed) return;
+  Q.sel=k; Q.revealed=true;
+  var ok=k===it.correct; if(ok) Q.correctSoFar++;
+  Q.records.push({ q:it.q, order:it.order, sel:k, correct:it.correct });
+  wrongRecord(it.q.i,ok); streakRecord(1);
+  drawQuiz();
+}
+function next(){
+  var Q=S.quiz; if(!Q) return;
+  if(Q.mode==="exam"){ if(Q.i+1<Q.items.length){ Q.i++; saveQuizProgress(); drawQuiz(); } return; }
+  if(!Q.revealed) return;
+  if(Q.i+1>=Q.items.length){ finishQuiz(); return; }
+  Q.i++; Q.revealed=false; Q.sel=null; saveQuizProgress(); drawQuiz(); window.scrollTo(0,0);
+}
+function submitExam(){
+  var Q=S.quiz; if(!Q||Q.finished) return;
+  Q.records=Q.items.map(function(it,idx){ var s=Q.answers[idx]; return { q:it.q, order:it.order, sel:(s===undefined?null:s), correct:it.correct }; });
+  Q.records.forEach(function(r){ if(r.sel!==null) wrongRecord(r.q.i, r.sel===r.correct); });
+  var answered=Q.records.filter(function(r){ return r.sel!==null; }).length;
+  if(answered) streakRecord(answered);
+  finishQuiz();
+}
+function finishQuiz(){
+  var Q=S.quiz; stopTimer(); Q.finished=true;
+  var score=Q.records.filter(function(r){ return r.sel===r.correct; }).length;
+  var total=Q.mode==="exam" ? Q.items.length : Q.records.length;
+  var att={ id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random()), categoryId:Q.catId, categoryTitle:Q.title, licenseTitle:Q.licTitle,
+    mode:Q.mode, score:score, total:total, finishedAt:new Date().toISOString(),
+    incorrect:Q.records.filter(function(r){ return r.sel!==r.correct; }).map(function(r){ return r.q.i; }) };
+  if(total>0){ var all=DB.attempts(); all.unshift(att); lset("attempts",all); cloudUploadAttempt(att); }
+  if(!Q.adhoc) progressDelete(Q.catId,Q.mode);
+  S.lastResult={ att:att, records:Q.records, catId:Q.catId, mode:Q.mode, adhoc:Q.adhoc };
+  S.quiz=null;
+  location.replace("#/result");
+}
+document.addEventListener("keydown",function(e){
+  var Q=S.quiz; if(!Q||Q.finished||location.hash.indexOf("#/quiz")!==0) return;
+  if(e.target && /input|textarea|select/i.test(e.target.tagName)) return;
+  if(document.querySelector(".fbm.is-open")) return;
+  var k=e.key.toLowerCase(), map={"1":0,"2":1,"3":2,"4":3,"a":0,"b":1,"c":2,"d":3}, n=Q.items[Q.i].order.length;
+  if(map[k]!==undefined && map[k]<n){ e.preventDefault(); answer(map[k]); }
+  else if(e.key==="Enter"){ e.preventDefault(); next(); }
+  else if(e.key==="ArrowRight" && Q.mode==="exam"){ next(); }
+  else if(e.key==="ArrowLeft" && Q.mode==="exam" && Q.i>0){ Q.i--; drawQuiz(); }
+});
 
-  // start: require account. If backend configured, resume existing session; otherwise show dev note.
-  (async function(){
-    if(sb){ try{ var r=await sb.auth.getSession(); if(r.data&&r.data.session){ var u=r.data.session.user; await loadEntitlement(u); enterApp({email:u.email}); return; } }catch(e){} }
-    else { var dn=$("devNote"); if(dn){ dn.textContent="Supabase zatím není připojen, přihlášení běží lokálně (režim vývoje)."; dn.classList.remove("hide"); } }
-  })();
+/* ================= RESULT ================= */
+function wrongCard(r){
+  var letters="ABCDEF", q=r.q, y=r.sel===null?T("none"):letters[r.sel]+") "+q.o[r.order[r.sel]], c=letters[r.correct]+") "+q.o[q.c];
+  return '<div class="wrong"><p class="q">'+esc(q.t)+'</p>'+(q.m?'<img class="qimg" style="max-height:200px" src="'+DATA_BASE+'img/'+encodeURIComponent(q.m)+'" alt="" loading="lazy">':'')+
+    '<p class="y">✗ '+esc(T("your"))+': '+esc(y)+'</p><p class="c">✓ '+esc(T("right"))+': '+esc(c)+'</p>'+(q.e?'<p class="e">'+esc(q.e)+'</p>':'')+'</div>';
+}
+function viewResult(){
+  var R=S.lastResult; if(!R) return go("#/");
+  setTop(T("res_t"),false);
+  var a=R.att, p=pct(a.score,a.total), pass=p>=PASS, col=pass?"var(--ok)":(p>=60?"var(--warn)":"var(--bad)");
+  var wrong=R.records.filter(function(r){ return r.sel!==r.correct; });
+  var html='<div class="card res"><h1 style="font-size:1.4rem">'+esc(a.categoryTitle)+'</h1>'+(a.licenseTitle?'<p style="margin:.2rem 0 0;color:var(--ink-3)">'+esc(a.licenseTitle)+'</p>':'')+
+    '<div class="score" style="--p:'+p+';--c:'+col+'"><div><b>'+p+'%</b><span>'+esc(T("score_of")(a.score,a.total))+'</span></div></div>'+
+    (R.mode==="exam"?'<span class="pill '+(pass?'ok':'bad')+'">'+esc(pass?T("passed"):T("failed"))+'</span>':'')+
+    '<div class="qnav" style="justify-content:center">'+
+      (R.adhoc?'':'<a class="btn btn--gold" href="#/quiz/'+R.catId+'/'+R.mode+'" id="againBtn">'+esc(T("again"))+'</a><a class="btn btn--ghost" href="#/cat/'+R.catId+'">'+esc(T("to_subj"))+'</a>')+
+      '<a class="btn btn--ghost" href="#/">'+esc(T("home"))+'</a></div></div>';
+  html+='<div class="sec-h">'+esc(T("mistakes"))+' ('+wrong.length+')</div>';
+  html+= wrong.length ? '<div class="list">'+wrong.map(wrongCard).join("")+'</div>' : '<div class="card" style="text-align:center">'+esc(T("nomist"))+'</div>';
+  render(html);
+}
 
-  // PWA service worker
-  if("serviceWorker" in navigator){ window.addEventListener("load",function(){ navigator.serviceWorker.register("app-sw.js").catch(function(){}); }); }
+/* ================= HISTORY ================= */
+function viewHistory(filterCat){
+  var all=DB.attempts(), list=filterCat? all.filter(function(a){ return a.categoryId===filterCat; }) : all;
+  var title = filterCat ? (S.catMap[filterCat]?S.catMap[filterCat].meta.title:T("hist_t")) : T("hist_t");
+  setTop(title,true);
+  if(!list.length){ render('<div class="empty">'+ic("hist")+'<h3>'+esc(T("hist_empty"))+'</h3><p>'+esc(T("hist_empty_p"))+'</p></div>'); return; }
+  var avg=Math.round(list.reduce(function(s,a){ return s+pct(a.score,a.total); },0)/list.length);
+  var passes=list.filter(function(a){ return a.mode==="exam" && pct(a.score,a.total)>=PASS; }).length;
+  var html='<div class="pagehead"><h1>'+esc(title)+'</h1></div><div class="stats"><div class="stat"><b>'+list.length+'</b><span>'+esc(T("attempts"))+'</span></div><div class="stat"><b>'+avg+' %</b><span>'+esc(T("avg"))+'</span></div><div class="stat"><b>'+passes+'</b><span>'+esc(T("passes"))+'</span></div></div><div class="list">';
+  list.forEach(function(a){
+    var p=pct(a.score,a.total), g = p>=PASS?"g-exam":(p>=60?"g-radio":"g-weak");
+    html+='<a class="row" href="#/history/'+encodeURIComponent(a.id)+'"><span class="ico ico--sm '+g+'" style="font-family:var(--ff-d);font-weight:700;font-size:.9rem">'+p+'</span><span><h4>'+esc(a.categoryTitle)+'</h4><small>'+esc((a.mode==="exam"?T("mode_exam"):T("mode_learn"))+" · "+a.score+"/"+a.total+" · "+dateStr(a.finishedAt))+'</small></span><span class="r"><span class="chev">'+ic("chev")+'</span></span></a>';
+  });
+  render(html+'</div>');
+}
+function viewAttempt(id){
+  var a=DB.attempts().filter(function(x){ return x.id===id; })[0]; if(!a) return go("#/history");
+  setTop(T("detail"),true);
+  loadCats(S.catMap[a.categoryId]?[a.categoryId]:DB.attempts().map(function(x){return x.categoryId;})).then(function(){
+    var p=pct(a.score,a.total), pass=p>=PASS, col=pass?"var(--ok)":(p>=60?"var(--warn)":"var(--bad)");
+    var html='<div class="card res"><h1 style="font-size:1.4rem">'+esc(a.categoryTitle)+'</h1><p style="margin:.2rem 0 0;color:var(--ink-3)">'+esc((a.licenseTitle?a.licenseTitle+" · ":"")+dateStr(a.finishedAt))+'</p>'+
+      '<div class="score" style="--p:'+p+';--c:'+col+'"><div><b>'+p+'%</b><span>'+esc(T("score_of")(a.score,a.total))+'</span></div></div>'+
+      (a.mode==="exam"?'<span class="pill '+(pass?'ok':'bad')+'">'+esc(pass?T("passed"):T("failed"))+'</span>':'')+
+      (S.catMap[a.categoryId]?'<div class="qnav" style="justify-content:center"><a class="btn btn--gold" href="#/cat/'+a.categoryId+'">'+esc(T("to_subj"))+'</a></div>':'')+'</div>'+
+      '<div class="sec-h">'+esc(T("wrong_list"))+' ('+a.incorrect.length+')</div>';
+    var qs=a.incorrect.map(findQ).filter(Boolean);
+    if(!qs.length) html+='<div class="card" style="text-align:center">'+esc(T("no_wrong"))+'</div>';
+    else html+='<div class="list">'+qs.map(function(q){ return '<div class="wrong"><p class="q">'+esc(q.t)+'</p><p class="c">✓ '+esc(T("right"))+': '+esc(q.o[q.c])+'</p>'+(q.e?'<p class="e">'+esc(q.e)+'</p>':'')+'</div>'; }).join("")+'</div>';
+    render(html);
+  }).catch(failed);
+}
+
+/* ================= MORE ================= */
+function viewMore(){
+  setTop(T("t_more"),true);
+  render('<div class="pagehead"><h1>'+esc(T("more_t"))+'</h1></div><div class="grid grid--2">'+
+    tile({href:"#/weak",g:"g-weak",icon:ic("chart"),t:T("weak"),s:T("weak_s")})+
+    tile({href:"#/mistakes",g:"g-mis",icon:ic("target"),t:T("mis"),s:T("mis_s"),badge:String(mistakeIds().length)})+
+    tile({href:"#/bookmarks",g:"g-book",icon:ic("bmf"),t:T("bm"),s:T("bm_s"),badge:String(Object.keys(DB.bookmarks()).length)})+
+    tile({href:"#/ach",g:"g-ach",icon:ic("trophy"),t:T("ach"),s:T("ach_s"),badge:achList().filter(function(a){return a.ok;}).length+"/"+achList().length})+
+    tile({href:"#/settings",g:"g-set",icon:ic("gear"),t:T("set"),s:T("set_s")})+
+  '</div>');
+}
+function viewWeak(){
+  setTop(T("weak"),true);
+  var groups={}; DB.attempts().forEach(function(a){ (groups[a.categoryId]=groups[a.categoryId]||[]).push(a); });
+  var rows=Object.keys(groups).map(function(id){ var l=groups[id]; return { id:id, title:l[0].categoryTitle, lic:l[0].licenseTitle, n:l.length,
+    avg:Math.round(l.reduce(function(s,a){ return s+pct(a.score,a.total); },0)/l.length), trend:l.slice(0,3).map(function(a){ return pct(a.score,a.total); }).reverse() }; })
+    .filter(function(r){ return S.catMap[r.id] || r.id.indexOf("__")!==0; }).sort(function(a,b){ return a.avg-b.avg; });
+  if(!rows.length){ render('<div class="empty">'+ic("chart")+'<h3>'+esc(T("weak_empty"))+'</h3><p>'+esc(T("weak_empty_p"))+'</p></div>'); return; }
+  var html='<div class="pagehead"><h1>'+esc(T("weak"))+'</h1><p>'+esc(T("weak_s"))+'</p></div><div class="list">';
+  rows.forEach(function(r){
+    var g=r.avg>=PASS?"g-exam":(r.avg>=60?"g-radio":"g-weak");
+    var dots=r.trend.map(function(p){ return '<span style="width:9px;height:9px;border-radius:50%;display:inline-block;background:'+(p>=PASS?'var(--ok)':'var(--bad)')+'"></span>'; }).join("");
+    html+='<a class="row" '+(S.catMap[r.id]?'href="#/cat/'+r.id+'"':'')+'><span class="ico ico--sm '+g+'" style="border-radius:50%;font-family:var(--ff-d);font-weight:700;font-size:.9rem">'+r.avg+'</span><span><h4>'+esc(r.title)+'</h4><small>'+esc((r.lic?r.lic+" · ":"")+T("weak_row")(r.n,r.avg))+'</small></span><span class="r">'+dots+(S.catMap[r.id]?'<span class="chev">'+ic("chev")+'</span>':'')+'</span></a>';
+  });
+  render(html+'</div>');
+}
+function mistakeIds(){
+  var seen={}, out=[]; var pre=lp();
+  DB.attempts().forEach(function(a){ var g=groupOfCat(a.categoryId); if(a.categoryId.indexOf("__")===0 || (g && g.indexOf(pre)===0)) (a.incorrect||[]).forEach(function(q){ if(!seen[q]){ seen[q]=1; out.push(q); } }); });
+  return out;
+}
+function viewMistakes(){
+  setTop(T("mis"),true);
+  var ids=mistakeIds();
+  if(!ids.length){ render('<div class="empty">'+ic("target")+'<h3>'+esc(T("mis_empty"))+'</h3><p>'+esc(T("mis_empty_p"))+'</p></div>'); return; }
+  render('<div class="pagehead"><h1>'+esc(T("mis"))+'</h1></div><div class="card"><p style="margin:0 0 1rem">'+esc(T("mis_p")(ids.length))+'</p><a class="btn btn--gold btn--block" href="#/quiz/__mistakes/learning">'+ic("play")+esc(T("mis_start")(ids.length))+'</a></div>');
+}
+function viewBookmarks(){
+  setTop(T("bm"),true);
+  var b=DB.bookmarks(), ids=Object.keys(b);
+  if(!ids.length){ render('<div class="empty">'+ic("bm")+'<h3>'+esc(T("bm_empty"))+'</h3><p>'+esc(T("bm_empty_p"))+'</p></div>'); return; }
+  loadCats(ids.map(function(i){ return b[i]; })).then(function(){
+    var html='<div class="pagehead"><h1>'+esc(T("bm"))+'</h1></div><a class="btn btn--gold btn--block" href="#/quiz/__bookmarks/learning" style="margin-bottom:14px">'+ic("play")+esc(T("bm_practice")(ids.length))+'</a><div class="list">';
+    ids.forEach(function(id){ var q=findQ(id); if(!q) return;
+      html+='<div class="wrong" style="border-left-color:var(--gold)"><div style="display:flex;gap:10px"><p class="q" style="flex:1">'+esc(q.t)+'</p><button class="bm on" data-un="'+esc(id)+'" aria-label="'+esc(T("unsaved"))+'">'+ic("bmf")+'</button></div><p class="c">✓ '+esc(q.o[q.c])+'</p>'+(q.e?'<p class="e">'+esc(q.e)+'</p>':'')+'</div>'; });
+    render(html+'</div>');
+    V.querySelectorAll("[data-un]").forEach(function(btn){ btn.onclick=function(){ var bb=DB.bookmarks(); delete bb[btn.getAttribute("data-un")]; lset("bookmarks",bb); cloudDataSoon(); viewBookmarks(); }; });
+  }).catch(failed);
+}
+function achList(){
+  var at=DB.attempts(), s=DB.streak();
+  var answered=at.reduce(function(x,a){ return x+a.total; },0), correct=at.reduce(function(x,a){ return x+a.score; },0);
+  var passed=at.filter(function(a){ return a.mode==="exam" && pct(a.score,a.total)>=PASS; }).length;
+  var perfect=at.some(function(a){ return a.total>0 && a.score===a.total; });
+  var subj={}; at.forEach(function(a){ subj[a.categoryId]=1; });
+  var vals={first_test:[at.length,1],answered_100:[answered,100],answered_1000:[answered,1000],correct_500:[correct,500],streak_3:[s.best||0,3],streak_7:[s.best||0,7],
+    streak_30:[s.best||0,30],exam_first_pass:[passed,1],exam_10_pass:[passed,10],perfect_score:[perfect?1:0,1],subjects_explored:[Object.keys(subj).length,5],bookmark_5:[Object.keys(DB.bookmarks()).length,5]};
+  var icons={first_test:"plane",answered_100:"check",answered_1000:"star",correct_500:"check",streak_3:"flame",streak_7:"flame",streak_30:"flame",exam_first_pass:"trophy",exam_10_pass:"trophy",perfect_score:"star",subjects_explored:"map",bookmark_5:"bmf"};
+  return T("ach_list").map(function(x){ var v=vals[x[0]]; return { id:x[0], t:x[1], d:x[2], ok:v[0]>=v[1], p:Math.min(1,v[0]/v[1]), v:Math.min(v[0],v[1]), max:v[1], icon:icons[x[0]] }; });
+}
+function viewAch(){
+  setTop(T("ach"),true);
+  var l=achList(), ok=l.filter(function(a){ return a.ok; }).length;
+  var html='<div class="pagehead"><h1>'+esc(T("ach"))+'</h1><p>'+ok+' / '+l.length+'</p></div><div class="grid grid--2">';
+  l.forEach(function(a){ html+='<div class="ach'+(a.ok?'':' lock')+'"><span class="ico '+(a.ok?'g-ach':'g-set')+'">'+ic(a.icon)+'</span><div style="flex:1"><h4>'+esc(a.t)+'</h4><small>'+esc(a.d)+'</small>'+(a.ok?'':'<div class="bar"><i style="width:'+Math.round(a.p*100)+'%"></i></div><small>'+a.v+' / '+a.max+'</small>')+'</div></div>'; });
+  render(html+'</div>');
+}
+function viewSettings(){
+  setTop(T("set"),true);
+  var s=DB.streak(), goals=[10,20,40,60,100];
+  var html='<div class="pagehead"><h1>'+esc(T("set"))+'</h1></div><div class="grid">'+
+    '<div class="card"><div class="sec-h" style="margin-top:0">'+esc(T("set_acc"))+'</div>'+
+      (S.user?'<p style="margin:0 0 1rem"><b>'+esc(S.user.email)+'</b></p><button class="btn btn--ghost" id="soBtn">'+ic("out")+esc(T("signout"))+'</button>'
+        :'<p style="margin:0"><b>'+esc(T("guest"))+'</b></p><p style="margin:.3rem 0 1rem;color:var(--ink-3)">'+esc(T("guest_note"))+'</p><button class="btn btn--navy" id="siBtn">'+ic("user")+esc(T("signin"))+'</button>')+
+    '</div>'+
+    '<div class="card"><div class="sec-h" style="margin-top:0">'+esc(T("set_lang"))+'</div><div class="seg" style="margin:0"><button data-l="cs" class="'+(S.lang==="cs"?"on":"")+'">Čeština</button><button data-l="en" class="'+(S.lang==="en"?"on":"")+'">English</button></div></div>'+
+    '<div class="card"><div class="sec-h" style="margin-top:0">'+esc(T("set_goal"))+'</div><select class="in" id="goalSel">'+goals.map(function(g){ return '<option value="'+g+'"'+((s.goal||20)===g?' selected':'')+'>'+esc(T("set_goal_n")(g))+'</option>'; }).join("")+'</select></div>'+
+    '<div class="card" style="display:flex;flex-wrap:wrap;gap:10px"><button class="btn btn--ghost" data-feedback>'+ic("msg")+esc(T("set_fb"))+'</button><a class="btn btn--ghost" href="index.html">'+ic("globe")+esc(T("set_site"))+'</a><button class="btn btn--danger" id="rsBtn">'+ic("trash")+esc(T("set_reset"))+'</button></div>'+
+  '</div>';
+  render(html);
+  V.querySelectorAll(".seg [data-l]").forEach(function(b){ b.onclick=function(){ setLang(b.getAttribute("data-l")); viewSettings(); }; });
+  document.getElementById("goalSel").onchange=function(){ var st=DB.streak(); st.goal=+this.value; lset("streak",st); cloudDataSoon(); };
+  var so=document.getElementById("soBtn"); if(so) so.onclick=function(){ sb.auth.signOut().then(function(){ S.user=null; S.guest=false; try{ localStorage.removeItem("pp_guest"); }catch(e){} go("#/"); route(); }); };
+  var si=document.getElementById("siBtn"); if(si) si.onclick=function(){ S.guest=false; try{ localStorage.removeItem("pp_guest"); }catch(e){} go("#/"); route(); };
+  document.getElementById("rsBtn").onclick=function(){
+    if(!confirm(T("reset_confirm"))) return;
+    ["attempts","bookmarks","wrong","streak","progress"].forEach(function(k){ try{ localStorage.removeItem(ns()+k); }catch(e){} });
+    if(cloudOn()){ sb.from("exam_attempts").delete().eq("user_id",S.user.id).then(function(){},function(){}); sb.from("user_progress").delete().eq("user_id",S.user.id).then(function(){},function(){}); cloudPushData(); }
+    toast(T("reset_done")); viewSettings();
+  };
+}
+
+/* ================= LANGUAGE ================= */
+function setLang(l){
+  S.lang=l; document.documentElement.lang=l;
+  try{ localStorage.setItem("propiloty_lang",l); }catch(e){}
+  document.querySelectorAll("#lang button").forEach(function(b){ b.classList.toggle("on",b.getAttribute("data-l")===l); });
+  document.title = l==="en" ? "Propilot(y) | web app" : "Propilot(y) | webová aplikace";
+}
+document.querySelectorAll("#lang button").forEach(function(b){ b.onclick=function(){
+  if(S.quiz && !S.quiz.finished && !confirm(T("confirm_leave"))) return;
+  setLang(b.getAttribute("data-l"));
+  var h=location.hash; if(/^#\/(quiz|cat|lic|pilot|bpl|radio|laa|subjhist|history\/)/.test(h)) go("#/"); else route();
+}; });
+setLang(S.lang);
+
+/* ================= BOOT ================= */
+function onUser(u){
+  var was=S.user && S.user.id; S.user=u||null;
+  if(S.user){ S.guest=false; try{ localStorage.removeItem("pp_guest"); }catch(e){} }
+  updateAcct();
+  if(S.user && S.user.id!==was){
+    Promise.all([cloudPullAttempts(),cloudPullData()]).then(function(){ if(!S.quiz) route(); });
+  }
+}
+if(sb){
+  if(/type=recovery/.test(location.hash)) S.recovering=true;
+  sb.auth.onAuthStateChange(function(ev,session){
+    if(ev==="PASSWORD_RECOVERY"){ S.recovering=true; S.user=session&&session.user; route(); return; }
+    var prev=S.user&&S.user.id; onUser(session&&session.user);
+    if(ev==="SIGNED_IN" && !prev){ if(/access_token|type=/.test(location.hash)) history.replaceState(null,"",location.pathname+"#/"); route(); }
+    if(ev==="SIGNED_OUT"){ route(); }
+  });
+  sb.auth.getSession().then(function(r){ var u=r.data&&r.data.session&&r.data.session.user; if(u) onUser(u); if(!/access_token/.test(location.hash)) route(); }, function(){ route(); });
+} else { route(); }
 })();
 </script>
-
-<!-- feedback (test version) -->
-<style>
-.fbk{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:50;display:inline-flex;align-items:center;gap:.5rem;
-  background:var(--gold);color:var(--navy-900);font-weight:600;font-size:.9rem;padding:.7rem 1rem;border-radius:999px;text-decoration:none;
-  box-shadow:0 12px 28px -10px rgba(10,26,48,.55)}
-.fbk:hover{background:var(--gold-200)}
-.fbk svg{width:18px;height:18px}
-.fbk small{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;opacity:.75}
-</style>
-<a class="fbk" href="#feedback" data-feedback title="Testovací verze: pošlete nám feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg>Feedback <small>beta</small></a>
 <!-- ===== FEEDBACK MODAL (Web3Forms) ===== -->
 <script>
 (function(){
@@ -575,7 +1240,5 @@ h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0}
     .finally(function(){ send.disabled=false; send.textContent=T[L].send; });
   });
 })();
-</script>
-
-</body>
+</script></body>
 </html>
