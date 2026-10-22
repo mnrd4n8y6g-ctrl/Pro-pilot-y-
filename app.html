@@ -189,6 +189,7 @@ h1,h2,h3{font-family:var(--ff-d);letter-spacing:-.01em;margin:0;line-height:1.15
 .lg{width:12px;height:12px;border-radius:3px;border:1px solid var(--line);background:#fff;display:inline-block;margin-left:.6rem}
 .lg:first-child{margin-left:0}
 .lg.r{background:var(--ok-bg);border-color:#9AD9B0}.lg.w{background:var(--bad-bg);border-color:#F2B1B1}
+.qrep{text-align:center;margin:12px 0 0}.qrep .linkbtn{display:inline-flex;align-items:center;gap:.35rem;color:var(--ink-3);font-weight:500;font-size:.85rem}.qrep .linkbtn:hover{color:var(--cobalt)}
 .hint{margin-top:10px;font-size:.78rem;color:var(--ink-3);text-align:center}
 @media(hover:none){.hint{display:none}}
 
@@ -323,7 +324,7 @@ var STR = {
   confirm_finish:function(a,n){ return "Zodpověděl/a jsi "+a+" z "+n+" otázek. Vyhodnotit jen zodpovězené otázky?"; }, correct:"Správně", wrong:"Špatně", expl:"Vysvětlení",
   confirm_submit:function(a,n){ return a<n? "Máš zodpovězeno "+a+" z "+n+" otázek. Nezodpovězené se počítají jako chyba. Opravdu odevzdat?" : "Opravdu odevzdat test?"; },
   confirm_leave:"Opravdu ukončit test? Rozpracovaný stav se uloží a můžeš pokračovat později.",
-  keys:"Tip: odpovídej klávesami 1–4 nebo A–D, šipky ← → přepínají otázky",
+  keys:"Tip: odpovídej klávesami 1–4 nebo A–D, šipky ← → přepínají otázky", report:"Nahlásit chybu v otázce", report_pre:"Chyba v otázce:", report_what:"Co je špatně:",
   res_t:"Výsledek", passed:"Úspěšně složeno", failed:"Neprošlo, potřebuješ "+PASS+" %", score_of:function(s,n){ return s+" z "+n+" správně"; },
   your:"Tvoje odpověď", right:"Správná odpověď", none:"bez odpovědi", mistakes:"Chybné odpovědi", nomist:"Bez jediné chyby. Výborně!",
   again:"Zkusit znovu", to_subj:"Zpět na předmět", home:"Domů",
@@ -379,7 +380,7 @@ var STR = {
   confirm_finish:function(a,n){ return "You answered "+a+" of "+n+" questions. Evaluate only the answered ones?"; }, correct:"Correct", wrong:"Incorrect", expl:"Explanation",
   confirm_submit:function(a,n){ return a<n? "You answered "+a+" of "+n+" questions. Unanswered ones count as wrong. Submit anyway?" : "Submit the exam?"; },
   confirm_leave:"Leave the test? Your progress is saved and you can continue later.",
-  keys:"Tip: answer with keys 1–4 or A–D, arrows ← → switch questions",
+  keys:"Tip: answer with keys 1–4 or A–D, arrows ← → switch questions", report:"Report an error in this question", report_pre:"Error in question:", report_what:"What is wrong:",
   res_t:"Result", passed:"Passed", failed:"Not passed, you need "+PASS+" %", score_of:function(s,n){ return s+" of "+n+" correct"; },
   your:"Your answer", right:"Correct answer", none:"no answer", mistakes:"Incorrect answers", nomist:"Not a single mistake. Great job!",
   again:"Try again", to_subj:"Back to subject", home:"Home",
@@ -921,7 +922,7 @@ function drawQuiz(){
     if(Q.i+1<n) html+='<button class="btn btn--navy" id="nextBtn">'+esc(T("nextq"))+'</button>';
     html+='<button class="btn btn--gold" id="subBtn">'+esc(T("submit"))+'</button>';
   }
-  html+='</div>'+drawNav(Q)+'</div><p class="hint">'+esc(T("keys"))+'</p>';
+  html+='</div>'+drawNav(Q)+'</div><p class="qrep"><button class="linkbtn" id="repBtn" data-feedback>'+ic("msg").replace('<svg','<svg width="14" height="14"')+' '+esc(T("report"))+'</button></p><p class="hint">'+esc(T("keys"))+'</p>';
   V.innerHTML=html;
   V.querySelectorAll(".opt").forEach(function(b){ b.onclick=function(){ answer(+b.getAttribute("data-k")); }; });
   var nb=document.getElementById("nextBtn"); if(nb) nb.onclick=function(){ goTo(Q.i+1); };
@@ -937,6 +938,14 @@ function drawQuiz(){
     lset("bookmarks",b); cloudDataSoon(); drawQuiz();
   };
   var im=document.getElementById("qimg"); if(im) im.onclick=function(){ var l=document.createElement("div"); l.className="lb"; l.innerHTML='<img src="'+im.src+'" alt="">'; l.onclick=function(){ l.remove(); }; document.body.appendChild(l); };
+  var rb=document.getElementById("repBtn"); if(rb) rb.addEventListener("click",function(){
+    setTimeout(function(){
+      var ta=document.querySelector(".fbm textarea"); if(!ta) return;
+      var oi=Q.answers[Q.i];
+      ta.value=T("report_pre")+"\n"+T("question")+": "+q.t+"\n"+T("right")+": "+q.o[q.c]+"\nID: "+q.i+" ("+(q.cat||Q.catId)+")\n\n"+T("report_what")+" ";
+      ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length);
+    },120);
+  });
 }
 function answer(k){
   var Q=S.quiz; if(!Q||Q.finished) return;
