@@ -679,7 +679,7 @@ function viewAuth(){
       }
       go_.disabled=true;
       var pr = mode==="in" ? sb.auth.signInWithPassword({email:e,password:p})
-        : sb.auth.signUp({email:e,password:p,options:{emailRedirectTo:location.origin+location.pathname}});
+        : sb.auth.signUp({email:e,password:p,options:{emailRedirectTo:location.origin+location.pathname,data:{lang:S.lang}}});
       pr.then(function(r){
         go_.disabled=false;
         if(r.error){ var m=(r.error.message||"").toLowerCase(); say(m.indexOf("confirm")>=0?T("a_unconf"):(mode==="in"?T("a_bad"):r.error.message),false); return; }
@@ -1156,6 +1156,17 @@ function setLang(l){
   try{ localStorage.setItem("propiloty_lang",l); }catch(e){}
   document.querySelectorAll("#lang button").forEach(function(b){ b.classList.toggle("on",b.getAttribute("data-l")===l); });
   document.title = l==="en" ? "Propilot(y) | web app" : "Propilot(y) | webová aplikace";
+  syncLang();
+}
+/* keep account language in Supabase user metadata (used by auth e-mail templates) */
+function syncLang(){
+  try{
+    if(!sb || !S.user || S.recovering) return;
+    var m=S.user.user_metadata||{};
+    if(m.lang===S.lang) return;
+    S.user.user_metadata=Object.assign({},m,{lang:S.lang});
+    sb.auth.updateUser({data:{lang:S.lang}});
+  }catch(e){}
 }
 document.querySelectorAll("#lang button").forEach(function(b){ b.onclick=function(){
   if(S.quiz && !S.quiz.finished && !confirm(T("confirm_leave"))) return;
@@ -1169,6 +1180,7 @@ function onUser(u){
   var was=S.user && S.user.id; S.user=u||null;
   if(S.user){ S.guest=false; try{ localStorage.removeItem("pp_guest"); }catch(e){} }
   updateAcct();
+  syncLang();
   if(S.user && S.user.id!==was){
     Promise.all([cloudPullAttempts(),cloudPullData()]).then(function(){ if(!S.quiz) route(); });
   }
